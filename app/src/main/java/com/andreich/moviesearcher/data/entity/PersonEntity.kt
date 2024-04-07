@@ -1,6 +1,9 @@
-package com.andreich.moviesearcher.domain.model
+package com.andreich.moviesearcher.data.entity
 
-data class Person(
+import androidx.room.Entity
+
+@Entity("actor")
+data class PersonEntity(
     val id: Int?,
     val photoUrl: String?,
     val name: String?,
