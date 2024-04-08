@@ -14,10 +14,10 @@ interface RemoteKeyDao {
     suspend fun insertAll(remoteKey: List<RemoteKeyEntity>)
 
     @Query("SELECT * FROM remote_key WHERE valueId = :id AND valueType = :type")
-    suspend fun getRemoteKeyByMovieID(id: Int, type: KClass<Entities>): RemoteKeyEntity?
+    suspend fun getRemoteKeyByValueID(id: Int, type: KClass<out Entities>): RemoteKeyEntity?
 
-    @Query("DELETE FROM remote_key")
-    suspend fun clearRemoteKeys()
+    @Query("DELETE FROM remote_key WHERE valueType = :type")
+    suspend fun clearRemoteKeys(type: KClass<out Entities>)
 
     @Query("SELECT created_at FROM remote_key WHERE valueType = :type ORDER BY created_at DESC LIMIT 1")
     suspend fun getCreationTime(type: KClass<Entities>): Long?

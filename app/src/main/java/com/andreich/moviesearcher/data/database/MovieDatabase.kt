@@ -34,4 +34,22 @@ abstract class MovieDatabase : RoomDatabase() {
             }
         }
     }
+
+    abstract fun movieDao(): MovieDao
+
+    abstract fun remoteKeyDao(): RemoteKeyDao
+
+    abstract fun personDao(): PersonDao
+
+    abstract fun reviewDao(): ReviewDao
+
+    abstract fun seasonDao(): SeasonDao
+
+    abstract fun historyDao(): MovieSearchHistoryDao
+
+    abstract fun movieRemoteKeyDao(): MovieRemoteKeyDao
+
+    abstract fun reviewRemoteKeyDao(): ReviewRemoteKeyDao
+
+    abstract fun personRemoteKeyDao(): PersonRemoteKeyDao
 }

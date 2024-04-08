@@ -12,5 +12,6 @@ data class ReviewEntity(
     val type: String,
     val review: String,
     val date: String,
-    val author: String
+    val author: String,
+    val page: Int
 )

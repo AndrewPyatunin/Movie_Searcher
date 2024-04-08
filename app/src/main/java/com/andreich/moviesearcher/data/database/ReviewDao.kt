@@ -8,7 +8,7 @@ import androidx.room.Query
 import com.andreich.moviesearcher.data.entity.ReviewEntity
 
 @Dao
-interface ReviewDao {
+interface ReviewDao: MyDao<ReviewEntity> {
 
     @Query("SELECT * FROM review ORDER BY page")
     fun getReviews(): PagingSource<Int, ReviewEntity>

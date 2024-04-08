@@ -11,4 +11,4 @@ data class PersonsDto(
     @SerializedName("description") var birthday: String? = null,
     @SerializedName("profession") var profession: String? = null,
     @SerializedName("enProfession") var enProfession: String? = null
-)
+): RequestDto

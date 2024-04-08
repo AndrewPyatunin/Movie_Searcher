@@ -2,7 +2,7 @@ package com.andreich.moviesearcher.domain.pojo
 
 import com.google.gson.annotations.SerializedName
 
-data class RequestResultDto<T>(
+data class RequestResultDto<T: RequestDto>(
 
     @SerializedName("docs") var docs  : ArrayList<T> = arrayListOf(),
     @SerializedName("total") var total : Int? = null,

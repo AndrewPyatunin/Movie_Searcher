@@ -5,14 +5,12 @@ import com.andreich.moviesearcher.data.entity.PersonEntity
 import com.andreich.moviesearcher.domain.model.MovieType
 import com.andreich.moviesearcher.domain.pojo.MovieDto
 import com.andreich.moviesearcher.domain.pojo.PersonsDto
-import com.andreich.moviesearcher.domain.pojo.RequestResultDto
 
 class MovieDtoToMovieMapper(
     private val personMapper: DtoMapper<PersonsDto, PersonEntity>,
-) : MovieMapper<RequestResultDto<MovieDto>, MovieEntity> {
+) : MovieMapper<MovieDto, MovieEntity> {
 
-    override fun map(fromRequestDto: RequestResultDto<MovieDto>, item: Int, requestId: Long): MovieEntity {
-        val fromDto = fromRequestDto.docs[item]
+    override fun map(fromDto: MovieDto, item: Int, requestId: Long): MovieEntity {
         return MovieEntity(
             id = fromDto.id ?: 0,
             name = fromDto.name ?: "",
@@ -42,7 +40,7 @@ class MovieDtoToMovieMapper(
             movieLength = fromDto.movieLength,
             isSeries = fromDto.isSeries ?: false,
             seriesLength = fromDto.seriesLength,
-            page = fromRequestDto.page,
+            page = 1,
             requestId = requestId
         )
     }

@@ -2,16 +2,15 @@ package com.andreich.moviesearcher.data.mapper
 
 import com.andreich.moviesearcher.data.entity.PosterDetailEntity
 import com.andreich.moviesearcher.domain.pojo.PosterDetailDto
-import com.andreich.moviesearcher.domain.pojo.RequestResultDto
 
-class PosterDetailDtoToPosterDetailEntityMapper : MovieMapper<RequestResultDto<PosterDetailDto>, PosterDetailEntity> {
+class PosterDetailDtoToPosterDetailEntityMapper : MovieMapper<PosterDetailDto, PosterDetailEntity> {
 
     override fun map(
-        fromRequestDto: RequestResultDto<PosterDetailDto>,
+        fromDto: PosterDetailDto,
         item: Int,
         requestId: Long
     ): PosterDetailEntity {
-        return with(fromRequestDto.docs[item]) {
+        return with(fromDto) {
             PosterDetailEntity(
                 url = url.toString(),
                 height = height ?: 0,

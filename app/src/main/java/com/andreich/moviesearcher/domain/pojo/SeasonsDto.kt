@@ -15,4 +15,4 @@ data class SeasonsDto(
     @SerializedName("enDescription") var enDescription: String? = null,
     @SerializedName("poster") var poster: PosterDto? = PosterDto(),
     @SerializedName("id") var id: String? = null
-)
+): RequestDto

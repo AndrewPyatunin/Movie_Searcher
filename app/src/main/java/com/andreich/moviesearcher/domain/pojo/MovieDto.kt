@@ -25,4 +25,4 @@ data class MovieDto(
     @SerializedName("ageRating") var ageRating: Int? = null,
     @SerializedName("logo") var logo: LogoDto? = LogoDto(),
     @SerializedName("top250") var top250: Int? = null
-)
+): RequestDto

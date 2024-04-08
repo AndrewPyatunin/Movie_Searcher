@@ -15,8 +15,14 @@ data class Movie(
     val url: String,
     val previewUrl: String,
     val actors: List<Person>,
-    val votes: Votes,
+    val votes: Int,
     val network: String,
     val seasonsAmount: Int? = null,
-    val top250: Int = 0
+    val top250: Int = 0,
+    val movieLength: Int?,
+    val isSeries: Boolean,
+    val seriesLength: Int?,
+    val page: Int,
+    val requestId: Long,
+    val ratingImdb: Double
 )

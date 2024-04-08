@@ -1,5 +1,6 @@
 package com.andreich.moviesearcher.data.network
 
+import com.andreich.moviesearcher.domain.pojo.*
 import retrofit2.http.FieldMap
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -13,7 +14,7 @@ interface ApiService {
     // по типу контента (сериал/фильм), по году выхода, по рейтингу Кинопоиска (от конкретного значения), поиск по сети производства (HBO,  Netflix  и т.п.)
 
     @GET(
-        "movie?selectFields=id&selectFields=name&selectFields=alternativeName&selectFields=names" +
+        "movie?page={page}&limit={limit}&selectFields=id&selectFields=name&selectFields=alternativeName&selectFields=names" +
                 "&selectFields=description&selectFields=slogan&selectFields=type&selectFields=isSeries" +
                 "&selectFields=year&selectFields=rating&selectFields=ageRating&selectFields=votes" +
                 "&selectFields=seasonsInfo&selectFields=movieLength&selectFields=seriesLength" +
@@ -24,19 +25,23 @@ interface ApiService {
     )
     suspend fun searchWithFilters(
         @Header("X-API-KEY") apiKey: String,
-        @FieldMap sortFilters: Map<String, String>,
+        @Path("page") page: Int = 1,
+        @Path("limit") limit: Int = 10,
+        @FieldMap sortFilters: Map<String, String> = emptyMap(),
         @Query(QUERY_PARAM_SORT_TYPE) vararg filters: String
-    )
+    ): RequestResultDto<MovieDto>
 
-    @GET("person?page=1&limit=10&selectFields=id&selectFields=name&selectFields=enName" +
+    @GET("person?page={page}&limit={limit}&selectFields=id&selectFields=name&selectFields=enName" +
             "&selectFields=photo&selectFields=sex&selectFields=birthday&selectFields=age" +
             "&selectFields=countAwards&selectFields=profession&sortField=countAwards" +
             "&sortField=movies.general&sortType=-1&sortType=-1")
     suspend fun getActors(
         @Header("X-API-KEY") apiKey: String,
-        @Query(QUERY_PARAM_MOVIE_ID) id: Int,
+        @Path("page") page: Int = 1,
+        @Path("limit") limit: Int = 10,
+        @Query(QUERY_PARAM_MOVIE_ID) movieId: Int,
         @Query(QUERY_PARAM_SELECT_FIELDS) vararg filters: String
-    )
+    ): RequestResultDto<PersonsDto>
 
     @GET("movie/search?page={page}&limit={limit}")
     suspend fun searchFilm(
@@ -44,7 +49,7 @@ interface ApiService {
         @Path("page") page: Int = 1,
         @Path("limit") limit: Int = 10,
         @Query(QUERY_PARAM_MOVIE_SEARCH_NAME) movieName: String
-    )
+    ): RequestResultDto<MovieDto>
 
     @GET("review?page={page}&limit={limit}&selectFields=id&selectFields=movieId&selectFields=title" +
             "&selectFields=type&selectFields=review&selectFields=date&selectFields=author")
@@ -54,7 +59,7 @@ interface ApiService {
         @Path("limit") limit: Int = 10,
         @Query(REVIEW_PARAM_MOVIE_ID) movieId: Int,
         @Query(QUERY_PARAM_SELECT_FIELDS) vararg filters: String
-    )
+    ): RequestResultDto<ReviewDto>
 
     @GET("season?page={page}&limit={limit}&selectFields=movieId&selectFields=poster&selectFields=number" +
             "&selectFields=name&selectFields=enName&selectFields=description" +
@@ -66,7 +71,7 @@ interface ApiService {
         @Path("limit") limit: Int = 10,
         @Query(QUERY_PARAM_MOVIE_ID) movieId: Int,
         @Query(QUERY_PARAM_SELECT_FIELDS) vararg selectFields: String
-    )
+    ): RequestResultDto<SeasonsDto>
 
     @GET("image?page={page}&limit={limit}&movieId={movieId}&type=cover&type=frame&type=promo&type=still&type=wallpaper")
     suspend fun getPosters(
@@ -74,7 +79,7 @@ interface ApiService {
         @Path("movieId") movieId: Int,
         @Path("page") page: Int = 1,
         @Path("limit") limit: Int = 10,
-    )
+    ): RequestResultDto<PosterDetailDto>
 
     companion object {
         //по жанру, по стране производства, по типу контента (сериал/фильм), по году выхода,

@@ -9,7 +9,7 @@ import com.andreich.moviesearcher.data.entity.MovieEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface MovieDao {
+interface MovieDao: MyDao<MovieEntity> {
 
     @Query("SELECT * FROM movie WHERE requestId = :requestId ORDER BY page")
     fun getMovies(requestId: Long): PagingSource<Int, MovieEntity>

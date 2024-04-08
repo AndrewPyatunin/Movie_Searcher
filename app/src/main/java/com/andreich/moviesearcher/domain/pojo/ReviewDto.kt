@@ -11,4 +11,4 @@ data class ReviewDto(
     @SerializedName("review") var review: String? = null,
     @SerializedName("date") var date: String? = null,
     @SerializedName("author") var author: String? = null
-)
+): RequestDto

@@ -3,15 +3,13 @@ package com.andreich.moviesearcher.data.mapper
 import com.andreich.moviesearcher.data.entity.EpisodeEntity
 import com.andreich.moviesearcher.data.entity.SeasonEntity
 import com.andreich.moviesearcher.domain.pojo.EpisodesDto
-import com.andreich.moviesearcher.domain.pojo.RequestResultDto
 import com.andreich.moviesearcher.domain.pojo.SeasonsDto
 
 class SeasonsDtoToSeasonEntityMapper(
     private val episodeMapper: DtoMapper<EpisodesDto, EpisodeEntity>
-) : MovieMapper<RequestResultDto<SeasonsDto>, SeasonEntity> {
+) : MovieMapper<SeasonsDto, SeasonEntity> {
 
-    override fun map(fromRequestDto: RequestResultDto<SeasonsDto>, item: Int, requestId: Long): SeasonEntity {
-        val fromDto = fromRequestDto.docs[item]
+    override fun map(fromDto: SeasonsDto, item: Int, requestId: Long): SeasonEntity {
         return SeasonEntity(
             movieId = fromDto.movieId,
             number = fromDto.number,

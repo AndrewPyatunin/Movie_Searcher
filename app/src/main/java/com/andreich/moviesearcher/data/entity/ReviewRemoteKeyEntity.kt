@@ -4,8 +4,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlin.reflect.KClass
 
-@Entity("remote_key")
-data class RemoteKeyEntity(
+@Entity("review_remote_key")
+data class ReviewRemoteKeyEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = System.currentTimeMillis(),
     val valueId: Int,
