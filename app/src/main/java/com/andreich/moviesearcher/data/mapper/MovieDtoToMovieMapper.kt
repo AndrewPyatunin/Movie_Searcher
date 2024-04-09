@@ -40,7 +40,7 @@ class MovieDtoToMovieMapper(
             movieLength = fromDto.movieLength,
             isSeries = fromDto.isSeries ?: false,
             seriesLength = fromDto.seriesLength,
-            page = 1,
+            page = item,
             requestId = requestId
         )
     }

@@ -1,4 +1,4 @@
-package com.andreich.moviesearcher.data
+package com.andreich.moviesearcher.data.remotemediator
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
@@ -7,7 +7,6 @@ import androidx.room.withTransaction
 import com.andreich.moviesearcher.data.database.MovieDatabase
 import com.andreich.moviesearcher.data.database.ReviewRemoteKeyDao
 import com.andreich.moviesearcher.data.datasource.remote.RemoteDataSource
-import com.andreich.moviesearcher.data.entity.Entities
 import com.andreich.moviesearcher.data.entity.ReviewEntity
 import com.andreich.moviesearcher.data.entity.ReviewRemoteKeyEntity
 import com.andreich.moviesearcher.data.mapper.MovieMapper
@@ -52,8 +51,7 @@ class ReviewRemoteMediator(
                         valueId = it.id ?: 0,
                         prevKey = prevKey,
                         currentPage = page,
-                        nextKey = nextKey,
-                        valueType = Entities.Reviews::class
+                        nextKey = nextKey
                     )
                 }
 

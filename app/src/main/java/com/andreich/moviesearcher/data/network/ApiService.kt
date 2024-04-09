@@ -4,14 +4,10 @@ import com.andreich.moviesearcher.domain.pojo.*
 import retrofit2.http.FieldMap
 import retrofit2.http.GET
 import retrofit2.http.Header
-import retrofit2.http.Headers
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
-    //Можно отфильтровать выдачу по году, стране и возрастному рейтингу
-    //Если для пользователя есть возможность установить фильтры: по жанру, по стране производства,
-    // по типу контента (сериал/фильм), по году выхода, по рейтингу Кинопоиска (от конкретного значения), поиск по сети производства (HBO,  Netflix  и т.п.)
 
     @GET(
         "movie?page={page}&limit={limit}&selectFields=id&selectFields=name&selectFields=alternativeName&selectFields=names" +
@@ -82,8 +78,6 @@ interface ApiService {
     ): RequestResultDto<PosterDetailDto>
 
     companion object {
-        //по жанру, по стране производства, по типу контента (сериал/фильм), по году выхода,
-        // по рейтингу Кинопоиска (от конкретного значения), поиск по сети производства (HBO,  Netflix  и т.п.)
 
         private const val QUERY_PARAM_SELECT_FIELDS = "selectFields"
         private const val QUERY_PARAM_SORT_FIELD = "sortField"
@@ -111,10 +105,6 @@ interface ApiService {
         private const val PARAM_SERIES_LENGTH = "seriesLength"
         private const val PARAM_TOP250 = "top250"
 
-        //https://api.kinopoisk.dev/v1.4/season?page=1&limit=10&selectFields=movieId&selectFields=poster&
-        // selectFields=number&selectFields=name&selectFields=enName&selectFields=description&selectFields=enDescription&
-        // selectFields=episodesCount&selectFields=airDate&selectFields=episodes&sortField=airDate&sortField=episodes.date&sortType=1
-        // &sortType=1&movieId=681831&number=1-30
         private const val SORT_TYPE_DOWN = "1"
         private const val SORT_TYPE_UP = "-1"
 
@@ -132,12 +122,6 @@ interface ApiService {
         private const val SEASON_SORT_PARAM_2 = ""
         private const val SEASON_NUMBER_RESTRICTION = "1-30"
 
-        //    @SerializedName("movieLength") var movieLength: Int? = null,
-        //    @SerializedName("isSeries") var isSeries: Boolean? = null,
-        //    @SerializedName("totalSeriesLength") var totalSeriesLength: String? = null,
-        //    @SerializedName("seriesLength") var seriesLength: String? = null,
-        //    @SerializedName("description") var description: String? = null,
-
         private const val REVIEW_PARAM_REVIEW = "review"
         private const val REVIEW_PARAM_DATE = "date"
         private const val REVIEW_PARAM_TYPE = "type"
@@ -145,19 +129,5 @@ interface ApiService {
         private const val REVIEW_PARAM_ID = "id"
         private const val REVIEW_PARAM_MOVIE_ID = "movieId"
         private const val REVIEW_PARAM_TITLE = "title"
-
-        //selectFields=name&selectFields=alternativeName&selectFields=description&selectFields=slogan&selectFields=type&
-        // selectFields=year&selectFields=rating&selectFields=ageRating&selectFields=votes&selectFields=seasonsInfo&
-        // selectFields=genres&selectFields=countries&selectFields=poster&selectFields=logo&selectFields=networks&
-        // selectFields=persons&selectFields=top250&type=tv-series&year=2010-2020&genres.name=%2B%D1%82%D1%80%D0%B8%D0%BB%D0%BB%D0%B5%D1%80&
-        // genres.name=%2B%D0%B4%D1%80%D0%B0%D0%BC%D0%B0
-
-        private const val QUERY_PARAM_API_KEY = "api_key"
-        private const val QUERY_PARAM_LIMIT = "limit"
-        private const val QUERY_PARAM_TO_SYMBOL = "tsym"
-        private const val QUERY_PARAM_TO_SYMBOLS = "tsyms"
-        private const val QUERY_PARAM_FROM_SYMBOLS = "fsyms"
-
-        private const val CURRENCY = "USD"
     }
 }

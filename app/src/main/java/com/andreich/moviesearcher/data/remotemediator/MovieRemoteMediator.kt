@@ -1,4 +1,4 @@
-package com.andreich.moviesearcher.data
+package com.andreich.moviesearcher.data.remotemediator
 
 import androidx.paging.*
 import androidx.room.withTransaction
@@ -6,7 +6,6 @@ import com.andreich.moviesearcher.data.database.*
 import com.andreich.moviesearcher.data.datasource.remote.RemoteDataSource
 import com.andreich.moviesearcher.data.entity.*
 import com.andreich.moviesearcher.data.mapper.MovieMapper
-import com.andreich.moviesearcher.data.network.ApiService
 import com.andreich.moviesearcher.domain.pojo.*
 import retrofit2.HttpException
 import java.io.IOException
@@ -18,7 +17,9 @@ class MovieRemoteMediator(
     private val apiKey: String,
     private val remoteKeyDao: MovieRemoteKeyDao,
     private val movieMapper: MovieMapper<MovieDto, MovieEntity>,
-    private val name: String? = null
+    private val personMapper: MovieMapper<PersonsDto, PersonEntity>,
+    private val name: String? = null,
+    private val requestId: Long,
 ) : BaseRemoteMediator<MovieEntity, MovieRemoteKeyDao>(remoteKeyDao, MovieEntity::class) {
     val movieDao = database.movieDao()
 
@@ -33,10 +34,16 @@ class MovieRemoteMediator(
 //                networkService.searchFilm(apiKey, page, movieName = name)
             } ?: remoteDataSource.searchWithFilters(page = page, apiKey = apiKey)
             val movies = apiResponse.docs
+            movies.map {
+                it.persons.map { person ->
+                    personMapper.map(person, page, requestId)
+                }
+            }.forEach {
+                database.personDao().insertActors(it)
+            }
             if (name != null) {
-                val timeStamp = System.currentTimeMillis()
-                MovieSearchHistoryEntity(timeStamp, name, movies.map {
-                    movieMapper.map(it, page, timeStamp)
+                MovieSearchHistoryEntity(requestId, name, movies.map {
+                    movieMapper.map(it, page, requestId)
                 }).let {
                     database.historyDao().insertElement(it)
                 }
@@ -51,12 +58,12 @@ class MovieRemoteMediator(
                 val prevKey = if (page > 1) page - 1 else null
                 val nextKey = if (endOfPaginationReached) null else page + 1
                 val remoteKeys = movies.map {
-                    MovieRemoteKeyEntity(valueId = it.id ?: 0, prevKey = prevKey, currentPage = page, nextKey = nextKey, valueType = Entities.Movies::class)
+                    MovieRemoteKeyEntity(valueId = it.id ?: 0, prevKey = prevKey, currentPage = page, nextKey = nextKey)
                 }
 
                 remoteKeyDao.insertAll(remoteKeys)
                 movieDao.insertMovies( movies.map {
-                    movieMapper.map(it, page, System.currentTimeMillis())
+                    movieMapper.map(it, page, requestId)
                 })
             }
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)

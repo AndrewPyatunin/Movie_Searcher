@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 interface SeasonDao: MyDao<SeasonEntity> {
 
     @Query("SELECT * FROM season")
-    fun getReviews(): Flow<ReviewEntity>
+    fun getSeasons(): Flow<SeasonEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSeasons(list: List<SeasonEntity>)

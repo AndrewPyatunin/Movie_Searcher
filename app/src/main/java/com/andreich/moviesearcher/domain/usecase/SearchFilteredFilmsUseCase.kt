@@ -1,14 +1,18 @@
 package com.andreich.moviesearcher.domain.usecase
 
-import com.andreich.moviesearcher.domain.MovieRepository
+import androidx.paging.PagingData
+import com.andreich.moviesearcher.domain.model.Movie
+import com.andreich.moviesearcher.domain.repo.MovieRepository
+import kotlinx.coroutines.flow.Flow
 
 class SearchFilteredFilmsUseCase(
     private val repository: MovieRepository
 ) {
 
-    suspend fun execute(searchParams: String, pageSize: Int, requestId: Long) = repository.searchFilteredFilms(
+    fun execute(searchParams: String, pageSize: Int, requestId: Long): Flow<PagingData<Movie>> = repository.searchFilteredFilms(
         searchParams,
         pageSize,
-        requestId
+        requestId,
+        null
     )
 }

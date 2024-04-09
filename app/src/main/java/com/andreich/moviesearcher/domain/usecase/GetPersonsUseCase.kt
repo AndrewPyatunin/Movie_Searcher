@@ -1,10 +1,10 @@
 package com.andreich.moviesearcher.domain.usecase
 
-import com.andreich.moviesearcher.domain.MovieRepository
+import com.andreich.moviesearcher.domain.repo.PersonRepository
 
 class GetPersonsUseCase(
-    private val repository: MovieRepository
+    private val repository: PersonRepository
 ) {
 
-    fun execute(movieId: Int) = repository.getPersons(movieId)
+    fun execute(movieId: Int, pageSize: Int) = repository.getPersons(movieId, pageSize)
 }

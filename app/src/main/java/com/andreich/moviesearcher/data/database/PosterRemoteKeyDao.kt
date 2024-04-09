@@ -4,16 +4,16 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.andreich.moviesearcher.data.entity.PersonRemoteKeyEntity
+import com.andreich.moviesearcher.data.entity.PosterRemoteKeyEntity
 
 @Dao
-interface PersonRemoteKeyDao {
+interface PosterRemoteKeyDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(remoteKey: List<PersonRemoteKeyEntity>)
+    suspend fun insertAll(remoteKey: List<PosterRemoteKeyEntity>)
 
-    @Query("SELECT * FROM person_remote_key WHERE valueId = :id AND valueType = :type")
-    suspend fun getRemoteKeyByValueID(id: Int): PersonRemoteKeyEntity?
+    @Query("SELECT * FROM poster_remote_key WHERE valueId = :id")
+    suspend fun getRemoteKeyByValueID(id: String): PosterRemoteKeyEntity?
 
     @Query("DELETE FROM person_remote_key")
     suspend fun clearRemoteKeys()

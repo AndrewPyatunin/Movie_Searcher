@@ -1,4 +1,4 @@
-package com.andreich.moviesearcher.data
+package com.andreich.moviesearcher.data.remotemediator
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
@@ -6,7 +6,7 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import com.andreich.moviesearcher.data.database.MovieRemoteKeyDao
 import com.andreich.moviesearcher.data.database.PersonRemoteKeyDao
-import com.andreich.moviesearcher.data.database.RemoteKeyDao
+import com.andreich.moviesearcher.data.database.PosterRemoteKeyDao
 import com.andreich.moviesearcher.data.database.ReviewRemoteKeyDao
 import com.andreich.moviesearcher.data.entity.*
 import kotlin.reflect.KClass
@@ -26,7 +26,10 @@ open class BaseRemoteMediator<Entity : Any, RemoteKey : Any>(
             LoadType.REFRESH -> {
                 val remoteKeys = getRemoteKeyClosestToCurrentPosition(state, entityClass)
                 when (remoteKeys) {
-                    is RemoteKeyEntity? -> remoteKeys?.nextKey?.minus(1) ?: 1
+                    is MovieRemoteKeyEntity? -> remoteKeys?.nextKey?.minus(1) ?: 1
+                    is PersonRemoteKeyEntity? -> remoteKeys?.nextKey?.minus(1) ?: 1
+                    is PosterRemoteKeyEntity? -> remoteKeys?.nextKey?.minus(1) ?: 1
+                    is ReviewRemoteKeyEntity? -> remoteKeys?.nextKey?.minus(1) ?: 1
                     else -> throw RuntimeException("Unexpected type of remoteKeys")
                 }
 
@@ -34,7 +37,22 @@ open class BaseRemoteMediator<Entity : Any, RemoteKey : Any>(
             LoadType.PREPEND -> {
                 val remoteKeys = getRemoteKeyForFirstItem(state, entityClass)
                 when (remoteKeys) {
-                    is RemoteKeyEntity? -> {
+                    is PosterRemoteKeyEntity? -> {
+                        val prevKey = remoteKeys?.prevKey
+                        prevKey
+                            ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
+                    }
+                    is MovieRemoteKeyEntity? -> {
+                        val prevKey = remoteKeys?.prevKey
+                        prevKey
+                            ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
+                    }
+                    is PersonRemoteKeyEntity? -> {
+                        val prevKey = remoteKeys?.prevKey
+                        prevKey
+                            ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
+                    }
+                    is ReviewRemoteKeyEntity? -> {
                         val prevKey = remoteKeys?.prevKey
                         prevKey
                             ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
@@ -46,7 +64,22 @@ open class BaseRemoteMediator<Entity : Any, RemoteKey : Any>(
             LoadType.APPEND -> {
                 val remoteKeys = getRemoteKeyForLastItem(state, entityClass)
                 when (remoteKeys) {
-                    is RemoteKeyEntity? -> {
+                    is MovieRemoteKeyEntity? -> {
+                        val nextKey = remoteKeys?.nextKey
+                        nextKey
+                            ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
+                    }
+                    is PersonRemoteKeyEntity? -> {
+                        val nextKey = remoteKeys?.nextKey
+                        nextKey
+                            ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
+                    }
+                    is ReviewRemoteKeyEntity? -> {
+                        val nextKey = remoteKeys?.nextKey
+                        nextKey
+                            ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
+                    }
+                    is PosterRemoteKeyEntity? -> {
                         val nextKey = remoteKeys?.nextKey
                         nextKey
                             ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
@@ -67,17 +100,22 @@ open class BaseRemoteMediator<Entity : Any, RemoteKey : Any>(
             when (entityClass) {
                 MovieEntity::class -> {
                     (state.closestItemToPosition(position) as MovieEntity).id.let { id ->
-                        (remoteKeyDao as MovieRemoteKeyDao).getRemoteKeyByValueID(id, Entities.Movies::class)
+                        (remoteKeyDao as MovieRemoteKeyDao).getRemoteKeyByValueID(id)
                     } as RemoteKey
                 }
                 PersonEntity::class -> {
                     (state.closestItemToPosition(position) as PersonEntity).id.let { id ->
-                        (remoteKeyDao as PersonRemoteKeyDao).getRemoteKeyByValueID(id, Entities.Actors::class)
+                        (remoteKeyDao as PersonRemoteKeyDao).getRemoteKeyByValueID(id)
                     } as RemoteKey
                 }
                 ReviewEntity::class -> {
                     (state.closestItemToPosition(position) as PersonEntity).id.let { id ->
-                        (remoteKeyDao as ReviewRemoteKeyDao).getRemoteKeyByValueID(id, Entities.Reviews::class)
+                        (remoteKeyDao as ReviewRemoteKeyDao).getRemoteKeyByValueID(id)
+                    } as RemoteKey
+                }
+                PosterDetailEntity::class -> {
+                    (state.closestItemToPosition(position) as PosterDetailEntity).id.let { id ->
+                        (remoteKeyDao as PosterRemoteKeyDao).getRemoteKeyByValueID(id)
                     } as RemoteKey
                 }
                 else -> {
@@ -97,20 +135,22 @@ open class BaseRemoteMediator<Entity : Any, RemoteKey : Any>(
             when (entityClass) {
                 MovieEntity::class -> {
                     (remoteKeyDao as MovieRemoteKeyDao).getRemoteKeyByValueID(
-                        (movie as MovieEntity).id,
-                        Entities.Movies::class
+                        (movie as MovieEntity).id
                     ) as RemoteKey
                 }
                 PersonEntity::class -> {
                     (remoteKeyDao as PersonRemoteKeyDao).getRemoteKeyByValueID(
-                        (movie as PersonEntity).id,
-                        Entities.Actors::class
+                        (movie as PersonEntity).id
                     ) as RemoteKey
                 }
                 ReviewEntity::class -> {
                     (remoteKeyDao as ReviewRemoteKeyDao).getRemoteKeyByValueID(
-                        (movie as ReviewEntity).id,
-                        Entities.Reviews::class
+                        (movie as ReviewEntity).id
+                    ) as RemoteKey
+                }
+                PosterDetailEntity::class -> {
+                    (remoteKeyDao as PosterRemoteKeyDao).getRemoteKeyByValueID(
+                        (movie as PosterDetailEntity).id
                     ) as RemoteKey
                 }
                 else -> throw RuntimeException("Unexpected type of entityClass")
@@ -129,20 +169,22 @@ open class BaseRemoteMediator<Entity : Any, RemoteKey : Any>(
             when (entityClass) {
                 MovieEntity::class -> {
                     (remoteKeyDao as MovieRemoteKeyDao).getRemoteKeyByValueID(
-                        (movie as MovieEntity).id,
-                        Entities.Movies::class
+                        (movie as MovieEntity).id
                     ) as RemoteKey
                 }
                 PersonEntity::class -> {
                     (remoteKeyDao as PersonRemoteKeyDao).getRemoteKeyByValueID(
-                        (movie as PersonEntity).id,
-                        Entities.Actors::class
+                        (movie as PersonEntity).id
                     ) as RemoteKey
                 }
                 ReviewEntity::class -> {
                     (remoteKeyDao as ReviewRemoteKeyDao).getRemoteKeyByValueID(
-                        (movie as ReviewEntity).id,
-                        Entities.Reviews::class
+                        (movie as ReviewEntity).id
+                    ) as RemoteKey
+                }
+                PosterDetailEntity::class -> {
+                    (remoteKeyDao as PosterRemoteKeyDao).getRemoteKeyByValueID(
+                        (movie as PosterDetailEntity).id
                     ) as RemoteKey
                 }
                 else -> throw RuntimeException("Unexpected type of entityClass")

@@ -1,6 +1,6 @@
 package com.andreich.moviesearcher.domain.usecase
 
-import com.andreich.moviesearcher.domain.MovieRepository
+import com.andreich.moviesearcher.domain.repo.MovieRepository
 
 class SearchFilmUseCase(
     private val repository: MovieRepository

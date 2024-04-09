@@ -1,45 +1,47 @@
-package com.andreich.moviesearcher.data
+package com.andreich.moviesearcher.data.remotemediator
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.room.withTransaction
 import com.andreich.moviesearcher.data.database.MovieDatabase
-import com.andreich.moviesearcher.data.database.PersonRemoteKeyDao
+import com.andreich.moviesearcher.data.database.PosterRemoteKeyDao
+import com.andreich.moviesearcher.data.datasource.home.PosterDataSource
 import com.andreich.moviesearcher.data.datasource.remote.RemoteDataSource
-import com.andreich.moviesearcher.data.entity.Entities
-import com.andreich.moviesearcher.data.entity.PersonEntity
-import com.andreich.moviesearcher.data.entity.PersonRemoteKeyEntity
+import com.andreich.moviesearcher.data.entity.PosterDetailEntity
+import com.andreich.moviesearcher.data.entity.PosterRemoteKeyEntity
 import com.andreich.moviesearcher.data.mapper.MovieMapper
-import com.andreich.moviesearcher.domain.pojo.PersonsDto
+import com.andreich.moviesearcher.domain.pojo.PosterDetailDto
 import retrofit2.HttpException
 import java.io.IOException
 
 @ExperimentalPagingApi
-class PersonRemoteMediator(
+class PosterRemoteMediator(
     private val apiKey: String,
     private val movieId: Int,
-    private val remoteKeyDao: PersonRemoteKeyDao,
-    private val remoteDataSource: RemoteDataSource,
+    private val requestId: Long,
     private val database: MovieDatabase,
-    private val personMapper: MovieMapper<PersonsDto, PersonEntity>
-) :
-    BaseRemoteMediator<PersonEntity, PersonRemoteKeyDao>(remoteKeyDao, PersonEntity::class) {
-
-    val personDao = database.personDao()
+    private val posterRemoteKeyDao: PosterRemoteKeyDao,
+    private val posterDataSource: PosterDataSource,
+    private val remoteDataSource: RemoteDataSource,
+    private val posterMapper: MovieMapper<PosterDetailDto, PosterDetailEntity>
+) : BaseRemoteMediator<PosterDetailEntity, PosterRemoteKeyDao>(
+    posterRemoteKeyDao,
+    PosterDetailEntity::class
+) {
 
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, PersonEntity>
+        state: PagingState<Int, PosterDetailEntity>
     ): MediatorResult {
         return super.load(loadType, state)
     }
 
     override suspend fun workWithNetworkAndDatabase(page: Int, loadType: LoadType): MediatorResult {
         try {
-            val apiResponse = remoteDataSource.getActors(apiKey, page, movieId = movieId)
-            val persons = apiResponse.docs
-            val endOfPaginationReached = persons.isEmpty()
+            val apiResponse = remoteDataSource.getPosters(apiKey, page = page, movieId = movieId)
+            val posters = apiResponse.docs
+            val endOfPaginationReached = posters.isEmpty()
 
             database.withTransaction {
                 if (loadType == LoadType.REFRESH) {
@@ -48,19 +50,18 @@ class PersonRemoteMediator(
                 }
                 val prevKey = if (page > 1) page - 1 else null
                 val nextKey = if (endOfPaginationReached) null else page + 1
-                val remoteKeys = persons.map {
-                    PersonRemoteKeyEntity(
-                        valueId = it.id ?: 0,
+                val remoteKeys = posters.map {
+                    PosterRemoteKeyEntity(
+                        valueId = it.id.toString(),
                         prevKey = prevKey,
                         currentPage = page,
-                        nextKey = nextKey,
-                        valueType = Entities.Reviews::class
+                        nextKey = nextKey
                     )
                 }
 
-                remoteKeyDao.insertAll(remoteKeys)
-                personDao.insertActors(persons.map {
-                    personMapper.map(it, page, System.currentTimeMillis())
+                posterRemoteKeyDao.insertAll(remoteKeys)
+                posterDataSource.insertPosters(posters.map {
+                    posterMapper.map(it, page, requestId)
                 })
             }
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
