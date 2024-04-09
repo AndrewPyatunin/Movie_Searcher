@@ -9,8 +9,8 @@ data class MovieRemoteKeyEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = System.currentTimeMillis(),
     val valueId: Int,
-    val prevKey: Int?,
-    val nextKey: Int?,
+    val prevKey: Int,
+    val nextKey: Int,
     val currentPage: Int,
     val createdAt: Long = System.currentTimeMillis()
 )

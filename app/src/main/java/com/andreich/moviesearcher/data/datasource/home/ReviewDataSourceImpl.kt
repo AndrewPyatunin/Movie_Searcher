@@ -3,8 +3,9 @@ package com.andreich.moviesearcher.data.datasource.home
 import androidx.paging.PagingSource
 import com.andreich.moviesearcher.data.database.ReviewDao
 import com.andreich.moviesearcher.data.entity.ReviewEntity
+import javax.inject.Inject
 
-class ReviewDataSourceImpl(
+class ReviewDataSourceImpl @Inject constructor(
     private val reviewDao: ReviewDao
 ) : ReviewDataSource {
 

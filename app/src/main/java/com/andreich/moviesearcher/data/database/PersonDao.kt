@@ -8,10 +8,10 @@ import androidx.room.Query
 import com.andreich.moviesearcher.data.entity.PersonEntity
 
 @Dao
-interface PersonDao: MyDao<PersonEntity> {
+interface PersonDao {
 
     @Query("SELECT * FROM actor ORDER BY page")
-    override fun getValues(): PagingSource<Int, PersonEntity>
+    fun getActors(): PagingSource<Int, PersonEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertActors(list: List<PersonEntity>)

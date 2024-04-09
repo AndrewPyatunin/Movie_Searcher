@@ -8,8 +8,8 @@ data class PosterRemoteKeyEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = System.currentTimeMillis(),
     val valueId: String,
-    val prevKey: Int?,
-    val nextKey: Int?,
+    val prevKey: Int,
+    val nextKey: Int,
     val currentPage: Int,
     val createdAt: Long = System.currentTimeMillis()
 )

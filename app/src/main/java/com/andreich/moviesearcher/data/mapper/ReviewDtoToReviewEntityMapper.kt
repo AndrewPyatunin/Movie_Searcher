@@ -2,8 +2,9 @@ package com.andreich.moviesearcher.data.mapper
 
 import com.andreich.moviesearcher.data.entity.ReviewEntity
 import com.andreich.moviesearcher.domain.pojo.ReviewDto
+import javax.inject.Inject
 
-class ReviewDtoToReviewEntityMapper : MovieMapper<ReviewDto, ReviewEntity> {
+class ReviewDtoToReviewEntityMapper @Inject constructor() : MovieMapper<ReviewDto, ReviewEntity> {
 
     override fun map(
         fromDto: ReviewDto,
@@ -14,11 +15,11 @@ class ReviewDtoToReviewEntityMapper : MovieMapper<ReviewDto, ReviewEntity> {
             ReviewEntity(
                 id = id ?: 0,
                 movieId = movieId ?: 0,
-                title = title.toString(),
-                type = type.toString(),
-                review = review.toString(),
-                date = date.toString(),
-                author = author.toString(),
+                title = title ?: "",
+                type = type ?: "",
+                review = review ?: "",
+                date = date ?: "",
+                author = author ?: "",
                 page = item
             )
         }

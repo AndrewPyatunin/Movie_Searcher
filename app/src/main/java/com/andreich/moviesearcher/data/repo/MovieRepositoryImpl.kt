@@ -12,18 +12,19 @@ import com.andreich.moviesearcher.data.mapper.MovieMapper
 import com.andreich.moviesearcher.data.remotemediator.MovieRemoteMediator
 import com.andreich.moviesearcher.domain.model.Movie
 import com.andreich.moviesearcher.domain.pojo.MovieDto
-import com.andreich.moviesearcher.domain.pojo.PersonsDto
+import com.andreich.moviesearcher.domain.pojo.PersonDto
 import com.andreich.moviesearcher.domain.repo.MovieRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class MovieRepositoryImpl(
+class MovieRepositoryImpl @Inject constructor(
     private val database: MovieDatabase,
     private val remoteDataSource: RemoteDataSource,
     private val movieDataSource: MovieDataSource,
     private val apiKey: String,
     private val movieMapper: MovieMapper<MovieDto, MovieEntity>,
-    private val personMapper: MovieMapper<PersonsDto, PersonEntity>,
+    private val personMapper: MovieMapper<PersonDto, PersonEntity>,
     private val movieEntityMapper: EntityToModelMapper<MovieEntity, Movie>,
     private val remoteKeyDao: MovieRemoteKeyDao,
 ) : MovieRepository {

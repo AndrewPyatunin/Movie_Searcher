@@ -37,7 +37,7 @@ interface ApiService {
         @Path("limit") limit: Int = 10,
         @Query(QUERY_PARAM_MOVIE_ID) movieId: Int,
         @Query(QUERY_PARAM_SELECT_FIELDS) vararg filters: String
-    ): RequestResultDto<PersonsDto>
+    ): RequestResultDto<PersonDto>
 
     @GET("movie/search?page={page}&limit={limit}")
     suspend fun searchFilm(
@@ -67,7 +67,7 @@ interface ApiService {
         @Path("limit") limit: Int = 10,
         @Query(QUERY_PARAM_MOVIE_ID) movieId: Int,
         @Query(QUERY_PARAM_SELECT_FIELDS) vararg selectFields: String
-    ): RequestResultDto<SeasonsDto>
+    ): RequestResultDto<SeasonDto>
 
     @GET("image?page={page}&limit={limit}&movieId={movieId}&type=cover&type=frame&type=promo&type=still&type=wallpaper")
     suspend fun getPosters(
@@ -75,7 +75,7 @@ interface ApiService {
         @Path("movieId") movieId: Int,
         @Path("page") page: Int = 1,
         @Path("limit") limit: Int = 10,
-    ): RequestResultDto<PosterDetailDto>
+    ): RequestResultDto<PosterDto>
 
     companion object {
 

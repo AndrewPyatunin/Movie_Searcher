@@ -113,8 +113,8 @@ open class BaseRemoteMediator<Entity : Any, RemoteKey : Any>(
                         (remoteKeyDao as ReviewRemoteKeyDao).getRemoteKeyByValueID(id)
                     } as RemoteKey
                 }
-                PosterDetailEntity::class -> {
-                    (state.closestItemToPosition(position) as PosterDetailEntity).id.let { id ->
+                PosterEntity::class -> {
+                    (state.closestItemToPosition(position) as PosterEntity).id.let { id ->
                         (remoteKeyDao as PosterRemoteKeyDao).getRemoteKeyByValueID(id)
                     } as RemoteKey
                 }
@@ -148,9 +148,9 @@ open class BaseRemoteMediator<Entity : Any, RemoteKey : Any>(
                         (movie as ReviewEntity).id
                     ) as RemoteKey
                 }
-                PosterDetailEntity::class -> {
+                PosterEntity::class -> {
                     (remoteKeyDao as PosterRemoteKeyDao).getRemoteKeyByValueID(
-                        (movie as PosterDetailEntity).id
+                        (movie as PosterEntity).id
                     ) as RemoteKey
                 }
                 else -> throw RuntimeException("Unexpected type of entityClass")
@@ -182,9 +182,9 @@ open class BaseRemoteMediator<Entity : Any, RemoteKey : Any>(
                         (movie as ReviewEntity).id
                     ) as RemoteKey
                 }
-                PosterDetailEntity::class -> {
+                PosterEntity::class -> {
                     (remoteKeyDao as PosterRemoteKeyDao).getRemoteKeyByValueID(
-                        (movie as PosterDetailEntity).id
+                        (movie as PosterEntity).id
                     ) as RemoteKey
                 }
                 else -> throw RuntimeException("Unexpected type of entityClass")

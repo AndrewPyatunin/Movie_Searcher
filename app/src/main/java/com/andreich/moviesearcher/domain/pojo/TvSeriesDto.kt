@@ -9,8 +9,8 @@ data class TvSeriesDto(
     @SerializedName("description") var description: String? = null,
     @SerializedName("enDescription") var enDescription: String? = null,
     @SerializedName("enName") var enName: String? = null,
-    @SerializedName("episodes") var episodes: ArrayList<EpisodesDto> = arrayListOf(),
+    @SerializedName("episodes") var episodes: ArrayList<EpisodeDto> = arrayListOf(),
     @SerializedName("name") var name: String? = null,
-    @SerializedName("poster") var poster: PosterDto? = PosterDto(),
+    @SerializedName("poster") var poster: PosterInfoDto? = PosterInfoDto(),
     @SerializedName("id") var id: String? = null
 )

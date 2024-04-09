@@ -12,12 +12,12 @@ interface PersonRemoteKeyDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(remoteKey: List<PersonRemoteKeyEntity>)
 
-    @Query("SELECT * FROM person_remote_key WHERE valueId = :id AND valueType = :type")
+    @Query("SELECT * FROM person_remote_key WHERE valueId = :id")
     suspend fun getRemoteKeyByValueID(id: Int): PersonRemoteKeyEntity?
 
     @Query("DELETE FROM person_remote_key")
     suspend fun clearRemoteKeys()
 
-    @Query("SELECT created_at FROM person_remote_key ORDER BY created_at DESC LIMIT 1")
+    @Query("SELECT createdAt FROM person_remote_key ORDER BY createdAt DESC LIMIT 1")
     suspend fun getCreationTime(): Long?
 }

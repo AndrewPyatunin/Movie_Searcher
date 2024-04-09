@@ -8,10 +8,10 @@ import com.andreich.moviesearcher.data.database.MovieDatabase
 import com.andreich.moviesearcher.data.database.PosterRemoteKeyDao
 import com.andreich.moviesearcher.data.datasource.home.PosterDataSource
 import com.andreich.moviesearcher.data.datasource.remote.RemoteDataSource
-import com.andreich.moviesearcher.data.entity.PosterDetailEntity
+import com.andreich.moviesearcher.data.entity.PosterEntity
 import com.andreich.moviesearcher.data.entity.PosterRemoteKeyEntity
 import com.andreich.moviesearcher.data.mapper.MovieMapper
-import com.andreich.moviesearcher.domain.pojo.PosterDetailDto
+import com.andreich.moviesearcher.domain.pojo.PosterDto
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -24,15 +24,15 @@ class PosterRemoteMediator(
     private val posterRemoteKeyDao: PosterRemoteKeyDao,
     private val posterDataSource: PosterDataSource,
     private val remoteDataSource: RemoteDataSource,
-    private val posterMapper: MovieMapper<PosterDetailDto, PosterDetailEntity>
-) : BaseRemoteMediator<PosterDetailEntity, PosterRemoteKeyDao>(
+    private val posterMapper: MovieMapper<PosterDto, PosterEntity>
+) : BaseRemoteMediator<PosterEntity, PosterRemoteKeyDao>(
     posterRemoteKeyDao,
-    PosterDetailEntity::class
+    PosterEntity::class
 ) {
 
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, PosterDetailEntity>
+        state: PagingState<Int, PosterEntity>
     ): MediatorResult {
         return super.load(loadType, state)
     }
@@ -53,9 +53,9 @@ class PosterRemoteMediator(
                 val remoteKeys = posters.map {
                     PosterRemoteKeyEntity(
                         valueId = it.id.toString(),
-                        prevKey = prevKey,
+                        prevKey = prevKey ?: 0,
                         currentPage = page,
-                        nextKey = nextKey
+                        nextKey = nextKey ?: 0
                     )
                 }
 

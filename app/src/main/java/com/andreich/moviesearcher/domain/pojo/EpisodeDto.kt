@@ -2,12 +2,12 @@ package com.andreich.moviesearcher.domain.pojo
 
 import com.google.gson.annotations.SerializedName
 
-data class EpisodesDto(
+data class EpisodeDto(
 
     @SerializedName("number") var number: Int? = null,
     @SerializedName("name") var name: String? = null,
     @SerializedName("enName") var enName: String? = null,
-    @SerializedName("still") var episodePoster: PosterDto? = PosterDto(),
+    @SerializedName("still") var episodePoster: PosterInfoDto? = PosterInfoDto(),
     @SerializedName("duration") var duration: Int? = null,
     @SerializedName("date") var date: String? = null,
     @SerializedName("description") var description: String? = null,

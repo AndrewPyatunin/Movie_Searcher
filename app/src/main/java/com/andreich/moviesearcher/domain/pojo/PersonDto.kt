@@ -2,7 +2,7 @@ package com.andreich.moviesearcher.domain.pojo
 
 import com.google.gson.annotations.SerializedName
 
-data class PersonsDto(
+data class PersonDto(
 
     @SerializedName("id") var id: Int? = null,
     @SerializedName("photo") var photo: String? = null,

@@ -4,8 +4,9 @@ import androidx.paging.PagingData
 import com.andreich.moviesearcher.domain.model.Poster
 import com.andreich.moviesearcher.domain.repo.PosterRepository
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class GetPostersUseCase(
+class GetPostersUseCase @Inject constructor(
     private val repository: PosterRepository
 ) {
 
