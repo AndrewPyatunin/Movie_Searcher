@@ -1,6 +1,6 @@
 package com.andreich.moviesearcher.di
 
-import com.andreich.moviesearcher.data.datasource.home.*
+import com.andreich.moviesearcher.data.datasource.local.*
 import com.andreich.moviesearcher.data.datasource.remote.RemoteDataSource
 import com.andreich.moviesearcher.data.datasource.remote.RemoteDataSourceImpl
 import com.andreich.moviesearcher.data.entity.EpisodeEntity
