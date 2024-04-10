@@ -3,7 +3,7 @@ package com.andreich.moviesearcher.data.repo
 import androidx.paging.*
 import com.andreich.moviesearcher.data.database.MovieDatabase
 import com.andreich.moviesearcher.data.database.PersonRemoteKeyDao
-import com.andreich.moviesearcher.data.datasource.home.PersonDataSource
+import com.andreich.moviesearcher.data.datasource.local.PersonDataSource
 import com.andreich.moviesearcher.data.datasource.remote.RemoteDataSource
 import com.andreich.moviesearcher.data.entity.PersonEntity
 import com.andreich.moviesearcher.data.mapper.EntityToModelMapper

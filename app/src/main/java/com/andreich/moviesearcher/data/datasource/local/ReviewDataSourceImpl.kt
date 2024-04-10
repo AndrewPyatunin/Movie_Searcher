@@ -1,4 +1,4 @@
-package com.andreich.moviesearcher.data.datasource.home
+package com.andreich.moviesearcher.data.datasource.local
 
 import androidx.paging.PagingSource
 import com.andreich.moviesearcher.data.database.ReviewDao
