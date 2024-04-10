@@ -29,4 +29,26 @@ class Converter {
     fun fromListEpisodeToString(list: List<EpisodeEntity?>?): String {
         return  Gson().toJson(list)
     }
+
+    @TypeConverter
+    fun fromListPersonEntityToString(list: List<PersonEntity?>?): String {
+        return Gson().toJson(list)
+    }
+
+    @TypeConverter
+    fun fromStringToListPersonEntity(value: String?): List<PersonEntity> {
+        if (value == null) return emptyList()
+
+        return Gson().fromJson(value, object : TypeToken<List<PersonEntity>>() {}.type)
+    }
+
+    @TypeConverter
+    fun fromListMovieToString(list: List<MovieEntity?>?): String {
+        return Gson().toJson(list)
+    }
+
+    @TypeConverter
+    fun fromStringToListMovieEntity(value: String?): List<MovieEntity> {
+        return Gson().fromJson(value, object : TypeToken<List<MovieEntity>>() {}.type)
+    }
 }

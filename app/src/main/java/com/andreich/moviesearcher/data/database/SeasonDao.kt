@@ -9,7 +9,7 @@ import com.andreich.moviesearcher.data.entity.SeasonEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface SeasonDao: MyDao<SeasonEntity> {
+interface SeasonDao {
 
     @Query("SELECT * FROM season")
     fun getSeasons(): Flow<SeasonEntity>

@@ -4,7 +4,7 @@ data class Movie(
     val id: Int = 0,
     val name: String,
     val alternativeName: String = "",
-    val type: MovieType = MovieType.Film(),
+    val type: String,
     val year: Int,
     val slogan: String,
     val description: String = "",

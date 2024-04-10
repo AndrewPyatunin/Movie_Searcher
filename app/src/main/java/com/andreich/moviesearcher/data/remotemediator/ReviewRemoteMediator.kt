@@ -6,6 +6,7 @@ import androidx.paging.PagingState
 import androidx.room.withTransaction
 import com.andreich.moviesearcher.data.database.MovieDatabase
 import com.andreich.moviesearcher.data.database.ReviewRemoteKeyDao
+import com.andreich.moviesearcher.data.datasource.home.ReviewDataSource
 import com.andreich.moviesearcher.data.datasource.remote.RemoteDataSource
 import com.andreich.moviesearcher.data.entity.ReviewEntity
 import com.andreich.moviesearcher.data.entity.ReviewRemoteKeyEntity
@@ -21,11 +22,11 @@ class ReviewRemoteMediator(
     private val remoteKeyDao: ReviewRemoteKeyDao,
     private val remoteDataSource: RemoteDataSource,
     private val database: MovieDatabase,
+    private val reviewDataSource: ReviewDataSource,
     private val reviewMapper: MovieMapper<ReviewDto, ReviewEntity>,
 ) :
     BaseRemoteMediator<ReviewEntity, ReviewRemoteKeyDao>(remoteKeyDao, ReviewEntity::class) {
 
-    val reviewDao = database.reviewDao()
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, ReviewEntity>
@@ -49,14 +50,14 @@ class ReviewRemoteMediator(
                 val remoteKeys = reviews.map {
                     ReviewRemoteKeyEntity(
                         valueId = it.id ?: 0,
-                        prevKey = prevKey,
+                        prevKey = prevKey ?: 0,
                         currentPage = page,
-                        nextKey = nextKey
+                        nextKey = nextKey ?: 0
                     )
                 }
 
                 remoteKeyDao.insertAll(remoteKeys)
-                reviewDao.insertReviews(reviews.map {
+                reviewDataSource.insertReviews(reviews.map {
                     reviewMapper.map(it, page, System.currentTimeMillis())
                 })
             }

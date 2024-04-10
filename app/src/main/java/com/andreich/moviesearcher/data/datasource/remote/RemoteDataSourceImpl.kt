@@ -2,8 +2,9 @@ package com.andreich.moviesearcher.data.datasource.remote
 
 import com.andreich.moviesearcher.data.network.ApiService
 import com.andreich.moviesearcher.domain.pojo.*
+import javax.inject.Inject
 
-class RemoteDataSourceImpl(
+class RemoteDataSourceImpl @Inject constructor(
     private val apiService: ApiService
 ) : RemoteDataSource {
 
@@ -23,7 +24,7 @@ class RemoteDataSourceImpl(
         limit: Int,
         movieId: Int,
         vararg filters: String
-    ): RequestResultDto<PersonsDto> {
+    ): RequestResultDto<PersonDto> {
         return apiService.getActors(apiKey, page, limit, movieId, *filters)
     }
 
@@ -52,7 +53,7 @@ class RemoteDataSourceImpl(
         limit: Int,
         movieId: Int,
         vararg selectFields: String
-    ): RequestResultDto<SeasonsDto> {
+    ): RequestResultDto<SeasonDto> {
         return apiService.getSeasons(apiKey, page, limit, movieId, *selectFields)
     }
 
@@ -61,7 +62,7 @@ class RemoteDataSourceImpl(
         movieId: Int,
         page: Int,
         limit: Int
-    ): RequestResultDto<PosterDetailDto> {
+    ): RequestResultDto<PosterDto> {
         return apiService.getPosters(apiKey, movieId, page, limit)
     }
 }

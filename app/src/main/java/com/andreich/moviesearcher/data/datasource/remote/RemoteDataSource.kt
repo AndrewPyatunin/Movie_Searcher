@@ -18,7 +18,7 @@ interface RemoteDataSource {
         limit: Int = 10,
         movieId: Int,
         vararg filters: String
-    ): RequestResultDto<PersonsDto>
+    ): RequestResultDto<PersonDto>
 
     suspend fun searchFilm(
         apiKey: String,
@@ -41,12 +41,12 @@ interface RemoteDataSource {
         limit: Int = 10,
         movieId: Int,
         vararg selectFields: String
-    ): RequestResultDto<SeasonsDto>
+    ): RequestResultDto<SeasonDto>
 
     suspend fun getPosters(
         apiKey: String,
         movieId: Int,
         page: Int = 1,
         limit: Int = 10,
-    ): RequestResultDto<PosterDetailDto>
+    ): RequestResultDto<PosterDto>
 }

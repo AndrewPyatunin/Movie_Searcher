@@ -1,9 +1,9 @@
 package com.andreich.moviesearcher.domain.usecase
 
-import com.andreich.moviesearcher.domain.repo.MovieRepository
 import com.andreich.moviesearcher.domain.repo.ReviewRepository
+import javax.inject.Inject
 
-class GetReviewsUseCase(
+class GetReviewsUseCase @Inject constructor(
     private val repository: ReviewRepository
 ) {
 

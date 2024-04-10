@@ -15,9 +15,9 @@ interface PosterRemoteKeyDao {
     @Query("SELECT * FROM poster_remote_key WHERE valueId = :id")
     suspend fun getRemoteKeyByValueID(id: String): PosterRemoteKeyEntity?
 
-    @Query("DELETE FROM person_remote_key")
+    @Query("DELETE FROM poster_remote_key")
     suspend fun clearRemoteKeys()
 
-    @Query("SELECT created_at FROM person_remote_key ORDER BY created_at DESC LIMIT 1")
+    @Query("SELECT createdAt FROM poster_remote_key ORDER BY createdAt DESC LIMIT 1")
     suspend fun getCreationTime(): Long?
 }

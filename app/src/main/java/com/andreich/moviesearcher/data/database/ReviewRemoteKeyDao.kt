@@ -18,6 +18,6 @@ interface ReviewRemoteKeyDao {
     @Query("DELETE FROM review_remote_key")
     suspend fun clearRemoteKeys()
 
-    @Query("SELECT created_at FROM review_remote_key ORDER BY created_at DESC LIMIT 1")
+    @Query("SELECT createdAt FROM review_remote_key ORDER BY createdAt DESC LIMIT 1")
     suspend fun getCreationTime(): Long?
 }

@@ -17,7 +17,7 @@ class MovieRemoteMediator(
     private val apiKey: String,
     private val remoteKeyDao: MovieRemoteKeyDao,
     private val movieMapper: MovieMapper<MovieDto, MovieEntity>,
-    private val personMapper: MovieMapper<PersonsDto, PersonEntity>,
+    private val personMapper: MovieMapper<PersonDto, PersonEntity>,
     private val name: String? = null,
     private val requestId: Long,
 ) : BaseRemoteMediator<MovieEntity, MovieRemoteKeyDao>(remoteKeyDao, MovieEntity::class) {
@@ -51,6 +51,9 @@ class MovieRemoteMediator(
             val endOfPaginationReached = movies.isEmpty()
 
             database.withTransaction {
+                if (loadType == LoadType.APPEND) {
+
+                }
                 if (loadType == LoadType.REFRESH) {
 //                    remoteKeyDao.clearRemoteKeys()
 //                    movieDao.clearAllMovies()
@@ -58,7 +61,7 @@ class MovieRemoteMediator(
                 val prevKey = if (page > 1) page - 1 else null
                 val nextKey = if (endOfPaginationReached) null else page + 1
                 val remoteKeys = movies.map {
-                    MovieRemoteKeyEntity(valueId = it.id ?: 0, prevKey = prevKey, currentPage = page, nextKey = nextKey)
+                    MovieRemoteKeyEntity(valueId = it.id ?: 0, prevKey = prevKey ?: 0, currentPage = page, nextKey = nextKey ?: 0)
                 }
 
                 remoteKeyDao.insertAll(remoteKeys)

@@ -2,12 +2,12 @@ package com.andreich.moviesearcher.data.mapper
 
 import com.andreich.moviesearcher.data.entity.MovieEntity
 import com.andreich.moviesearcher.data.entity.PersonEntity
-import com.andreich.moviesearcher.domain.model.MovieType
 import com.andreich.moviesearcher.domain.pojo.MovieDto
-import com.andreich.moviesearcher.domain.pojo.PersonsDto
+import com.andreich.moviesearcher.domain.pojo.PersonDto
+import javax.inject.Inject
 
-class MovieDtoToMovieMapper(
-    private val personMapper: DtoMapper<PersonsDto, PersonEntity>,
+class MovieDtoToMovieMapper @Inject constructor(
+    private val personMapper: DtoMapper<PersonDto, PersonEntity>,
 ) : MovieMapper<MovieDto, MovieEntity> {
 
     override fun map(fromDto: MovieDto, item: Int, requestId: Long): MovieEntity {
@@ -15,21 +15,21 @@ class MovieDtoToMovieMapper(
             id = fromDto.id ?: 0,
             name = fromDto.name ?: "",
             alternativeName = fromDto.alternativeName ?: "",
-            type = (fromDto.type ?: MovieType.Film()) as MovieType,
+            type = fromDto.type ?: "",
             year = fromDto.year ?: 0,
-            slogan = fromDto.slogan,
+            slogan = fromDto.slogan ?: "",
             description = fromDto.description ?: "",
             rating = fromDto.rating?.kp ?: 0.0,
-            ratingImdb = fromDto.rating?.imdb,
+            ratingImdb = fromDto.rating?.imdb ?: 0.0,
             ageRating = fromDto.ageRating ?: 0,
             genres = fromDto.genres.map {
-                it.name.toString()
+                it.name ?: ""
             },
             countries = fromDto.countries.map {
                 it.name.toString()
             },
-            url = fromDto.poster?.url,
-            previewUrl = fromDto.poster?.previewUrl,
+            url = fromDto.poster?.url ?: "",
+            previewUrl = fromDto.poster?.previewUrl ?: "",
             actors = fromDto.persons.map {
                 personMapper.map(it)
             },
@@ -37,9 +37,9 @@ class MovieDtoToMovieMapper(
             network = fromDto.networks ?: "",
             seasonsAmount = fromDto.seasonsInfo.size,
             top250 = fromDto.top250 ?: 0,
-            movieLength = fromDto.movieLength,
+            movieLength = fromDto.movieLength ?: -1,
             isSeries = fromDto.isSeries ?: false,
-            seriesLength = fromDto.seriesLength,
+            seriesLength = fromDto.seriesLength ?: -1,
             page = item,
             requestId = requestId
         )

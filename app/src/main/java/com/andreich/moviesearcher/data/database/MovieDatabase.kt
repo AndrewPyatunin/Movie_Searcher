@@ -4,14 +4,18 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.andreich.moviesearcher.data.entity.*
 
 @Database(
     entities = [PersonEntity::class, MovieEntity::class, ReviewEntity::class,
-        PosterDetailEntity::class, RemoteKeyEntity::class, SeasonEntity::class],
+        PosterEntity::class, SeasonEntity::class, MovieSearchHistoryEntity::class,
+        PersonRemoteKeyEntity::class, ReviewRemoteKeyEntity::class, PosterRemoteKeyEntity::class,
+        MovieRemoteKeyEntity::class],
     version = 1,
     exportSchema = false
 )
+@TypeConverters(value = [Converter::class])
 abstract class MovieDatabase : RoomDatabase() {
 
     //Если реализована пагинация:
@@ -37,13 +41,13 @@ abstract class MovieDatabase : RoomDatabase() {
 
     abstract fun movieDao(): MovieDao
 
-    abstract fun remoteKeyDao(): RemoteKeyDao
-
     abstract fun personDao(): PersonDao
 
     abstract fun reviewDao(): ReviewDao
 
     abstract fun seasonDao(): SeasonDao
+
+    abstract fun posterDao(): PosterDao
 
     abstract fun historyDao(): MovieSearchHistoryDao
 
@@ -52,4 +56,6 @@ abstract class MovieDatabase : RoomDatabase() {
     abstract fun reviewRemoteKeyDao(): ReviewRemoteKeyDao
 
     abstract fun personRemoteKeyDao(): PersonRemoteKeyDao
+
+    abstract fun posterRemoteKeyDao(): PosterRemoteKeyDao
 }

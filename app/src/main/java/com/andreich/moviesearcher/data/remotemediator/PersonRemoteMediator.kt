@@ -10,7 +10,7 @@ import com.andreich.moviesearcher.data.datasource.remote.RemoteDataSource
 import com.andreich.moviesearcher.data.entity.PersonEntity
 import com.andreich.moviesearcher.data.entity.PersonRemoteKeyEntity
 import com.andreich.moviesearcher.data.mapper.MovieMapper
-import com.andreich.moviesearcher.domain.pojo.PersonsDto
+import com.andreich.moviesearcher.domain.pojo.PersonDto
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -22,7 +22,7 @@ class PersonRemoteMediator(
     private val remoteKeyDao: PersonRemoteKeyDao,
     private val remoteDataSource: RemoteDataSource,
     private val database: MovieDatabase,
-    private val personMapper: MovieMapper<PersonsDto, PersonEntity>
+    private val personMapper: MovieMapper<PersonDto, PersonEntity>
 ) :
     BaseRemoteMediator<PersonEntity, PersonRemoteKeyDao>(remoteKeyDao, PersonEntity::class) {
 
@@ -51,9 +51,9 @@ class PersonRemoteMediator(
                 val remoteKeys = persons.map {
                     PersonRemoteKeyEntity(
                         valueId = it.id ?: 0,
-                        prevKey = prevKey,
+                        prevKey = prevKey ?: 0,
                         currentPage = page,
-                        nextKey = nextKey
+                        nextKey = nextKey ?: 0
                     )
                 }
 

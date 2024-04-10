@@ -1,15 +1,19 @@
 package com.andreich.moviesearcher.data.datasource.home
 
 import androidx.paging.PagingSource
+import com.andreich.moviesearcher.data.database.PersonDao
 import com.andreich.moviesearcher.data.entity.PersonEntity
+import javax.inject.Inject
 
-class PersonDataSourceImpl : PersonDataSource {
+class PersonDataSourceImpl @Inject constructor(
+    private val personDao: PersonDao
+) : PersonDataSource {
 
     override fun getPersons(): PagingSource<Int, PersonEntity> {
-        TODO("Not yet implemented")
+        return personDao.getActors()
     }
 
     override suspend fun insertActors(list: List<PersonEntity>) {
-        TODO("Not yet implemented")
+        personDao.insertActors(list)
     }
 }

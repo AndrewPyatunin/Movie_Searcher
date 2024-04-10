@@ -1,8 +1,9 @@
 package com.andreich.moviesearcher.domain.usecase
 
 import com.andreich.moviesearcher.domain.repo.PersonRepository
+import javax.inject.Inject
 
-class GetPersonsUseCase(
+class GetPersonsUseCase @Inject constructor(
     private val repository: PersonRepository
 ) {
 

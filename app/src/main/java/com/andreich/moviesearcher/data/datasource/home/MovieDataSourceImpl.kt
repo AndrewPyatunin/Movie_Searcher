@@ -4,8 +4,9 @@ import androidx.paging.PagingSource
 import com.andreich.moviesearcher.data.database.MovieDao
 import com.andreich.moviesearcher.data.entity.MovieEntity
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class MovieDataSourceImpl(
+class MovieDataSourceImpl @Inject constructor(
     private val movieDao: MovieDao
 ) : MovieDataSource {
 

@@ -3,10 +3,10 @@ package com.andreich.moviesearcher.data.mapper
 import com.andreich.moviesearcher.data.entity.MovieEntity
 import com.andreich.moviesearcher.data.entity.PersonEntity
 import com.andreich.moviesearcher.domain.model.Movie
-import com.andreich.moviesearcher.domain.model.MovieType
 import com.andreich.moviesearcher.domain.model.Person
+import javax.inject.Inject
 
-class MovieEntityToMovieMapper(
+class MovieEntityToMovieMapper @Inject constructor(
     private val personMapper: EntityToModelMapper<PersonEntity, Person>
 ) : EntityToModelMapper<MovieEntity, Movie> {
 
