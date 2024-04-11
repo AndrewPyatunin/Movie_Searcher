@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">Movie Searcher</string>
+    <string name="app_name" translatable="false">Movie Searcher</string>
+    <string name="enter_your_api_key">Enter your api_key:</string>
+    <string name="enter_your_name">Enter your name:</string>
+    <string name="log_in">Log in</string>
+    <string name="movie_name_test" translatable="false">The Lord of the Rings: The Fellowship of the Ring (2001)</string>
 </resources>

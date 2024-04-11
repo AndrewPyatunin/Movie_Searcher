@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardElevation="8dp"
+    app:cardUseCompatPadding="true"
+    android:id="@+id/movie_card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/movie_image"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_launcher_foreground"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/guideline_movie_item"
+            app:layout_constraintTop_toTopOf="parent"/>
+        <TextView
+            android:id="@+id/movie_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:textSize="18sp"
+            android:ellipsize="end"
+            android:maxLength="25"
+            app:layout_constraintStart_toEndOf="@id/movie_image"
+            tools:text="@string/movie_name_test"
+            app:layout_constraintTop_toTopOf="parent"/>
+        <TextView
+            android:id="@+id/movie_creation_date"
+            android:textSize="18sp"
+            android:textColor="@color/orange"
+            android:text="2007"
+            android:layout_marginHorizontal="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/movie_title"
+            app:layout_constraintTop_toTopOf="parent"/>
+        <TextView
+            android:id="@+id/movie_alt_name_with_length"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:ellipsize="end"
+            android:maxLength="32"
+            android:textSize="14sp"
+            android:text="Movie, 95min"
+            app:layout_constraintStart_toEndOf="@id/movie_image"
+            app:layout_constraintTop_toBottomOf="@id/movie_title"/>
+        <TextView
+            android:id="@+id/movie_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textSize="28sp"
+            android:textColor="@color/white"
+            android:background="@color/green"
+            android:text="7.2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+        <TextView
+            android:id="@+id/movie_countries"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:ellipsize="end"
+            android:maxLength="32"
+            android:textSize="14sp"
+            android:text="Russia, USA, France"
+            app:layout_constraintStart_toEndOf="@id/movie_image"
+            app:layout_constraintTop_toBottomOf="@id/movie_alt_name_with_length"/>
+        <TextView
+            android:id="@+id/genres"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:ellipsize="end"
+            android:maxLength="32"
+            android:textSize="14sp"
+            android:text="(comedy, horror, thriller)"
+            app:layout_constraintStart_toEndOf="@id/movie_image"
+            app:layout_constraintTop_toBottomOf="@id/movie_countries"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_movie_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.2" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

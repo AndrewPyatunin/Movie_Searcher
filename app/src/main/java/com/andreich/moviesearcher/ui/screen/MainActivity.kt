@@ -1,8 +1,9 @@
-package com.andreich.moviesearcher
+package com.andreich.moviesearcher.ui.screen
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.andreich.moviesearcher.di.DaggerAppComponent
+import com.andreich.moviesearcher.MovieApp
+import com.andreich.moviesearcher.R
 
 class MainActivity : AppCompatActivity() {
 

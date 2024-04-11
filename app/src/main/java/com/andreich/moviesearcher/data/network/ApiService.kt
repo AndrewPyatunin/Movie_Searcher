@@ -77,6 +77,12 @@ interface ApiService {
         @Path("limit") limit: Int = 10,
     ): RequestResultDto<PosterDto>
 
+    @GET("movie/{movieId}")
+    suspend fun getFilmById(
+        @Header("X-API-KEY") apiKey: String,
+        @Path("movieId") movieId: Int,
+    )
+
     companion object {
 
         private const val QUERY_PARAM_SELECT_FIELDS = "selectFields"
