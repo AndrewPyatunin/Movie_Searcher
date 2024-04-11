@@ -12,5 +12,11 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+    </style>
+    
+    <style name="textSecond" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/gray</item>
+        <item name="marginHorizontal">4dp</item>
     </style>
 </resources>

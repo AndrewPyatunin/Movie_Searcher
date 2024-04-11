@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomTextViewWithImage">
+
+        <attr name="category_text" format="string"/>
+        <attr name="expand_svg" format="reference"/>
+
+    </declare-styleable>
+
+</resources>

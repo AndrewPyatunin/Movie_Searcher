@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="enter_your_api_key">Enter your api_key</string>
+    <string name="enter_your_name">Enter your name:</string>
+    <string name="log_in">Log in</string>
+</resources>
