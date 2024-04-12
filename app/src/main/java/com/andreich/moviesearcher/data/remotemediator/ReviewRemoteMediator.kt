@@ -49,6 +49,7 @@ class ReviewRemoteMediator(
                 val nextKey = if (endOfPaginationReached) null else page + 1
                 val remoteKeys = reviews.map {
                     ReviewRemoteKeyEntity(
+                        id = it.id ?: 0,
                         valueId = it.id ?: 0,
                         prevKey = prevKey ?: 0,
                         currentPage = page,

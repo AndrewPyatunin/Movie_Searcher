@@ -35,7 +35,7 @@ class MovieRepositoryImpl @Inject constructor(
 
     @OptIn(ExperimentalPagingApi::class)
     override fun searchFilteredFilms(
-        requestParams: String,
+//        requestParams: String,
         pageSize: Int,
         requestId: Long,
         name: String?

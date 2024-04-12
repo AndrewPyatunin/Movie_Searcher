@@ -11,6 +11,13 @@ import com.andreich.moviesearcher.databinding.FragmentLoginBinding
 
 class LoginFragment : Fragment() {
 
+    companion object {
+
+        fun newInstance(): LoginFragment {
+            return LoginFragment()
+        }
+    }
+
     private var _binding: FragmentLoginBinding? = null
     private val binding: FragmentLoginBinding get() = _binding ?: throw RuntimeException("binding is null!")
 

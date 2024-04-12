@@ -52,7 +52,8 @@ class PosterRemoteMediator(
                 val nextKey = if (endOfPaginationReached) null else page + 1
                 val remoteKeys = posters.map {
                     PosterRemoteKeyEntity(
-                        valueId = it.id.toString(),
+                        id = it.id ?: "",
+                        valueId = it.id ?: "",
                         prevKey = prevKey ?: 0,
                         currentPage = page,
                         nextKey = nextKey ?: 0

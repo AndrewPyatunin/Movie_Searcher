@@ -9,6 +9,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <ImageView
                 android:id="@+id/movie_detail_image"
                 android:layout_width="match_parent"
@@ -33,7 +34,7 @@
                 app:layout_constraintTop_toBottomOf="@id/movie_detail_image" />
 
             <TextView
-                android:id="@+id/movie_detail_about"
+                android:id="@+id/movie_detail_about_tag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
@@ -49,7 +50,7 @@
                 android:layout_height="wrap_content"
                 style="@style/textSecond"
                 android:text="Countries"
-                app:layout_constraintTop_toBottomOf="@id/movie_detail_about"
+                app:layout_constraintTop_toBottomOf="@id/movie_detail_about_tag"
                 app:layout_constraintStart_toStartOf="parent"/>
             <TextView
                 android:id="@+id/movie_detail_countries"
@@ -57,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:text="Hohoho, hello kids, I'm Santa Claus and have the gifts for you!"
 
-                app:layout_constraintTop_toBottomOf="@id/movie_detail_about"
+                app:layout_constraintTop_toBottomOf="@id/movie_detail_about_tag"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/guideline_detail"/>
 

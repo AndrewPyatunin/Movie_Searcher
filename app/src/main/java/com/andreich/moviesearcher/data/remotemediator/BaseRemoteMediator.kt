@@ -101,22 +101,22 @@ open class BaseRemoteMediator<Entity : Any, RemoteKey : Any>(
                 MovieEntity::class -> {
                     (state.closestItemToPosition(position) as MovieEntity).id.let { id ->
                         (remoteKeyDao as MovieRemoteKeyDao).getRemoteKeyByValueID(id)
-                    } as RemoteKey
+                    } as RemoteKey?
                 }
                 PersonEntity::class -> {
                     (state.closestItemToPosition(position) as PersonEntity).id.let { id ->
                         (remoteKeyDao as PersonRemoteKeyDao).getRemoteKeyByValueID(id)
-                    } as RemoteKey
+                    } as RemoteKey?
                 }
                 ReviewEntity::class -> {
                     (state.closestItemToPosition(position) as PersonEntity).id.let { id ->
                         (remoteKeyDao as ReviewRemoteKeyDao).getRemoteKeyByValueID(id)
-                    } as RemoteKey
+                    } as RemoteKey?
                 }
                 PosterEntity::class -> {
                     (state.closestItemToPosition(position) as PosterEntity).id.let { id ->
                         (remoteKeyDao as PosterRemoteKeyDao).getRemoteKeyByValueID(id)
-                    } as RemoteKey
+                    } as RemoteKey?
                 }
                 else -> {
                     throw RuntimeException("Unexpected type of entityClass")
@@ -136,22 +136,22 @@ open class BaseRemoteMediator<Entity : Any, RemoteKey : Any>(
                 MovieEntity::class -> {
                     (remoteKeyDao as MovieRemoteKeyDao).getRemoteKeyByValueID(
                         (movie as MovieEntity).id
-                    ) as RemoteKey
+                    ) as RemoteKey?
                 }
                 PersonEntity::class -> {
                     (remoteKeyDao as PersonRemoteKeyDao).getRemoteKeyByValueID(
                         (movie as PersonEntity).id
-                    ) as RemoteKey
+                    ) as RemoteKey?
                 }
                 ReviewEntity::class -> {
                     (remoteKeyDao as ReviewRemoteKeyDao).getRemoteKeyByValueID(
                         (movie as ReviewEntity).id
-                    ) as RemoteKey
+                    ) as RemoteKey?
                 }
                 PosterEntity::class -> {
                     (remoteKeyDao as PosterRemoteKeyDao).getRemoteKeyByValueID(
                         (movie as PosterEntity).id
-                    ) as RemoteKey
+                    ) as RemoteKey?
                 }
                 else -> throw RuntimeException("Unexpected type of entityClass")
             }
@@ -170,22 +170,22 @@ open class BaseRemoteMediator<Entity : Any, RemoteKey : Any>(
                 MovieEntity::class -> {
                     (remoteKeyDao as MovieRemoteKeyDao).getRemoteKeyByValueID(
                         (movie as MovieEntity).id
-                    ) as RemoteKey
+                    ) as RemoteKey?
                 }
                 PersonEntity::class -> {
                     (remoteKeyDao as PersonRemoteKeyDao).getRemoteKeyByValueID(
                         (movie as PersonEntity).id
-                    ) as RemoteKey
+                    ) as RemoteKey?
                 }
                 ReviewEntity::class -> {
                     (remoteKeyDao as ReviewRemoteKeyDao).getRemoteKeyByValueID(
                         (movie as ReviewEntity).id
-                    ) as RemoteKey
+                    ) as RemoteKey?
                 }
                 PosterEntity::class -> {
                     (remoteKeyDao as PosterRemoteKeyDao).getRemoteKeyByValueID(
                         (movie as PosterEntity).id
-                    ) as RemoteKey
+                    ) as RemoteKey?
                 }
                 else -> throw RuntimeException("Unexpected type of entityClass")
             }

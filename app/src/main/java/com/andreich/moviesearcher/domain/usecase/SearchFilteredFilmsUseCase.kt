@@ -10,10 +10,10 @@ class SearchFilteredFilmsUseCase @Inject constructor(
     private val repository: MovieRepository
 ) {
 
-    fun execute(searchParams: String, pageSize: Int, requestId: Long): Flow<PagingData<Movie>> = repository.searchFilteredFilms(
-        searchParams,
+    fun execute(/*searchParams: String,*/ pageSize: Int, requestId: Long, name: String? = null): Flow<PagingData<Movie>> = repository.searchFilteredFilms(
+//        searchParams,
         pageSize,
         requestId,
-        null
+        name
     )
 }

@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
 @Entity("person_remote_key")
 data class PersonRemoteKeyEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Long = System.currentTimeMillis(),
+    val id: Int,
     val valueId: Int,
     val prevKey: Int,
     val nextKey: Int,

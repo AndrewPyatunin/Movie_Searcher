@@ -19,11 +19,9 @@ object ApiFactory {
         .addInterceptor(ForceCacheInterceptor(application))
         .build();
 
-    private val retrofit = Retrofit.Builder()
+    val retrofit = Retrofit.Builder()
         .addConverterFactory(GsonConverterFactory.create())
         .client(okHttpClient)
         .baseUrl(BASE_URL)
         .build()
-
-    val apiService = retrofit.create(ApiService::class.java)
 }
