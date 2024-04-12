@@ -7,13 +7,13 @@ import com.andreich.moviesearcher.R
 
 class MainActivity : AppCompatActivity() {
 
-    private val component by lazy {
-        (application as MovieApp).component
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        component.inject(this)
+        val fragment = MovieListFragment.getInstance()
+        supportFragmentManager.beginTransaction()
+            .addToBackStack(null)
+            .add(R.id.fragment_container, fragment)
+            .commit()
     }
 }

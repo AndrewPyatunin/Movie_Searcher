@@ -6,6 +6,6 @@ data class RatingDto(
     @SerializedName("kp") var kp: Double? = null,
     @SerializedName("imdb") var imdb: Double? = null,
     @SerializedName("filmCritics") var filmCritics: Double? = null,
-    @SerializedName("russianFilmCritics") var russianFilmCritics: Int? = null,
+    @SerializedName("russianFilmCritics") var russianFilmCritics: Double? = null,
     @SerializedName("await") var await: String? = null
 )

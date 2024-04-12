@@ -50,6 +50,7 @@ class PersonRemoteMediator(
                 val nextKey = if (endOfPaginationReached) null else page + 1
                 val remoteKeys = persons.map {
                     PersonRemoteKeyEntity(
+                        id = it.id ?: 0,
                         valueId = it.id ?: 0,
                         prevKey = prevKey ?: 0,
                         currentPage = page,
