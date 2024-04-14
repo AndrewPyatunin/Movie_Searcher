@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface ReviewRepository {
 
-    fun getReviews(movieId: Int, pageSize: Int): Flow<PagingData<Review>>
+    fun getReviews(movieId: Int, pageSize: Int, requestId: String): Flow<PagingData<Review>>
 }

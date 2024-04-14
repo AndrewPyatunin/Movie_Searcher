@@ -51,7 +51,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.9.0'
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
 
-    implementation("androidx.paging:paging-runtime:3.2.1")
+    implementation("androidx.paging:paging-runtime-ktx:3.2.1")
 
     implementation("androidx.room:room-runtime:2.5.2")
     // To use Kotlin annotation processing tool (kapt)
@@ -67,6 +67,10 @@ dependencies {
     implementation "androidx.room:room-paging:2.5.2"
 
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.2"
+
+    implementation("ru.tinkoff.kotea:core:1.1.0")
+    implementation("ru.tinkoff.kotea:android:1.1.0") // android extensions
+    implementation("ru.tinkoff.kotea:logging:1.1.0") // factory with logging feature
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

@@ -10,8 +10,8 @@ class MovieDataSourceImpl @Inject constructor(
     private val movieDao: MovieDao
 ) : MovieDataSource {
 
-    override fun getMovies(requestId: Long): PagingSource<Int, MovieEntity> {
-        return movieDao.getMovies()
+    override fun getMovies(requestId: String): PagingSource<Int, MovieEntity> {
+        return movieDao.getMovies(requestId)
     }
 
     override fun getMovie(id: Int): Flow<MovieEntity> {

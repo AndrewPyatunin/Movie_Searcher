@@ -1,5 +1,7 @@
 package com.andreich.moviesearcher.ui.adapter
 
+import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,25 +11,25 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.andreich.moviesearcher.R
-import com.andreich.moviesearcher.domain.model.Movie
+import com.andreich.moviesearcher.ui.MovieItem
 import com.bumptech.glide.Glide
-import kotlin.math.round
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 
-class DiffCallback : DiffUtil.ItemCallback<Movie>() {
+class DiffCallback : DiffUtil.ItemCallback<MovieItem>() {
 
-    override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+    override fun areItemsTheSame(oldItem: MovieItem, newItem: MovieItem): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+    override fun areContentsTheSame(oldItem: MovieItem, newItem: MovieItem): Boolean {
         return oldItem == newItem
     }
 
 }
 
 class MovieListAdapter() :
-    PagingDataAdapter<Movie, MovieListAdapter.MovieViewHolder>(DiffCallback()) {
-    //RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
+    PagingDataAdapter<MovieItem, MovieListAdapter.MovieViewHolder>(DiffCallback()) {
 
     var onMovieClick: OnMovieClickListener? = null
 
@@ -38,23 +40,35 @@ class MovieListAdapter() :
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
+        Log.d("FRAGMENT_ADAPtER", "$position")
         val movie = getItem(position)
-        with(holder) {
-            with(movie) {
-                movieTitle.text = movie?.name
+        movie?.let {
+            with(holder) {
+                    movieTitle.text = movie.name
+                    movieRating.setBackgroundColor (movie.ratingColor)
+                    movieRating.text = movie.rating
+                    year.text = movie.year
+                    genres.text = movie.genres
+                    altName.text = movie.alternativeName
+                    countries.text = movie.countries
+                    Glide.with(holder.itemView.context).load(movie.previewUrl).into(object : CustomTarget<Drawable>() {
+                        override fun onResourceReady(
+                            resource: Drawable,
+                            transition: Transition<in Drawable>?
+                        ) {
+                            personAvatar.setImageDrawable(resource)
+                        }
 
-                movieRating.text = movie?.rating?.let {"%.1f".format(it)}
-                year.text = movie?.year.toString()
-                genres.text = movie?.genres?.joinToString(", ")
-                altName.text = movie?.alternativeName
-                countries.text = movie?.countries.toString()
-                Glide.with(holder.itemView.context).load(movie?.previewUrl ?: "")
-                    .into(personAvatar)
-                itemView.setOnClickListener {
-                    this?.let { movie -> onMovieClick?.onMovieClick(movie) }
-                }
+                        override fun onLoadCleared(placeholder: Drawable?) {
+                            personAvatar.setImageDrawable(placeholder)
+                        }
+                    })
+                    itemView.setOnClickListener {
+                        onMovieClick?.onMovieClick(movie)
+                    }
             }
         }
+
     }
 
     inner class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -70,6 +84,6 @@ class MovieListAdapter() :
 
     interface OnMovieClickListener {
 
-        fun onMovieClick(movie: Movie)
+        fun onMovieClick(movie: MovieItem)
     }
 }

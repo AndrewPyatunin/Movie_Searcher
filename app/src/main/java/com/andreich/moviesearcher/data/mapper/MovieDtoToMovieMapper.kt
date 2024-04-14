@@ -10,7 +10,7 @@ class MovieDtoToMovieMapper @Inject constructor(
     private val personMapper: MovieMapper<PersonDto, PersonEntity>,
 ) : MovieMapper<MovieDto, MovieEntity> {
 
-    override fun map(fromDto: MovieDto, item: Int, requestId: Long): MovieEntity {
+    override fun map(fromDto: MovieDto, item: Int, requestId: String): MovieEntity {
         return MovieEntity(
             id = fromDto.id ?: 0,
             name = fromDto.name ?: "",

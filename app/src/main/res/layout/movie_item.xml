@@ -16,7 +16,8 @@
             android:id="@+id/movie_image"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_launcher_foreground"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/guideline_movie_item"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -33,13 +34,13 @@
             app:layout_constraintTop_toTopOf="parent"/>
         <TextView
             android:id="@+id/movie_creation_date"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textColor="@color/orange"
-            android:text="2007"
             android:layout_marginHorizontal="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toEndOf="@id/movie_title"
+            tools:text="2007"
             app:layout_constraintTop_toTopOf="parent"/>
         <TextView
             android:id="@+id/movie_alt_name_with_length"
@@ -49,7 +50,6 @@
             android:ellipsize="end"
             android:maxLength="32"
             android:textSize="14sp"
-            android:text="Movie, 95min"
             app:layout_constraintStart_toEndOf="@id/movie_image"
             app:layout_constraintTop_toBottomOf="@id/movie_title"/>
         <TextView
@@ -59,8 +59,6 @@
             android:padding="4dp"
             android:textSize="28sp"
             android:textColor="@color/white"
-            android:background="@color/green"
-            android:text="7.2"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
@@ -72,7 +70,6 @@
             android:ellipsize="end"
             android:maxLength="32"
             android:textSize="14sp"
-            android:text="Russia, USA, France"
             app:layout_constraintStart_toEndOf="@id/movie_image"
             app:layout_constraintTop_toBottomOf="@id/movie_alt_name_with_length"/>
         <TextView
@@ -83,7 +80,6 @@
             android:ellipsize="end"
             android:maxLength="32"
             android:textSize="14sp"
-            android:text="(comedy, horror, thriller)"
             app:layout_constraintStart_toEndOf="@id/movie_image"
             app:layout_constraintTop_toBottomOf="@id/movie_countries"/>
 

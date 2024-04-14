@@ -7,5 +7,5 @@ class GetReviewsUseCase @Inject constructor(
     private val repository: ReviewRepository
 ) {
 
-    fun execute(movieId: Int, pageSize: Int) = repository.getReviews(movieId, pageSize)
+    fun execute(movieId: Int, pageSize: Int = 10, requestId: String = "") = repository.getReviews(movieId, pageSize, requestId)
 }

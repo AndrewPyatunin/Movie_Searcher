@@ -12,15 +12,14 @@ interface ApiService {
                 "&selectFields=seasonsInfo&selectFields=movieLength&selectFields=seriesLength" +
                 "&selectFields=totalSeriesLength&selectFields=genres&selectFields=countries" +
                 "&selectFields=poster&selectFields=logo&selectFields=networks&selectFields=persons" +
-                "&selectFields=sequelsAndPrequels&selectFields=top250" +
-                "&type=tv-series&year=2010-2020"
+                "&selectFields=sequelsAndPrequels&selectFields=top250"
     )/*&genres.name=%2B%D1%82%D1%80%D0%B8%D0%BB%D0%BB%D0%B5%D1%80&genres.name=%2B%D0%B4%D1%80%D0%B0%D0%BC%D0%B0*/
     suspend fun searchWithFilters(
-        @Header("X-API-KEY") apiKey: String,
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 10,
 //        @FieldMap sortFilters: Map<String, String> = emptyMap(),
-        @Query(QUERY_PARAM_SORT_TYPE) vararg filters: String
+        @Query(QUERY_PARAM_SORT_TYPE) vararg filters: String,
+        @Header("X-API-KEY") apiKey: String = "",
     ): RequestResultDto<MovieDto>
 
     @GET("person?selectFields=id&selectFields=name&selectFields=enName" +
@@ -28,29 +27,29 @@ interface ApiService {
             "&selectFields=countAwards&selectFields=profession&sortField=countAwards" +
             "&sortField=movies.general&sortType=-1&sortType=-1")
     suspend fun getActors(
-        @Header("X-API-KEY") apiKey: String,
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 10,
         @Query(QUERY_PARAM_MOVIE_ID) movieId: Int,
-        @Query(QUERY_PARAM_SELECT_FIELDS) vararg filters: String
+        @Query(QUERY_PARAM_SELECT_FIELDS) vararg filters: String,
+        @Header("X-API-KEY") apiKey: String = "",
     ): RequestResultDto<PersonDto>
 
     @GET("movie/search")
     suspend fun searchFilm(
-        @Header("X-API-KEY") apiKey: String,
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 10,
-        @Query(QUERY_PARAM_MOVIE_SEARCH_NAME) movieName: String
+        @Query(QUERY_PARAM_MOVIE_SEARCH_NAME) movieName: String,
+        @Header("X-API-KEY") apiKey: String = "",
     ): RequestResultDto<MovieDto>
 
     @GET("review?selectFields=id&selectFields=movieId&selectFields=title" +
             "&selectFields=type&selectFields=review&selectFields=date&selectFields=author")
     suspend fun getReviews(
-        @Header("X-API-KEY") apiKey: String,
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 10,
         @Query(REVIEW_PARAM_MOVIE_ID) movieId: Int,
-        @Query(QUERY_PARAM_SELECT_FIELDS) vararg filters: String
+        @Query(QUERY_PARAM_SELECT_FIELDS) vararg filters: String,
+        @Header("X-API-KEY") apiKey: String = "",
     ): RequestResultDto<ReviewDto>
 
     @GET("season?selectFields=movieId&selectFields=poster&selectFields=number" +
@@ -58,24 +57,22 @@ interface ApiService {
             "&selectFields=enDescription&selectFields=episodesCount&selectFields=airDate" +
             "&selectFields=episodes&sortField=airDate&sortField=episodes.date&sortType=1&sortType=1&number=1-30")
     suspend fun getSeasons(
-        @Header("X-API-KEY") apiKey: String,
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 10,
         @Query(QUERY_PARAM_MOVIE_ID) movieId: Int,
         @Query(QUERY_PARAM_SELECT_FIELDS) vararg selectFields: String
     ): RequestResultDto<SeasonDto>
 
-    @GET("image?movieId={movieId}&type=cover&type=frame&type=promo&type=still&type=wallpaper")
+    @GET("image?&type=cover&type=frame&type=promo&type=still&type=wallpaper")
     suspend fun getPosters(
-        @Header("X-API-KEY") apiKey: String,
         @Query("movieId") movieId: Int,
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 10,
+        @Header("X-API-KEY") apiKey: String = "",
     ): RequestResultDto<PosterDto>
 
     @GET("movie/{movieId}")
     suspend fun getFilmById(
-        @Header("X-API-KEY") apiKey: String,
         @Query("movieId") movieId: Int,
     )
 

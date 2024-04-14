@@ -4,4 +4,12 @@
     <string name="enter_your_name">Enter your name:</string>
     <string name="log_in">Log in</string>
     <string name="movie_name_test" translatable="false">The Lord of the Rings: The Fellowship of the Ring (2001)</string>
+    <string name="about_the_film">О фильме</string>
+    <string name="countries">Страны</string>
+    <string name="genres">Жанры</string>
+    <string name="slogan">Слоган</string>
+    <string name="description">Описание</string>
+    <string name="posters">Постеры</string>
+    <string name="reviews">Отзывы</string>
+    <string name="actors">Актеры</string>
 </resources>

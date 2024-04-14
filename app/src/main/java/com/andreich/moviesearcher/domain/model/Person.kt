@@ -10,5 +10,6 @@ data class Person(
     val name: String?,
     val enName: String?,
     val profession: String?,
-    val enProfession: String?
+    val enProfession: String?,
+    val description: String?
 ) : Parcelable

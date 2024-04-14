@@ -17,7 +17,6 @@ class Debounce(private val delay: Long, val scope: CoroutineScope, val param: (S
     }
 
     private fun valueChanged(value: String) {
-        if(value.isNotEmpty())
-            param(value)
+        param(value)
     }
 }

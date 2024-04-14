@@ -20,8 +20,8 @@ class MovieRemoteMediator(
     private val movieMapper: MovieMapper<MovieDto, MovieEntity>,
     private val personMapper: MovieMapper<PersonDto, PersonEntity>,
     private val name: String? = null,
-    private val requestId: Long,
-) : BaseRemoteMediator<MovieEntity, MovieRemoteKeyDao>(remoteKeyDao, MovieEntity::class) {
+    private val requestId: String,
+) : BaseRemoteMediator<MovieEntity, MovieRemoteKeyDao>(remoteKeyDao, MovieEntity::class, ) {
     val movieDao = database.movieDao()
 
     override suspend fun workWithNetworkAndDatabase(page: Int, loadType: LoadType): MediatorResult {
@@ -67,12 +67,6 @@ class MovieRemoteMediator(
     //                    movieDao.clearAllMovies()
                     Log.d("REMOTE_MEDIATOR", "refresh$page")
                 }
-                if (loadType == LoadType.APPEND) {
-                    Log.d("REMOTE_MEDIATOR", "append$page")
-                }
-                if (loadType == LoadType.PREPEND) {
-                    Log.d("REMOTE_MEDIATOR", "prepend$page")
-                }
                 val prevKey = if (page == 1) null else page - 1
                 val nextKey = if (endOfPaginationReached) null else page + 1
                 Log.d("REMOTE_MEDIATOR", "next_key_first=$nextKey")
@@ -93,10 +87,16 @@ class MovieRemoteMediator(
         }
     }
 
+    override suspend fun initialize(): InitializeAction {
+        Log.d("Mediator", "init")
+        return InitializeAction.LAUNCH_INITIAL_REFRESH
+    }
+
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, MovieEntity>
     ): MediatorResult {
+        Log.d("MEDIATOR", "load")
         val pageKeyData = getKeyPageData(loadType, state)
         val page: Int = when (pageKeyData) {
             is MediatorResult.Success -> {
@@ -106,7 +106,7 @@ class MovieRemoteMediator(
                 pageKeyData as Int
             }
         }
-            return workWithNetworkAndDatabase(page, loadType)
+        return workWithNetworkAndDatabase(page, loadType)
     }
 
     private suspend fun getKeyPageData(loadType: LoadType, state: PagingState<Int, MovieEntity>): Any {
