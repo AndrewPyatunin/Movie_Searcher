@@ -25,7 +25,7 @@ class ApiModule {
     fun provideApiService(context: Context): ApiService {
         val okHttpClient = OkHttpClient().newBuilder()
             .cache(Cache(File(context.cacheDir, "http-cache"), 10L * 1024L * 1024L))
-//            .addInterceptor(ApiKeyInterceptor(context))
+            .addInterceptor(ApiKeyInterceptor(context))
             .addNetworkInterceptor(CacheInterceptor(context))
             .addInterceptor(ForceCacheInterceptor(context))
             .build()

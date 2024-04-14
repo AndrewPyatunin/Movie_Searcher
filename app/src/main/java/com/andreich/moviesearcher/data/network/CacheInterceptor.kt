@@ -12,20 +12,7 @@ import java.util.concurrent.TimeUnit
 
 class CacheInterceptor(val context: Context) : Interceptor {
 
-    private fun readApiKeyFromFile(): String {
-        return try {
-            context.assets
-                .open("api_key.txt")
-                .bufferedReader()
-                .use(BufferedReader::readText)
-        } catch (e: IOException) {
-            e.printStackTrace()
-            ""
-        }
-    }
-
     override fun intercept(chain: Interceptor.Chain): Response {
-        val apiKey = readApiKeyFromFile()
 //        Log.d("INTERCEPTOR", apiKey)
         Log.d("INTERCEPTOR", "intercept")
         val response: Response = chain.proceed(chain.request())
@@ -33,7 +20,6 @@ class CacheInterceptor(val context: Context) : Interceptor {
             .maxAge(7, TimeUnit.DAYS)
             .build()
         return response.newBuilder()
-            .header("X-API-KEY", apiKey)
             .header("Cache-Control", cacheControl.toString())
             .build()
     }

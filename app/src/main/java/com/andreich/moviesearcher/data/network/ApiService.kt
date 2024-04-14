@@ -19,7 +19,7 @@ interface ApiService {
         @Query("limit") limit: Int = 10,
 //        @FieldMap sortFilters: Map<String, String> = emptyMap(),
         @Query(QUERY_PARAM_SORT_TYPE) vararg filters: String,
-        @Header("X-API-KEY") apiKey: String = "",
+//        @Header("X-API-KEY") apiKey: String = "",
     ): RequestResultDto<MovieDto>
 
     @GET("person?selectFields=id&selectFields=name&selectFields=enName" +
@@ -31,7 +31,7 @@ interface ApiService {
         @Query("limit") limit: Int = 10,
         @Query(QUERY_PARAM_MOVIE_ID) movieId: Int,
         @Query(QUERY_PARAM_SELECT_FIELDS) vararg filters: String,
-        @Header("X-API-KEY") apiKey: String = "",
+//        @Header("X-API-KEY") apiKey: String = "",
     ): RequestResultDto<PersonDto>
 
     @GET("movie/search")
@@ -39,7 +39,7 @@ interface ApiService {
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 10,
         @Query(QUERY_PARAM_MOVIE_SEARCH_NAME) movieName: String,
-        @Header("X-API-KEY") apiKey: String = "",
+//        @Header("X-API-KEY") apiKey: String = "",
     ): RequestResultDto<MovieDto>
 
     @GET("review?selectFields=id&selectFields=movieId&selectFields=title" +
@@ -49,7 +49,7 @@ interface ApiService {
         @Query("limit") limit: Int = 10,
         @Query(REVIEW_PARAM_MOVIE_ID) movieId: Int,
         @Query(QUERY_PARAM_SELECT_FIELDS) vararg filters: String,
-        @Header("X-API-KEY") apiKey: String = "",
+//        @Header("X-API-KEY") apiKey: String = "",
     ): RequestResultDto<ReviewDto>
 
     @GET("season?selectFields=movieId&selectFields=poster&selectFields=number" +
@@ -68,7 +68,7 @@ interface ApiService {
         @Query("movieId") movieId: Int,
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 10,
-        @Header("X-API-KEY") apiKey: String = "",
+//        @Header("X-API-KEY") apiKey: String = "",
     ): RequestResultDto<PosterDto>
 
     @GET("movie/{movieId}")
