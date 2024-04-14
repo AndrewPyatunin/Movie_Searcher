@@ -13,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.andreich.moviesearcher.MovieApp
@@ -104,22 +105,20 @@ class MovieDetailFragment : Fragment() {
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         recyclerViewReviews.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-        recyclerViewReviews.layoutManager =
+        recyclerViewPosters.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+
         binding.movieReviewsTag.setOnClickListener {
             recyclerViewReviews.changeVisibility()
         }
         binding.movieActorsTag.setOnClickListener {
             recyclerViewActors.changeVisibility()
         }
-        binding.movieDetailExpandablePostersTag.setOnClickListener {
-            recyclerViewPosters.changeVisibility()
-        }
         observeViewModel()
         movieId?.let {
             getReviews(it)
-            getPosters(it)
         }
+        movieId?.let { getPosters(it) }
     }
 
     private fun observeViewModel() {
@@ -168,7 +167,7 @@ class MovieDetailFragment : Fragment() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.getPosters(movieId).collectLatest {
-                    Log.d("MEDIATOR_PAGING", "$it")
+                    Log.d("MEDIATOR_PAGING_POSTER", "$it")
                     posterAdapter.submitData(it)
                 }
             }
