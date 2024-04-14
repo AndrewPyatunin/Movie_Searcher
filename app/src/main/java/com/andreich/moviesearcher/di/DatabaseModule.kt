@@ -26,6 +26,11 @@ class DatabaseModule {
     }
 
     @Provides
+    fun provideReviewDao(database: MovieDatabase): ReviewDao {
+        return database.reviewDao()
+    }
+
+    @Provides
     fun providePosterDao(database: MovieDatabase): PosterDao {
         return database.posterDao()
     }

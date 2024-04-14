@@ -5,8 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity("poster_remote_key")
 data class PosterRemoteKeyEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long = System.currentTimeMillis(),
+    @PrimaryKey
+    val id: String,
     val valueId: String,
     val prevKey: Int,
     val nextKey: Int,

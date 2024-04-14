@@ -9,8 +9,8 @@ class PosterDataSourceImpl @Inject constructor(
     private val posterDao: PosterDao
 ) : PosterDataSource {
 
-    override fun getPosters(): PagingSource<Int, PosterEntity> {
-        return posterDao.getPosters()
+    override fun getPosters(movieId: Int): PagingSource<Int, PosterEntity> {
+        return posterDao.getPosters(movieId)
     }
 
     override suspend fun insertPosters(list: List<PosterEntity>) {

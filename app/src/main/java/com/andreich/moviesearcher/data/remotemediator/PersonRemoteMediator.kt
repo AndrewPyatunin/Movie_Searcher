@@ -18,7 +18,7 @@ import java.io.IOException
 class PersonRemoteMediator(
     private val apiKey: String,
     private val movieId: Int,
-    private val requestId: Long,
+    private val requestId: String,
     private val remoteKeyDao: PersonRemoteKeyDao,
     private val remoteDataSource: RemoteDataSource,
     private val database: MovieDatabase,
@@ -50,6 +50,7 @@ class PersonRemoteMediator(
                 val nextKey = if (endOfPaginationReached) null else page + 1
                 val remoteKeys = persons.map {
                     PersonRemoteKeyEntity(
+                        id = it.id ?: 0,
                         valueId = it.id ?: 0,
                         prevKey = prevKey ?: 0,
                         currentPage = page,

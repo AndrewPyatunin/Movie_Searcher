@@ -9,7 +9,7 @@ class PersonEntityToPersonMapper @Inject constructor(): EntityToModelMapper<Pers
     override fun map(from: PersonEntity): Person {
         with(from) {
             return Person(
-                id, photoUrl, name, enName, profession, enProfession
+                id, photoUrl, name, enName, profession, enProfession, description
             )
         }
     }

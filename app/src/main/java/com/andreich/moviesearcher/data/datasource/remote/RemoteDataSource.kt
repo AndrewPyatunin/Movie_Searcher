@@ -8,7 +8,7 @@ interface RemoteDataSource {
         apiKey: String,
         page: Int = 1,
         limit: Int = 10,
-        sortFilters: Map<String, String> = emptyMap(),
+//        sortFilters: Map<String, String> = emptyMap(),
         vararg filters: String
     ): RequestResultDto<MovieDto>
 

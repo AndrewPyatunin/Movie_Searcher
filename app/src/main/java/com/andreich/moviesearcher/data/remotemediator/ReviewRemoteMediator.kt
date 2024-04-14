@@ -1,5 +1,6 @@
 package com.andreich.moviesearcher.data.remotemediator
 
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -23,16 +24,10 @@ class ReviewRemoteMediator(
     private val remoteDataSource: RemoteDataSource,
     private val database: MovieDatabase,
     private val reviewDataSource: ReviewDataSource,
+    private val requestId: String,
     private val reviewMapper: MovieMapper<ReviewDto, ReviewEntity>,
 ) :
     BaseRemoteMediator<ReviewEntity, ReviewRemoteKeyDao>(remoteKeyDao, ReviewEntity::class) {
-
-    override suspend fun load(
-        loadType: LoadType,
-        state: PagingState<Int, ReviewEntity>
-    ): MediatorResult {
-        return super.load(loadType, state)
-    }
 
     override suspend fun workWithNetworkAndDatabase(page: Int, loadType: LoadType): MediatorResult {
         try {
@@ -49,6 +44,7 @@ class ReviewRemoteMediator(
                 val nextKey = if (endOfPaginationReached) null else page + 1
                 val remoteKeys = reviews.map {
                     ReviewRemoteKeyEntity(
+                        id = it.id ?: 0,
                         valueId = it.id ?: 0,
                         prevKey = prevKey ?: 0,
                         currentPage = page,
@@ -58,7 +54,7 @@ class ReviewRemoteMediator(
 
                 remoteKeyDao.insertAll(remoteKeys)
                 reviewDataSource.insertReviews(reviews.map {
-                    reviewMapper.map(it, page, System.currentTimeMillis())
+                    reviewMapper.map(it, page, requestId)
                 })
             }
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
@@ -66,6 +62,71 @@ class ReviewRemoteMediator(
             return MediatorResult.Error(error)
         } catch (error: HttpException) {
             return MediatorResult.Error(error)
+        }
+    }
+
+    override suspend fun load(
+        loadType: LoadType,
+        state: PagingState<Int, ReviewEntity>
+    ): MediatorResult {
+        Log.d("MEDIATOR_REVIEW", "load")
+        val pageKeyData = getKeyPageData(loadType, state)
+        val page: Int = when (pageKeyData) {
+            is MediatorResult.Success -> {
+                return pageKeyData
+            }
+            else -> {
+                pageKeyData as Int
+            }
+        }
+        return workWithNetworkAndDatabase(page, loadType)
+    }
+
+    private suspend fun getKeyPageData(loadType: LoadType, state: PagingState<Int, ReviewEntity>): Any {
+        return when (loadType) {
+            LoadType.REFRESH -> {
+                val remoteKeys = getRemoteKeyClosestToCurrentPosition(state)
+                Log.d("REMOTE_MEDIATOR_REVIEW", "refresh")
+                remoteKeys?.nextKey?.minus(1) ?: 1
+            }
+            LoadType.PREPEND -> {
+                val remoteKeys = getRemoteKeyForFirstItem(state)
+                val prevKey = remoteKeys?.prevKey
+                Log.d("REMOTE_MEDIATOR_REVIEW", "prepend")
+                prevKey ?: return MediatorResult.Success(endOfPaginationReached = false)
+            }
+            LoadType.APPEND -> {
+                val remoteKeys = getRemoteKeyForLastItem(state)
+                val nextKey = remoteKeys?.nextKey
+                Log.d("REMOTE_MEDIATOR_REVIEW", "append, nextKey=$nextKey")
+                nextKey ?: return MediatorResult.Success(endOfPaginationReached = false)
+            }
+        }
+    }
+
+
+    private suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, ReviewEntity>): ReviewRemoteKeyEntity? {
+        return state.anchorPosition?.let { position ->
+            state.closestItemToPosition(position)?.id?.let { id ->
+                remoteKeyDao.getRemoteKeyByValueID(id)
+            }
+        }
+    }
+
+    private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, ReviewEntity>): ReviewRemoteKeyEntity? {
+        return state.pages.firstOrNull {
+            it.data.isNotEmpty()
+        }?.data?.firstOrNull()?.let { movie ->
+            Log.d("MEDIATOR_REMOTE", movie.id.toString())
+            remoteKeyDao.getRemoteKeyByValueID(movie.id)
+        }
+    }
+
+    private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, ReviewEntity>): ReviewRemoteKeyEntity? {
+        return state.pages.lastOrNull {
+            it.data.isNotEmpty()
+        }?.data?.lastOrNull()?.let { movie ->
+            remoteKeyDao.getRemoteKeyByValueID(movie.id)
         }
     }
 }

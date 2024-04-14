@@ -7,10 +7,10 @@ import com.andreich.moviesearcher.domain.pojo.PersonDto
 import javax.inject.Inject
 
 class MovieDtoToMovieMapper @Inject constructor(
-    private val personMapper: DtoMapper<PersonDto, PersonEntity>,
+    private val personMapper: MovieMapper<PersonDto, PersonEntity>,
 ) : MovieMapper<MovieDto, MovieEntity> {
 
-    override fun map(fromDto: MovieDto, item: Int, requestId: Long): MovieEntity {
+    override fun map(fromDto: MovieDto, item: Int, requestId: String): MovieEntity {
         return MovieEntity(
             id = fromDto.id ?: 0,
             name = fromDto.name ?: "",
@@ -31,10 +31,10 @@ class MovieDtoToMovieMapper @Inject constructor(
             url = fromDto.poster?.url ?: "",
             previewUrl = fromDto.poster?.previewUrl ?: "",
             actors = fromDto.persons.map {
-                personMapper.map(it)
+                personMapper.map(it, item, requestId)
             },
             votes = fromDto.votes?.kp,
-            network = fromDto.networks ?: "",
+            network = fromDto.networks?.items?.joinToString(", ") ?: "",
             seasonsAmount = fromDto.seasonsInfo.size,
             top250 = fromDto.top250 ?: 0,
             movieLength = fromDto.movieLength ?: -1,

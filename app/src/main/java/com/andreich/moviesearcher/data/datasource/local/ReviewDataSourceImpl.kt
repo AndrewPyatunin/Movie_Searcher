@@ -9,8 +9,8 @@ class ReviewDataSourceImpl @Inject constructor(
     private val reviewDao: ReviewDao
 ) : ReviewDataSource {
 
-    override fun getReviews(): PagingSource<Int, ReviewEntity> {
-        return reviewDao.getReviews()
+    override fun getReviews(movieId: Int): PagingSource<Int, ReviewEntity> {
+        return reviewDao.getReviews(movieId)
     }
 
     override suspend fun insertReviews(list: List<ReviewEntity>) {

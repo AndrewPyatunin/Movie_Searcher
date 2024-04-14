@@ -1,5 +1,6 @@
 package com.andreich.moviesearcher.data.repo
 
+import android.util.Log
 import androidx.paging.*
 import com.andreich.moviesearcher.data.database.MovieDatabase
 import com.andreich.moviesearcher.data.database.MovieRemoteKeyDao
@@ -30,16 +31,19 @@ class MovieRepositoryImpl @Inject constructor(
 ) : MovieRepository {
 
     override fun getMovie(movieId: Int): Flow<Movie> {
-        TODO("Not yet implemented")
+        return movieDataSource.getMovie(movieId).map {
+            movieEntityMapper.map(it)
+        }
     }
 
     @OptIn(ExperimentalPagingApi::class)
     override fun searchFilteredFilms(
-        requestParams: String,
+        requestParams: String?,
         pageSize: Int,
-        requestId: Long,
+        requestId: String,
         name: String?
     ): Flow<PagingData<Movie>> {
+        Log.d("SEARCH_IN_REPO", "$pageSize")
         return Pager(
             config = PagingConfig(
                 pageSize = pageSize,
@@ -56,9 +60,10 @@ class MovieRepositoryImpl @Inject constructor(
                 remoteKeyDao = remoteKeyDao,
                 name = name,
                 requestId = requestId
-            ),
+            )
         ).flow.map {
             it.map {
+                Log.d("SEARCH_IN_REPO_MAP", it.name)
                 movieEntityMapper.map(it)
             }
         }

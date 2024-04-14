@@ -5,6 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity("season")
 data class SeasonEntity(
+    @PrimaryKey
+    val id: String,
     val movieId: Int,
     val number: Int,
     val episodesCount: Int,
@@ -16,6 +18,4 @@ data class SeasonEntity(
     val enDescription: String,
     val url: String,
     val previewUrl: String,
-    @PrimaryKey
-    val id: String
 )

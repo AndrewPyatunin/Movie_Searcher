@@ -13,27 +13,21 @@ import dagger.Module
 @Module
 interface DataModule {
 
-    @AppScope
     @Binds
     fun bindMovieDatasource(impl: MovieDataSourceImpl): MovieDataSource
 
-    @AppScope
     @Binds
     fun bindPersonDataSource(impl: PersonDataSourceImpl): PersonDataSource
 
-    @AppScope
     @Binds
     fun bindReviewDataSource(impl: ReviewDataSourceImpl): ReviewDataSource
 
-    @AppScope
     @Binds
     fun bindSeasonDataSource(impl: SeasonDataSourceImpl): SeasonDataSource
 
-    @AppScope
     @Binds
     fun bindPosterDataSource(impl: PosterDataSourceImpl): PosterDataSource
 
-    @AppScope
     @Binds
     fun bindRemoteDataSource(impl: RemoteDataSourceImpl): RemoteDataSource
 

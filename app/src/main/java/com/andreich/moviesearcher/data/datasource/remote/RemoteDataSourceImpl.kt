@@ -12,10 +12,10 @@ class RemoteDataSourceImpl @Inject constructor(
         apiKey: String,
         page: Int,
         limit: Int,
-        sortFilters: Map<String, String>,
+//        sortFilters: Map<String, String>,
         vararg filters: String
     ): RequestResultDto<MovieDto> {
-        return apiService.searchWithFilters(apiKey, page, limit, sortFilters, *filters)
+        return apiService.searchWithFilters(page, limit, /*sortFilters,*/ *filters)
     }
 
     override suspend fun getActors(
@@ -25,7 +25,7 @@ class RemoteDataSourceImpl @Inject constructor(
         movieId: Int,
         vararg filters: String
     ): RequestResultDto<PersonDto> {
-        return apiService.getActors(apiKey, page, limit, movieId, *filters)
+        return apiService.getActors(page, limit, movieId, *filters)
     }
 
     override suspend fun searchFilm(
@@ -34,7 +34,7 @@ class RemoteDataSourceImpl @Inject constructor(
         limit: Int,
         movieName: String
     ): RequestResultDto<MovieDto> {
-        return apiService.searchFilm(apiKey, page, limit, movieName)
+        return apiService.searchFilm(page, limit, movieName)
     }
 
     override suspend fun getReviews(
@@ -44,7 +44,7 @@ class RemoteDataSourceImpl @Inject constructor(
         movieId: Int,
         vararg filters: String
     ): RequestResultDto<ReviewDto> {
-        return apiService.getReviews(apiKey, page, limit, movieId, *filters)
+        return apiService.getReviews(page, limit, movieId, *filters)
     }
 
     override suspend fun getSeasons(
@@ -54,7 +54,7 @@ class RemoteDataSourceImpl @Inject constructor(
         movieId: Int,
         vararg selectFields: String
     ): RequestResultDto<SeasonDto> {
-        return apiService.getSeasons(apiKey, page, limit, movieId, *selectFields)
+        return apiService.getSeasons(page, limit, movieId, *selectFields)
     }
 
     override suspend fun getPosters(
@@ -63,6 +63,6 @@ class RemoteDataSourceImpl @Inject constructor(
         page: Int,
         limit: Int
     ): RequestResultDto<PosterDto> {
-        return apiService.getPosters(apiKey, movieId, page, limit)
+        return apiService.getPosters(movieId, page, limit)
     }
 }

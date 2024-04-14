@@ -21,7 +21,7 @@ data class MovieDto(
     @SerializedName("seasonsInfo") var seasonsInfo: ArrayList<SeasonsInfoDto> = arrayListOf(),
     @SerializedName("persons") var persons: ArrayList<PersonDto> = arrayListOf(),
     @SerializedName("alternativeName") var alternativeName: String? = null,
-    @SerializedName("networks") var networks: String? = null,
+    @SerializedName("networks") var networks: NetworkDto? = null,
     @SerializedName("ageRating") var ageRating: Int? = null,
     @SerializedName("logo") var logo: LogoDto? = LogoDto(),
     @SerializedName("top250") var top250: Int? = null

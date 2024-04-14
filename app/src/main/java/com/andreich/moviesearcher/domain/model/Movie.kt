@@ -1,5 +1,9 @@
 package com.andreich.moviesearcher.domain.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Movie(
     val id: Int = 0,
     val name: String,
@@ -23,6 +27,6 @@ data class Movie(
     val isSeries: Boolean,
     val seriesLength: Int?,
     val page: Int,
-    val requestId: Long,
+    val requestId: String,
     val ratingImdb: Double
-)
+): Parcelable

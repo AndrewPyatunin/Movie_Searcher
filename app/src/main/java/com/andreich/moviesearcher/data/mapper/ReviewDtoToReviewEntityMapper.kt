@@ -9,7 +9,7 @@ class ReviewDtoToReviewEntityMapper @Inject constructor() : MovieMapper<ReviewDt
     override fun map(
         fromDto: ReviewDto,
         item: Int,
-        requestId: Long
+        requestId: String
     ): ReviewEntity {
         return with(fromDto) {
             ReviewEntity(

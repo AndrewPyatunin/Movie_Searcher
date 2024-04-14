@@ -21,14 +21,13 @@ class PersonRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
     private val personDataSource: PersonDataSource,
     private val apiKey: String,
-    private val requestId: Long,
     private val personMapper: MovieMapper<PersonDto, PersonEntity>,
     private val personEntityMapper: EntityToModelMapper<PersonEntity, Person>,
     private val remoteKeyDao: PersonRemoteKeyDao,
 ) : PersonRepository {
 
     @OptIn(ExperimentalPagingApi::class)
-    override fun getPersons(movieId: Int, pageSize: Int): Flow<PagingData<Person>> {
+    override fun getPersons(movieId: Int, pageSize: Int, requestId: String): Flow<PagingData<Person>> {
         return Pager(
             config = PagingConfig(
                 pageSize = pageSize,

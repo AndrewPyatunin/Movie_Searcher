@@ -5,7 +5,7 @@ import com.andreich.moviesearcher.data.entity.PosterEntity
 
 interface PosterDataSource {
 
-    fun getPosters(): PagingSource<Int, PosterEntity>
+    fun getPosters(movieId: Int): PagingSource<Int, PosterEntity>
 
     suspend fun insertPosters(list: List<PosterEntity>)
 }

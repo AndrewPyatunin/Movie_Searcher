@@ -27,22 +27,23 @@ class ReviewRepositoryImpl @Inject constructor(
 ) : ReviewRepository {
 
     @OptIn(ExperimentalPagingApi::class)
-    override fun getReviews(movieId: Int, pageSize: Int): Flow<PagingData<Review>> {
+    override fun getReviews(movieId: Int, pageSize: Int, requestId: String): Flow<PagingData<Review>> {
         return Pager(
             config = PagingConfig(
                 pageSize = pageSize,
                 prefetchDistance = 10,
                 initialLoadSize = pageSize
             ),
-            pagingSourceFactory = { database.reviewDao().getReviews() },
+            pagingSourceFactory = { database.reviewDao().getReviews(movieId) },
             remoteMediator = ReviewRemoteMediator(
-                database = database,
-                remoteDataSource = remoteDataSource,
                 apiKey = apiKey,
-                reviewMapper = reviewMapper,
-                remoteKeyDao = reviewRemoteKeyDao,
                 movieId = movieId,
-                reviewDataSource = reviewDataSource
+                remoteKeyDao = reviewRemoteKeyDao,
+                remoteDataSource = remoteDataSource,
+                database = database,
+                reviewDataSource = reviewDataSource,
+                requestId = requestId,
+                reviewMapper = reviewMapper
             ),
         ).flow.map {
             it.map {

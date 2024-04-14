@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MovieDao {
-
+    /*WHERE requestId = :requestId*/
     @Query("SELECT * FROM movie WHERE requestId = :requestId ORDER BY page")
-    fun getMovies(requestId: Long): PagingSource<Int, MovieEntity>
+    fun getMovies(requestId: String): PagingSource<Int, MovieEntity>
 
     @Query("SELECT * FROM movie WHERE id = :id")
     fun getMovie(id: Int): Flow<MovieEntity>

@@ -5,8 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity("review_remote_key")
 data class ReviewRemoteKeyEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long = System.currentTimeMillis(),
+    @PrimaryKey
+    val id: Int,
     val valueId: Int,
     val prevKey: Int,
     val nextKey: Int,

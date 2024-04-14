@@ -10,7 +10,7 @@ class SeasonDtoToSeasonEntityMapper @Inject constructor(
     private val episodeMapper: DtoMapper<EpisodeDto, EpisodeEntity>
 ) : MovieMapper<SeasonDto, SeasonEntity> {
 
-    override fun map(fromDto: SeasonDto, item: Int, requestId: Long): SeasonEntity {
+    override fun map(fromDto: SeasonDto, item: Int, requestId: String): SeasonEntity {
         return SeasonEntity(
             movieId = fromDto.movieId ?: -1,
             number = fromDto.number ?: -1,
