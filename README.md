@@ -18,12 +18,14 @@ git clone https://github.com/AndrewPyatunin/Movie_Searcher.git
 
 ### Получение списка отзывов по id фильма (movieId) (GET):
 Запрос:
+
 curl -X 'GET' \
   'https://api.kinopoisk.dev/v1.4/review?page=1&limit=10&movieId=520' \
   -H 'accept: application/json' \
   -H 'X-API-KEY: {your_api_key}'
 
 Ответ:
+
 {
   "docs": [
     {
@@ -52,13 +54,14 @@ curl -X 'GET' \
 }
 ### Получение списка фильмов (GET):
 Запрос:
+
 curl -X 'GET' \
   'https://api.kinopoisk.dev/v1.4/movie?page=1&limit=10&selectFields=name&selectFields=alternativeName&selectFields=description&selectFields=shortDescription&selectFields=slogan&selectFields=type&selectFields=isSeries&selectFields=status&selectFields=year&selectFields=rating&selectFields=ageRating&selectFields=votes&selectFields=movieLength&selectFields=seriesLength&selectFields=totalSeriesLength&selectFields=genres&selectFields=countries&selectFields=poster&selectFields=networks&selectFields=persons&selectFields=top250&type=' \
   -H 'accept: application/json' \
   -H 'X-API-KEY: {your_api_key}'
 
-
 Ответ:
+
 {
   "docs": [
     {
