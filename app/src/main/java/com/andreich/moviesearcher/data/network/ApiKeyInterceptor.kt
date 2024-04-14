@@ -26,7 +26,7 @@ class ApiKeyInterceptor(private val context: Context) : Interceptor {
         Log.d("INTERCEPT", apiKey)
         val originalRequest = chain.request()
         val newRequest = originalRequest.newBuilder()
-            .header("X-API-KEY", readApiKeyFromFile())
+            .header("X-API-KEY", apiKey)
             .build()
 
         return chain.proceed(newRequest)
