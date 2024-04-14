@@ -2,10 +2,6 @@ package com.andreich.moviesearcher.domain.repo
 
 import androidx.paging.PagingData
 import com.andreich.moviesearcher.domain.model.Movie
-import com.andreich.moviesearcher.domain.model.Person
-import com.andreich.moviesearcher.domain.model.Request
-import com.andreich.moviesearcher.domain.model.Review
-import dagger.Binds
 import kotlinx.coroutines.flow.Flow
 
 interface MovieRepository {
@@ -15,9 +11,9 @@ interface MovieRepository {
     suspend fun searchFilm(name: String)
 
     fun searchFilteredFilms(
-//        requestParams: String,
+        requestParams: String?,
         pageSize: Int,
-        requestId: Long,
+        requestId: String,
         name: String?
     ): Flow<PagingData<Movie>>
 

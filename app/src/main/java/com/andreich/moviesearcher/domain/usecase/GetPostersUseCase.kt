@@ -10,7 +10,7 @@ class GetPostersUseCase @Inject constructor(
     private val repository: PosterRepository
 ) {
 
-    fun execute(movieId: Int, pageSize: Int = 10): Flow<PagingData<Poster>> {
-        return repository.getPosters(movieId, pageSize)
+    fun execute(movieId: Int, requestId: String ="", pageSize: Int = 10): Flow<PagingData<Poster>> {
+        return repository.getPosters(movieId, pageSize, requestId)
     }
 }

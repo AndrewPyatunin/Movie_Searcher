@@ -9,7 +9,7 @@ class PosterDtoToPosterEntityMapper @Inject constructor() : MovieMapper<PosterDt
     override fun map(
         fromDto: PosterDto,
         item: Int,
-        requestId: Long
+        requestId: String
     ): PosterEntity {
         return with(fromDto) {
             PosterEntity(

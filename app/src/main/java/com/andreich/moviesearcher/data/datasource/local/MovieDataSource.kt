@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface MovieDataSource {
 
-    fun getMovies(requestId: Long): PagingSource<Int, MovieEntity>
+    fun getMovies(requestId: String): PagingSource<Int, MovieEntity>
 
     fun getMovie(id: Int): Flow<MovieEntity>
 

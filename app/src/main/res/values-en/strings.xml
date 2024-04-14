@@ -3,4 +3,12 @@
     <string name="enter_your_api_key">Enter your api_key</string>
     <string name="enter_your_name">Enter your name:</string>
     <string name="log_in">Log in</string>
+    <string name="about_the_film">About the film</string>
+    <string name="countries">Countries</string>
+    <string name="genres">Genres</string>
+    <string name="slogan">Slogan</string>
+    <string name="description">Description</string>
+    <string name="posters">Posters</string>
+    <string name="reviews">Reviews</string>
+    <string name="actors">Actors</string>
 </resources>

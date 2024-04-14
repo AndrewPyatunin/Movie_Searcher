@@ -1,5 +1,6 @@
 package com.andreich.moviesearcher.data.remotemediator
 
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -19,7 +20,7 @@ import java.io.IOException
 class PosterRemoteMediator(
     private val apiKey: String,
     private val movieId: Int,
-    private val requestId: Long,
+    private val requestId: String,
     private val database: MovieDatabase,
     private val posterRemoteKeyDao: PosterRemoteKeyDao,
     private val posterDataSource: PosterDataSource,
@@ -29,13 +30,6 @@ class PosterRemoteMediator(
     posterRemoteKeyDao,
     PosterEntity::class
 ) {
-
-    override suspend fun load(
-        loadType: LoadType,
-        state: PagingState<Int, PosterEntity>
-    ): MediatorResult {
-        return super.load(loadType, state)
-    }
 
     override suspend fun workWithNetworkAndDatabase(page: Int, loadType: LoadType): MediatorResult {
         try {
@@ -70,6 +64,71 @@ class PosterRemoteMediator(
             return MediatorResult.Error(error)
         } catch (error: HttpException) {
             return MediatorResult.Error(error)
+        }
+    }
+
+    override suspend fun load(
+        loadType: LoadType,
+        state: PagingState<Int, PosterEntity>
+    ): MediatorResult {
+        Log.d("MEDIATOR_POSTER", "load")
+        val pageKeyData = getKeyPageData(loadType, state)
+        val page: Int = when (pageKeyData) {
+            is MediatorResult.Success -> {
+                return pageKeyData
+            }
+            else -> {
+                pageKeyData as Int
+            }
+        }
+        return workWithNetworkAndDatabase(page, loadType)
+    }
+
+    private suspend fun getKeyPageData(loadType: LoadType, state: PagingState<Int, PosterEntity>): Any {
+        return when (loadType) {
+            LoadType.REFRESH -> {
+                val remoteKeys = getRemoteKeyClosestToCurrentPosition(state)
+                Log.d("REMOTE_MEDIATOR_POSTER", "refresh")
+                remoteKeys?.nextKey?.minus(1) ?: 1
+            }
+            LoadType.PREPEND -> {
+                val remoteKeys = getRemoteKeyForFirstItem(state)
+                val prevKey = remoteKeys?.prevKey
+                Log.d("REMOTE_MEDIATOR_POSTER", "prepend")
+                prevKey ?: return MediatorResult.Success(endOfPaginationReached = false)
+            }
+            LoadType.APPEND -> {
+                val remoteKeys = getRemoteKeyForLastItem(state)
+                val nextKey = remoteKeys?.nextKey
+                Log.d("REMOTE_MEDIATOR_POSTER", "append, nextKey=$nextKey")
+                nextKey ?: return MediatorResult.Success(endOfPaginationReached = false)
+            }
+        }
+    }
+
+
+    private suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, PosterEntity>): PosterRemoteKeyEntity? {
+        return state.anchorPosition?.let { position ->
+            state.closestItemToPosition(position)?.id?.let { id ->
+                posterRemoteKeyDao.getRemoteKeyByValueID(id)
+            }
+        }
+    }
+
+    private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, PosterEntity>): PosterRemoteKeyEntity? {
+        return state.pages.firstOrNull {
+            it.data.isNotEmpty()
+        }?.data?.firstOrNull()?.let { movie ->
+            Log.d("MEDIATOR_REMOTE", movie.id.toString())
+            posterRemoteKeyDao.getRemoteKeyByValueID(movie.id)
+        }
+    }
+
+    private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, PosterEntity>): PosterRemoteKeyEntity? {
+        return state.pages.lastOrNull {
+            it.data.isNotEmpty()
+        }?.data?.lastOrNull()?.let { movie ->
+            posterRemoteKeyDao.getRemoteKeyByValueID(movie.id)
         }
     }
 }

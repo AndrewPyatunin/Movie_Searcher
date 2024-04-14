@@ -7,5 +7,5 @@ class GetPersonsUseCase @Inject constructor(
     private val repository: PersonRepository
 ) {
 
-    fun execute(movieId: Int, pageSize: Int) = repository.getPersons(movieId, pageSize)
+    fun execute(movieId: Int, pageSize: Int, requestId: String) = repository.getPersons(movieId, pageSize, requestId)
 }

@@ -20,7 +20,6 @@ class PosterRepositoryImpl @Inject constructor(
     private val apiKey: String,
     private val remoteDataSource: RemoteDataSource,
     private val database: MovieDatabase,
-    private val requestId: Long,
     private val posterDataSource: PosterDataSource,
     private val posterMapper: MovieMapper<PosterDto, PosterEntity>,
     private val posterRemoteKeyDao: PosterRemoteKeyDao,
@@ -28,7 +27,7 @@ class PosterRepositoryImpl @Inject constructor(
 ) : PosterRepository {
 
     @OptIn(ExperimentalPagingApi::class)
-    override fun getPosters(movieId: Int, pageSize: Int): Flow<PagingData<Poster>> {
+    override fun getPosters(movieId: Int, pageSize: Int, requestId: String): Flow<PagingData<Poster>> {
         return Pager(
             config = PagingConfig(
                 pageSize = pageSize,
@@ -45,7 +44,7 @@ class PosterRepositoryImpl @Inject constructor(
                 remoteDataSource,
                 posterMapper
             ),
-            pagingSourceFactory = { posterDataSource.getPosters() }
+            pagingSourceFactory = { posterDataSource.getPosters(movieId) }
         ).flow.map {
             it.map {
                 posterEntityMapper.map(it)

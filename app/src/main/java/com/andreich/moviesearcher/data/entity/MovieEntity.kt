@@ -29,5 +29,5 @@ data class MovieEntity(
     val isSeries: Boolean,
     val seriesLength: Int,
     val page: Int,
-    val requestId: Long
+    val requestId: String
 )

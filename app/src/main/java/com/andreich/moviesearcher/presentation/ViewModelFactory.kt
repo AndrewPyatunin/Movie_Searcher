@@ -1,4 +1,4 @@
-package com.andreich.moviesearcher.ui
+package com.andreich.moviesearcher.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

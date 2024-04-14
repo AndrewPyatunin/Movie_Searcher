@@ -5,7 +5,7 @@ import com.andreich.moviesearcher.data.entity.ReviewEntity
 
 interface ReviewDataSource {
 
-    fun getReviews(): PagingSource<Int, ReviewEntity>
+    fun getReviews(movieId: Int): PagingSource<Int, ReviewEntity>
 
     suspend fun insertReviews(list: List<ReviewEntity>)
 }

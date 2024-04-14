@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface PersonRepository {
 
-    fun getPersons(movieId: Int, pageSize: Int): Flow<PagingData<Person>>
+    fun getPersons(movieId: Int, pageSize: Int, requestId: String): Flow<PagingData<Person>>
 }

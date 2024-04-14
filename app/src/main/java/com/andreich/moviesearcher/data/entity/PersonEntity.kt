@@ -12,5 +12,6 @@ data class PersonEntity(
     val enName: String,
     val profession: String,
     val enProfession: String,
+    val description: String,
     val page: Int
 )
