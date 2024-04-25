@@ -1,4 +1,4 @@
-package com.andreich.moviesearcher.presentation
+package com.andreich.moviesearcher.presentation.movie_list
 
 import androidx.paging.PagingData
 import com.andreich.moviesearcher.domain.model.Movie
@@ -11,7 +11,8 @@ sealed interface MovieListEvent {
 
         class LoadData(val scope: CoroutineScope) : MovieListUiEvent
 
-        class SearchClicked(val name: String, val scope: CoroutineScope, val requestId: String) : MovieListUiEvent
+        class SearchClicked(val name: String, val scope: CoroutineScope, val requestId: String) :
+            MovieListUiEvent
 
         class FilterSearchClicked(val query: String, val scope: CoroutineScope) : MovieListUiEvent
 

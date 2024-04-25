@@ -1,9 +1,10 @@
-package com.andreich.moviesearcher.ui
+package com.andreich.moviesearcher.presentation.movie_list
 
 import androidx.paging.map
 import com.andreich.moviesearcher.R
 import com.andreich.moviesearcher.domain.model.Movie
-import com.andreich.moviesearcher.presentation.MovieListState
+import com.andreich.moviesearcher.ui.MovieItem
+import com.andreich.moviesearcher.ui.MovieListUiState
 import ru.tinkoff.kotea.android.ui.ResourcesProvider
 import ru.tinkoff.kotea.android.ui.UiStateMapper
 

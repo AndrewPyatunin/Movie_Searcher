@@ -8,27 +8,34 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.andreich.moviesearcher.MovieApp
 import com.andreich.moviesearcher.databinding.FragmentMovieDetailBinding
-import com.andreich.moviesearcher.domain.model.Movie
-import com.andreich.moviesearcher.presentation.MovieDetailViewModel
-import com.andreich.moviesearcher.presentation.ViewModelFactory
+import com.andreich.moviesearcher.presentation.movie_detail.MovieDetailEvent
+import com.andreich.moviesearcher.presentation.movie_detail.MovieDetailNews
+import com.andreich.moviesearcher.presentation.movie_detail.MovieDetailStore
+import com.andreich.moviesearcher.presentation.movie_detail.MovieDetailUiStateMapper
+import com.andreich.moviesearcher.ui.MovieDetailItem
 import com.andreich.moviesearcher.ui.adapter.ActorAdapter
 import com.andreich.moviesearcher.ui.adapter.PosterAdapter
 import com.andreich.moviesearcher.ui.adapter.ReviewListAdapter
+import com.andreich.moviesearcher.ui.state.MovieDetailUiState
+import com.andreich.moviesearcher.ui.view.CustomTextViewWithImage
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import ru.tinkoff.kotea.android.lifecycle.collectOnCreate
+import ru.tinkoff.kotea.android.storeViaViewModel
 import javax.inject.Inject
 
 class MovieDetailFragment : Fragment() {
@@ -46,12 +53,15 @@ class MovieDetailFragment : Fragment() {
         }
     }
 
+    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        Log.e("MainActivity", throwable.message, throwable)
+    }
+
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    lateinit var movieDetailStore: MovieDetailStore
 
-    private val viewModel by viewModels<MovieDetailViewModel> { viewModelFactory }
+    private val store by storeViaViewModel(Dispatchers.Default + coroutineExceptionHandler) { movieDetailStore }
 
-    lateinit var movie: Movie
     private val movieId by lazy { arguments?.getInt(KEY_MOVIE) }
     private var _binding: FragmentMovieDetailBinding? = null
     private val binding: FragmentMovieDetailBinding
@@ -59,13 +69,20 @@ class MovieDetailFragment : Fragment() {
 
     lateinit var reviewAdapter: ReviewListAdapter
     lateinit var posterAdapter: PosterAdapter
+    lateinit var actorAdapter: ActorAdapter
 
     private val component by lazy { (activity?.application as MovieApp).component }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component.inject(this)
-        viewModel.getMovie(movieId ?: 0)
+        store.collectOnCreate(
+            fragment = this,
+            uiStateMapper = MovieDetailUiStateMapper(),
+            stateCollector = ::collectState,
+            newsCollector = ::handleNews,
+        )
+        store.dispatch(MovieDetailEvent.MovieDetailUiEvent.LoadMovie(lifecycleScope, movieId ?: 0))
     }
 
     override fun onCreateView(
@@ -82,12 +99,41 @@ class MovieDetailFragment : Fragment() {
         initViews()
     }
 
+    private fun collectState(state: MovieDetailUiState) {
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                reviewAdapter.submitData(state.reviews)
+            }
+        }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                posterAdapter.submitData(state.posters)
+            }
+        }
+        state.movieDetailItem?.let {
+            initScreen(it)
+        }
+    }
+
+    private fun handleNews(news: MovieDetailNews) {
+        when (news) {
+            is MovieDetailNews.ShowError -> {
+                Toast.makeText(requireContext(), news.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     private fun View.changeVisibility() {
         visibility = if (visibility == GONE) {
             VISIBLE
         } else {
             GONE
         }
+    }
+
+    private fun CustomTextViewWithImage.changeImageRes() {
+        get(1).changeVisibility()
+        get(2).changeVisibility()
     }
 
     private fun initViews() {
@@ -100,6 +146,7 @@ class MovieDetailFragment : Fragment() {
 
         reviewAdapter = recyclerViewReviews.adapter as ReviewListAdapter
         posterAdapter = recyclerViewPosters.adapter as PosterAdapter
+        actorAdapter = recyclerViewActors.adapter as ActorAdapter
 
         recyclerViewActors.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
@@ -108,68 +155,45 @@ class MovieDetailFragment : Fragment() {
         recyclerViewPosters.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
 
+
         binding.movieReviewsTag.setOnClickListener {
             recyclerViewReviews.changeVisibility()
+            binding.movieReviewsTag.changeImageRes()
         }
         binding.movieActorsTag.setOnClickListener {
             recyclerViewActors.changeVisibility()
+            binding.movieActorsTag.changeImageRes()
         }
-        observeViewModel()
-        movieId?.let {
-            getReviews(it)
-        }
-        movieId?.let { getPosters(it) }
-    }
-
-    private fun observeViewModel() {
-        viewModel.movieLiveData.observe(viewLifecycleOwner) {
-            movie = it
-            with(binding) {
-                movie.let {
-                    Glide.with(this@MovieDetailFragment).load(it.url)
-                        .into(object : CustomTarget<Drawable>() {
-                            override fun onResourceReady(
-                                resource: Drawable,
-                                transition: Transition<in Drawable>?
-                            ) {
-                                movieDetailImage.setImageDrawable(resource)
-                                progressImage.visibility = GONE
-                            }
-
-                            override fun onLoadCleared(placeholder: Drawable?) {
-                                movieDetailImage.setImageDrawable(placeholder)
-                                progressImage.visibility = GONE
-                            }
-                        })
-                    movieDetailDescription.text = it.description
-                    movieDetailSlogan.text = it.slogan
-                    movieDetailGenres.text = it.genres.joinToString(", ")
-                    movieDetailCountries.text = it.countries.joinToString(", ")
-                    movieDetailTitle.text = it.name + " (${it.year})"
-                }
-                (movieDetailActorsRecycler.adapter as ActorAdapter).submitList(it.actors)
-            }
+        binding.moviePostersTag.setOnClickListener {
+            recyclerViewPosters.changeVisibility()
+            binding.moviePostersTag.changeImageRes()
         }
     }
 
-    private fun getReviews(movieId: Int) {
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                viewModel.getReviews(movieId).collectLatest {
-                    Log.d("MEDIATOR_PAGING", "$it")
-                    reviewAdapter.submitData(it)
-                }
-            }
-        }
-    }
+    private fun initScreen(movie: MovieDetailItem) {
+        with(binding) {
+            movie.let {
+                Glide.with(this@MovieDetailFragment).load(it.url)
+                    .into(object : CustomTarget<Drawable>() {
+                        override fun onResourceReady(
+                            resource: Drawable,
+                            transition: Transition<in Drawable>?
+                        ) {
+                            movieDetailImage.setImageDrawable(resource)
+                            progressImage.visibility = GONE
+                        }
 
-    private fun getPosters(movieId: Int) {
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                viewModel.getPosters(movieId).collectLatest {
-                    Log.d("MEDIATOR_PAGING_POSTER", "$it")
-                    posterAdapter.submitData(it)
-                }
+                        override fun onLoadCleared(placeholder: Drawable?) {
+                            movieDetailImage.setImageDrawable(placeholder)
+                            progressImage.visibility = GONE
+                        }
+                    })
+                movieDetailDescription.text = it.description
+                movieDetailSlogan.text = it.slogan
+                movieDetailGenres.text = it.genres
+                movieDetailCountries.text = it.countries
+                movieDetailTitle.text = it.title
+                actorAdapter.submitList(it.actors)
             }
         }
     }

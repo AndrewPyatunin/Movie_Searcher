@@ -28,7 +28,6 @@ class MovieRemoteMediator(
         try {
             val apiResponse = name?.let {
                 remoteDataSource.searchFilm(apiKey, page, movieName = name)
-//                networkService.searchFilm(apiKey, page, movieName = name)
             } ?: remoteDataSource.searchWithFilters(page = page, apiKey = apiKey)
             val movies = apiResponse.docs
             movies.map {

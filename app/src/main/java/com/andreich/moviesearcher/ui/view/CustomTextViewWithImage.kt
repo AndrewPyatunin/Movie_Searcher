@@ -5,15 +5,16 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.andreich.moviesearcher.R
 import com.andreich.moviesearcher.databinding.ExpandableTextViewWithImageBinding
 
 class CustomTextViewWithImage @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0,
+    defStyleAttr: Int = R.attr.iconExpandableStyle,
     defStyleRes: Int = 0
-) : LinearLayout(context, attrs, defStyleAttr, defStyleRes) {
+) : ConstraintLayout(context, attrs, defStyleAttr, defStyleRes) {
 
     private val binding: ExpandableTextViewWithImageBinding
 
@@ -45,6 +46,10 @@ class CustomTextViewWithImage @JvmOverloads constructor(
             val expandSvg = typedArray.getDrawable(R.styleable.CustomTextViewWithImage_expand_svg)
             expandSvg?.let {
                 expand.setImageDrawable(it)
+            }
+            val shortenSvg = typedArray.getDrawable(R.styleable.CustomTextViewWithImage_shorten_svg)
+            shortenSvg?.let {
+                shorten.setImageDrawable(it)
             }
         }
         typedArray.recycle()
