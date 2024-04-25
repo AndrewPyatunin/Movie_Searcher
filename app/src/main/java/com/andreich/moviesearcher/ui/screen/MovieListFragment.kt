@@ -8,26 +8,24 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.PagingData
-import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.andreich.moviesearcher.MovieApp
 import com.andreich.moviesearcher.R
 import com.andreich.moviesearcher.databinding.FragmentMovieListBinding
-import com.andreich.moviesearcher.presentation.*
+import com.andreich.moviesearcher.presentation.movie_list.MovieListEvent
+import com.andreich.moviesearcher.presentation.movie_list.MovieListNews
+import com.andreich.moviesearcher.presentation.movie_list.MovieListStore
+import com.andreich.moviesearcher.presentation.movie_list.MovieListUiStateMapper
 import com.andreich.moviesearcher.ui.Debounce
 import com.andreich.moviesearcher.ui.MovieItem
 import com.andreich.moviesearcher.ui.MovieListUiState
-import com.andreich.moviesearcher.ui.MovieListUiStateMapper
 import com.andreich.moviesearcher.ui.adapter.MovieListAdapter
-import com.andreich.moviesearcher.ui.view.MovieToMovieItemMapper
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.tinkoff.kotea.android.lifecycle.collectOnCreate
 import ru.tinkoff.kotea.android.storeViaViewModel
@@ -47,11 +45,6 @@ class MovieListFragment : Fragment() {
     }
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    private val viewModel by viewModels<MovieListViewModel> { viewModelFactory }
-
-    @Inject
     lateinit var movieListStore: MovieListStore
 
     private val store by storeViaViewModel(Dispatchers.Default + coroutineExceptionHandler) {
@@ -67,8 +60,13 @@ class MovieListFragment : Fragment() {
 
     private val debounce by lazy {
         Debounce(1000, lifecycleScope) {
-//            searchFilm(it)
-            store.dispatch(MovieListEvent.MovieListUiEvent.SearchClicked(it, lifecycleScope, "?query=$it"))
+            store.dispatch(
+                MovieListEvent.MovieListUiEvent.SearchClicked(
+                    it,
+                    lifecycleScope,
+                    "?query=$it"
+                )
+            )
         }
     }
 
@@ -106,11 +104,13 @@ class MovieListFragment : Fragment() {
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String): Boolean {
                     Log.d("FRAGMENT", query)
-                    store.dispatch(MovieListEvent.MovieListUiEvent.SearchClicked(
-                        query,
-                        lifecycleScope,
-                        "?query=$query"
-                    ))
+                    store.dispatch(
+                        MovieListEvent.MovieListUiEvent.SearchClicked(
+                            query,
+                            lifecycleScope,
+                            "?query=$query"
+                        )
+                    )
                     return true
                 }
 
@@ -121,6 +121,8 @@ class MovieListFragment : Fragment() {
                         debounce.offer(newText)
                         Log.d("Fragment_list", "clear")
 //                        clearData()
+                    } else if (newText == "") {
+                        store.dispatch(MovieListEvent.MovieListUiEvent.LoadData(lifecycleScope))
                     }
                     return true
                 }
@@ -134,34 +136,19 @@ class MovieListFragment : Fragment() {
         }
     }
 
-    private fun getData() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                viewModel.getData("").collectLatest {
-                    it.map {
-                        MovieToMovieItemMapper.mapMovieToMovieItem(it, requireContext())
-                    }
-                        .let {
-                            adapter.submitData(it)
-                        }
-                }
-            }
-        }
-    }
-
     private fun collectState(state: MovieListUiState) {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 Log.d("FRAGMENT", state.movies.toString())
                 adapter.submitData(state.movies)
             }
-            }
-            binding.progressLoadMovies.visibility =
-                if (state.progressVisibility) View.VISIBLE else View.GONE
-            binding.recyclerMovies.visibility =
-                if (state.listVisibility) View.VISIBLE else View.INVISIBLE
-
         }
+        binding.progressLoadMovies.visibility =
+            if (state.progressVisibility) View.VISIBLE else View.GONE
+        binding.recyclerMovies.visibility =
+            if (state.listVisibility) View.VISIBLE else View.INVISIBLE
+
+    }
 
     private fun handleNews(news: MovieListNews) {
         when (news) {
@@ -171,24 +158,6 @@ class MovieListFragment : Fragment() {
             is MovieListNews.ShowErrorToast -> {
                 Toast.makeText(requireContext(), news.message, Toast.LENGTH_SHORT).show()
             }
-        }
-    }
-
-    //
-    private fun searchFilm(name: String) {
-//        if (name.isEmpty())
-//            getData()
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                viewModel.searchFilm(name, "?query=$name").collectLatest {
-                    it.map {
-                        MovieToMovieItemMapper.mapMovieToMovieItem(it, requireContext())
-                    }.let {
-                        adapter.submitData(it)
-                    }
-                }
-            }
-
         }
     }
 

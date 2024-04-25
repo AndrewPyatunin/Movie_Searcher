@@ -1,6 +1,8 @@
 package com.andreich.moviesearcher.presentation
 
 import android.util.Log
+import com.andreich.moviesearcher.presentation.movie_list.MovieListEvent
+import com.andreich.moviesearcher.presentation.movie_list.MovieListState
 import javax.inject.Inject
 
 class AnalyticsTracker @Inject constructor() {

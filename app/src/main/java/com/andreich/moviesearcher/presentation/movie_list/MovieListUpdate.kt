@@ -1,9 +1,10 @@
-package com.andreich.moviesearcher.presentation
+package com.andreich.moviesearcher.presentation.movie_list
 
 import android.util.Log
 import androidx.paging.PagingData
+import com.andreich.moviesearcher.presentation.AnalyticsTracker
 import ru.tinkoff.kotea.core.dsl.DslUpdate
-import com.andreich.moviesearcher.presentation.MovieListEvent.*
+import com.andreich.moviesearcher.presentation.movie_list.MovieListEvent.*
 import com.andreich.moviesearcher.ui.screen.MovieDetailFragment
 import javax.inject.Inject
 

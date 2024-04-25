@@ -1,7 +1,6 @@
-package com.andreich.moviesearcher.presentation
+package com.andreich.moviesearcher.presentation.movie_list
 
 import ru.tinkoff.kotea.core.CommandsFlowHandler
-import ru.tinkoff.kotea.core.KoteaStore
 import ru.tinkoff.kotea.core.Store
 import ru.tinkoff.kotea.logging.KoteaLoggingStore
 import javax.inject.Inject

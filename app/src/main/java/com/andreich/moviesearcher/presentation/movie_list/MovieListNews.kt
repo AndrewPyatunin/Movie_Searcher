@@ -1,4 +1,4 @@
-package com.andreich.moviesearcher.presentation
+package com.andreich.moviesearcher.presentation.movie_list
 
 import androidx.fragment.app.Fragment
 

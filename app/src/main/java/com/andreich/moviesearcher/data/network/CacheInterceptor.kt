@@ -13,8 +13,6 @@ import java.util.concurrent.TimeUnit
 class CacheInterceptor(val context: Context) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
-//        Log.d("INTERCEPTOR", apiKey)
-        Log.d("INTERCEPTOR", "intercept")
         val response: Response = chain.proceed(chain.request())
         val cacheControl = CacheControl.Builder()
             .maxAge(7, TimeUnit.DAYS)
