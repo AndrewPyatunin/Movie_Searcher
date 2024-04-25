@@ -13,7 +13,6 @@ import com.andreich.moviesearcher.domain.usecase.GetPostersUseCase
 import com.andreich.moviesearcher.domain.usecase.GetReviewsUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,10 +34,10 @@ class MovieDetailViewModel @Inject constructor(
     }
 
     fun getReviews(movieId: Int): Flow<PagingData<Review>> {
-        return getReviewsUseCase.execute(movieId)
+        return getReviewsUseCase.execute(movieId, scope = viewModelScope)
     }
 
     fun getPosters(movieId: Int): Flow<PagingData<Poster>> {
-        return getPostersUseCase.execute(movieId)
+        return getPostersUseCase.execute(movieId, scope = viewModelScope)
     }
 }

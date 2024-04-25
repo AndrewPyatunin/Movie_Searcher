@@ -1,7 +1,6 @@
 package com.andreich.moviesearcher.di
 
 import android.content.Context
-import com.andreich.moviesearcher.presentation.MovieListStore
 import com.andreich.moviesearcher.ui.screen.LoginFragment
 import com.andreich.moviesearcher.ui.screen.MainActivity
 import com.andreich.moviesearcher.ui.screen.MovieDetailFragment

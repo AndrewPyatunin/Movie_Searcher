@@ -4,7 +4,11 @@
 
         <attr name="category_text" format="string"/>
         <attr name="expand_svg" format="reference"/>
+        <attr name="shorten_svg" format="reference"/>
+        <attr name="iconColor" format="color"/>
 
     </declare-styleable>
+    
+    <attr name="iconExpandableStyle" format="reference" />
 
 </resources>

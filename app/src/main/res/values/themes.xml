@@ -13,10 +13,20 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
         <item name="android:textColor">?attr/colorOnSecondary</item>
+
+        <item name="iconExpandableStyle">@style/IconStyleDown</item>
     </style>
-    
-    <style name="textSecond" parent="TextAppearance.AppCompat">
+
+    <style name="TextTag" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/gray</item>
         <item name="marginHorizontal">4dp</item>
+    </style>
+
+    <style name="IconStyleDown">
+        <item name="android:src">@drawable/arrow_down</item>
+    </style>
+
+    <style name="IconStyleUp">
+        <item name="android:src">@drawable/arrow_up</item>
     </style>
 </resources>

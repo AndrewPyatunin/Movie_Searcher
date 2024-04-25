@@ -1,4 +1,4 @@
-package com.andreich.moviesearcher.presentation
+package com.andreich.moviesearcher.presentation.movie_list
 
 import android.util.Log
 import com.andreich.moviesearcher.domain.usecase.SearchFilteredFilmsUseCase
