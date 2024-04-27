@@ -11,4 +11,55 @@
     <string name="posters">Posters</string>
     <string name="reviews">Reviews</string>
     <string name="actors">Actors</string>
+    <string name="choose_filters">Выберите фильтры</string>
+    <string name="content_type">Тип контента</string>
+    <string name="years">Годы выхода</string>
+    <string name="rating">Рейтинг</string>
+    <string name="input_value">Введите значение:</string>
+    <string name="network">Сеть производства</string>
+    <string name="from">С</string>
+    <string name="until">До</string>
+    <string name="apply">Применить</string>
+    <string-array name="countries">
+        <item>Выберите страну</item>
+        <item>США</item>
+        <item>Россия</item>
+        <item>Испания</item>
+        <item>Франция</item>
+        <item>Германия</item>
+        <item>Великобритания</item>
+        <item>Индия</item>
+        <item>Турция</item>
+        <item>Южная Корея</item>
+        <item>Китай</item>
+        <item>Япония</item>
+        <item>Нидерланды</item>
+        <item>Казахстан</item>
+    </string-array>
+    <string-array name="network">
+        <item>Выберите сеть</item>
+        <item>Netflix</item>
+        <item>HBO</item>
+        <item>Amazon</item>
+        <item>YouTube Premium</item>
+    </string-array>
+    <string-array name="genres">
+        <item>Выберите жанр</item>
+        <item>Драма</item>
+        <item>Фантастика</item>
+        <item>Приключения</item>
+        <item>Фэнтези</item>
+        <item>Комедия</item>
+        <item>Триллер</item>
+        <item>Ужасы</item>
+        <item>Мелодрама</item>
+    </string-array>
+    <string-array name="content_types">
+        <item>Выберите тип</item>
+        <item>Фильм</item>
+        <item>Сериал</item>
+        <item>Аниме</item>
+        <item>Мультфильм</item>
+        <item>Анимационный сериал</item>
+    </string-array>
 </resources>

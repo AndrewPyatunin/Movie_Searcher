@@ -10,9 +10,24 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MovieDao {
-    /*WHERE requestId = :requestId*/
-    @Query("SELECT * FROM movie WHERE requestId = :requestId ORDER BY page")
+
+    @Query("SELECT * FROM movie WHERE name LIKE '%' || :requestId || '%' ORDER BY page")
     fun getMovies(requestId: String): PagingSource<Int, MovieEntity>
+
+     @Query(
+        "SELECT * FROM movie WHERE requestId = :requestId AND (:genreFilter = '' OR genres LIKE '%' || :genreFilter || '%') " +
+                "AND (:countryFilter = '' OR countries LIKE '%' || :countryFilter || '%') " +
+                "AND (type = :movieTypeFilter OR :movieTypeFilter = '') " +
+                "AND (network = :networkFilter OR :networkFilter = '')" +
+                " ORDER BY page"
+    )
+    fun loadMovies(
+        requestId: String,
+        genreFilter: String,
+        countryFilter: String,
+        movieTypeFilter: String,
+        networkFilter: String
+    ): PagingSource<Int, MovieEntity>
 
     @Query("SELECT * FROM movie WHERE id = :id")
     fun getMovie(id: Int): Flow<MovieEntity>

@@ -9,5 +9,5 @@ sealed interface MovieListCommand {
     class SearchFilm(val name: String, val scope: CoroutineScope, val requestId: String) :
         MovieListCommand
 
-    class SearchFiltered(val filters: String, val scope: CoroutineScope) : MovieListCommand
+    class SearchFiltered(val filters: Map<String, String>, val scope: CoroutineScope) : MovieListCommand
 }

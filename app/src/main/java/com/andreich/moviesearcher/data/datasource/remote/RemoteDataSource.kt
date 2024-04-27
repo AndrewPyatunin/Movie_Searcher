@@ -8,7 +8,7 @@ interface RemoteDataSource {
         apiKey: String,
         page: Int = 1,
         limit: Int = 10,
-        vararg filters: String
+        filters: Map<String, String> = emptyMap()
     ): RequestResultDto<MovieDto>
 
     suspend fun getActors(

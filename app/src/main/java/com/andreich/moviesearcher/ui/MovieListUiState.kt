@@ -4,7 +4,8 @@ import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
 
 data class MovieListUiState(
-    val movies: PagingData<MovieItem>,
+    val movies: PagingData<MovieItem>?,
     val progressVisibility: Boolean,
-    val listVisibility: Boolean
+    val listVisibility: Boolean,
+    val query: String = "",
 )
