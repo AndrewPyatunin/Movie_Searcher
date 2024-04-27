@@ -14,7 +14,8 @@ interface MovieRepository {
         requestParams: String?,
         pageSize: Int,
         requestId: String,
-        name: String?
+        name: String?,
+        filters: Map<String, String>
     ): Flow<PagingData<Movie>>
 
 }

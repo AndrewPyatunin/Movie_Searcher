@@ -21,7 +21,8 @@ class StoreModule {
             update = MovieListUpdate(AnalyticsTracker()),
             commandsHandlers = listOf(
                 MovieListCommandsFlowHandler(searchUseCase),
-                MovieListSearchFilmCommandHandler(searchUseCase)
+                MovieListSearchFilmCommandHandler(searchUseCase),
+                MovieListFilteredSearchCommandHandler(searchUseCase)
             )
         )
     }

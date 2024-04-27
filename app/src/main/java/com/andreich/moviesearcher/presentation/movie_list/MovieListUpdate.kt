@@ -5,6 +5,7 @@ import androidx.paging.PagingData
 import com.andreich.moviesearcher.presentation.AnalyticsTracker
 import ru.tinkoff.kotea.core.dsl.DslUpdate
 import com.andreich.moviesearcher.presentation.movie_list.MovieListEvent.*
+import com.andreich.moviesearcher.ui.screen.FilterFragment
 import com.andreich.moviesearcher.ui.screen.MovieDetailFragment
 import javax.inject.Inject
 
@@ -33,13 +34,16 @@ class MovieListUpdate @Inject constructor(
             is MovieListUiEvent.LoadData -> {
                 handleUiEvent(event)
             }
+            is MovieListUiEvent.FilterMoviesClicked -> {
+                handleUiEvent(event)
+            }
         }
     }
 
     private fun NextBuilder.handleResult(event: MovieListCommandsResultEvent) {
         when(event) {
             is MovieListCommandsResultEvent.DataIsReady -> {
-                state { copy(isLoading = false, movies = event.movies ?: PagingData.empty()) }
+                state { copy(isLoading = false, movies = event.movies) }
                 Log.d("HANDLE_RESULT", "${state.isLoading}")
             }
             is MovieListCommandsResultEvent.LoadError -> {
@@ -67,6 +71,9 @@ class MovieListUpdate @Inject constructor(
                 Log.d("COMMAND_UI", "loadDataUpdate")
                 commands(MovieListCommand.LoadData(event.scope))
                 state { copy(isLoading = true) }
+            }
+            MovieListUiEvent.FilterMoviesClicked -> {
+                news(MovieListNews.NavigateTo(FilterFragment.newInstance()))
             }
         }
     }

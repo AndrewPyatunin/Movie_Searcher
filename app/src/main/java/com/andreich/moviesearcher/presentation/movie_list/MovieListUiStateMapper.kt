@@ -11,7 +11,7 @@ import ru.tinkoff.kotea.android.ui.UiStateMapper
 class MovieListUiStateMapper : UiStateMapper<MovieListState, MovieListUiState> {
 
     override fun ResourcesProvider.map(state: MovieListState): MovieListUiState {
-        val movies = state.movies.map {
+        val movies = state.movies?.map {
             val color: Int = when {
                 it.rating >= 7.0 -> {
                     getColor(R.color.green)

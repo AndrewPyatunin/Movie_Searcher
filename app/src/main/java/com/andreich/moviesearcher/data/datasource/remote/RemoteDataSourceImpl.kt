@@ -12,9 +12,9 @@ class RemoteDataSourceImpl @Inject constructor(
         apiKey: String,
         page: Int,
         limit: Int,
-        vararg filters: String
+        filters: Map<String, String>
     ): RequestResultDto<MovieDto> {
-        return apiService.searchWithFilters(page, limit, *filters)
+        return apiService.searchWithFilters(page, limit, filters)
     }
 
     override suspend fun getActors(

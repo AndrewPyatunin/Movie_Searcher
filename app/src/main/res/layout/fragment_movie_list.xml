@@ -26,7 +26,7 @@
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/search_view"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 app:iconifiedByDefault="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/search_filter_image"
@@ -64,10 +64,9 @@
         android:id="@+id/progress_load_movies"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_card_view" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

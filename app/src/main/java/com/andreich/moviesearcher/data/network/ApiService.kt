@@ -13,11 +13,11 @@ interface ApiService {
                 "&selectFields=totalSeriesLength&selectFields=genres&selectFields=countries" +
                 "&selectFields=poster&selectFields=logo&selectFields=networks&selectFields=persons" +
                 "&selectFields=sequelsAndPrequels&selectFields=top250"
-    )/*&genres.name=%2B%D1%82%D1%80%D0%B8%D0%BB%D0%BB%D0%B5%D1%80&genres.name=%2B%D0%B4%D1%80%D0%B0%D0%BC%D0%B0*/
+    )
     suspend fun searchWithFilters(
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 10,
-        @Query(QUERY_PARAM_SORT_TYPE) vararg filters: String,
+        @QueryMap filters: Map<String, String>,
     ): RequestResultDto<MovieDto>
 
     @GET("person?selectFields=id&selectFields=name&selectFields=enName" +

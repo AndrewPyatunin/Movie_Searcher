@@ -15,6 +15,10 @@ import com.andreich.moviesearcher.domain.model.Movie
 import com.andreich.moviesearcher.domain.pojo.MovieDto
 import com.andreich.moviesearcher.domain.pojo.PersonDto
 import com.andreich.moviesearcher.domain.repo.MovieRepository
+import com.andreich.moviesearcher.ui.screen.FilterFragment.Companion.QUERY_COUNTRY
+import com.andreich.moviesearcher.ui.screen.FilterFragment.Companion.QUERY_GENRE
+import com.andreich.moviesearcher.ui.screen.FilterFragment.Companion.QUERY_MOVIE_TYPE
+import com.andreich.moviesearcher.ui.screen.FilterFragment.Companion.QUERY_NETWORKS
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -41,16 +45,25 @@ class MovieRepositoryImpl @Inject constructor(
         requestParams: String?,
         pageSize: Int,
         requestId: String,
-        name: String?
+        name: String?,
+        filters: Map<String, String>
     ): Flow<PagingData<Movie>> {
         Log.d("SEARCH_IN_REPO", "$pageSize")
         return Pager(
             config = PagingConfig(
                 pageSize = pageSize,
                 prefetchDistance = 10,
-                initialLoadSize = pageSize
+                initialLoadSize = pageSize,
             ),
-            pagingSourceFactory = { movieDataSource.getMovies(requestId) },
+            pagingSourceFactory = {
+                movieDataSource.getMovies(
+                    requestId,
+                    filters[QUERY_GENRE] ?: "",
+                    filters[QUERY_COUNTRY] ?: "",
+                    filters[QUERY_MOVIE_TYPE] ?: "",
+                    filters[QUERY_NETWORKS] ?: ""
+                )
+            },
             remoteMediator = MovieRemoteMediator(
                 database,
                 remoteDataSource,
@@ -59,7 +72,8 @@ class MovieRepositoryImpl @Inject constructor(
                 personMapper = personMapper,
                 remoteKeyDao = remoteKeyDao,
                 name = name,
-                requestId = requestId
+                requestId = requestId,
+                filters = filters
             )
         ).flow.map {
             it.map {

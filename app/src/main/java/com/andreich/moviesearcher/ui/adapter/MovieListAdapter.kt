@@ -16,7 +16,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 
-class DiffCallback : DiffUtil.ItemCallback<MovieItem>() {
+object DiffCallback : DiffUtil.ItemCallback<MovieItem>() {
 
     override fun areItemsTheSame(oldItem: MovieItem, newItem: MovieItem): Boolean {
         return oldItem.id == newItem.id
@@ -25,11 +25,10 @@ class DiffCallback : DiffUtil.ItemCallback<MovieItem>() {
     override fun areContentsTheSame(oldItem: MovieItem, newItem: MovieItem): Boolean {
         return oldItem == newItem
     }
-
 }
 
 class MovieListAdapter() :
-    PagingDataAdapter<MovieItem, MovieListAdapter.MovieViewHolder>(DiffCallback()) {
+    PagingDataAdapter<MovieItem, MovieListAdapter.MovieViewHolder>(DiffCallback) {
 
     var onMovieClick: OnMovieClickListener? = null
 

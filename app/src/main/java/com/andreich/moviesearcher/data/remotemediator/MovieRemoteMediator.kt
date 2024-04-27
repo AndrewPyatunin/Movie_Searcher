@@ -21,6 +21,7 @@ class MovieRemoteMediator(
     private val personMapper: MovieMapper<PersonDto, PersonEntity>,
     private val name: String? = null,
     private val requestId: String,
+    private val filters: Map<String, String> = emptyMap()
 ) : BaseRemoteMediator<MovieEntity, MovieRemoteKeyDao>(remoteKeyDao, MovieEntity::class, ) {
     val movieDao = database.movieDao()
 
@@ -28,7 +29,7 @@ class MovieRemoteMediator(
         try {
             val apiResponse = name?.let {
                 remoteDataSource.searchFilm(apiKey, page, movieName = name)
-            } ?: remoteDataSource.searchWithFilters(page = page, apiKey = apiKey)
+            } ?: remoteDataSource.searchWithFilters(page = page, apiKey = apiKey, filters = filters)
             val movies = apiResponse.docs
             movies.map {
                 it.persons.map { person ->
@@ -44,7 +45,7 @@ class MovieRemoteMediator(
                     database.historyDao().insertElement(it)
                 }
             }
-            val endOfPaginationReached = apiResponse.page == apiResponse.total
+            val endOfPaginationReached = /*apiResponse.page == apiResponse.total || */apiResponse.docs.isEmpty()
 //
             database.withTransaction {
                 movies.map {
@@ -68,7 +69,7 @@ class MovieRemoteMediator(
                 }
                 val prevKey = if (page == 1) null else page - 1
                 val nextKey = if (endOfPaginationReached) null else page + 1
-                Log.d("REMOTE_MEDIATOR", "next_key_first=$nextKey")
+                Log.d("REMOTE_MEDIATOR_PAGE", "next_key_first=$page")
                 val remoteKeys = movies.map {
                     MovieRemoteKeyEntity(id = it.id ?: 0, valueId = it.id ?: 0, prevKey = prevKey, currentPage = page, nextKey = nextKey)
                 }

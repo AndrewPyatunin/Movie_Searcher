@@ -35,10 +35,18 @@ class MovieListFragment : Fragment() {
 
     companion object {
 
-        fun getInstance(): MovieListFragment {
-            return MovieListFragment()
+        private const val QUERY_FILTER = "query_filter"
+
+        fun getInstance(query: java.io.Serializable): MovieListFragment {
+            return MovieListFragment().apply {
+                arguments = Bundle().apply {
+                    putSerializable(QUERY_FILTER, query)
+                }
+            }
         }
     }
+
+    private val queryFilter by lazy { arguments?.getSerializable(QUERY_FILTER) }
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Log.e("MainActivity", throwable.message, throwable)
@@ -60,11 +68,12 @@ class MovieListFragment : Fragment() {
 
     private val debounce by lazy {
         Debounce(1000, lifecycleScope) {
+            clearData()
             store.dispatch(
                 MovieListEvent.MovieListUiEvent.SearchClicked(
                     it,
                     lifecycleScope,
-                    "?query=$it"
+                    it
                 )
             )
         }
@@ -81,7 +90,7 @@ class MovieListFragment : Fragment() {
             stateCollector = ::collectState,
             newsCollector = ::handleNews,
         )
-        store.dispatch(MovieListEvent.MovieListUiEvent.LoadData(lifecycleScope))
+
     }
 
     override fun onCreateView(
@@ -99,16 +108,28 @@ class MovieListFragment : Fragment() {
             recyclerMovies.layoutManager = LinearLayoutManager(requireContext())
             recyclerMovies.adapter = MovieListAdapter()
             adapter = recyclerMovies.adapter as MovieListAdapter
-            store.dispatch(MovieListEvent.MovieListUiEvent.LoadData(lifecycleScope))
+            if (queryFilter != null && (queryFilter as Map<String, String>).isNotEmpty()) {
+                clearData()
+                store.dispatch(
+                    MovieListEvent.MovieListUiEvent.FilterSearchClicked(
+                        queryFilter as Map<String, String>,
+                        lifecycleScope
+                    )
+                )
+            } else {
+                store.dispatch(MovieListEvent.MovieListUiEvent.LoadData(lifecycleScope))
+            }
+            clickFilter()
             var previousText = ""
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String): Boolean {
                     Log.d("FRAGMENT", query)
+                    clearData()
                     store.dispatch(
                         MovieListEvent.MovieListUiEvent.SearchClicked(
                             query,
                             lifecycleScope,
-                            "?query=$query"
+                            query
                         )
                     )
                     return true
@@ -120,7 +141,6 @@ class MovieListFragment : Fragment() {
                         previousText = newText
                         debounce.offer(newText)
                         Log.d("Fragment_list", "clear")
-//                        clearData()
                     } else if (newText == "") {
                         store.dispatch(MovieListEvent.MovieListUiEvent.LoadData(lifecycleScope))
                     }
@@ -136,17 +156,23 @@ class MovieListFragment : Fragment() {
         }
     }
 
+    private fun clickFilter() {
+        binding.searchFilterImage.setOnClickListener {
+            store.dispatch(MovieListEvent.MovieListUiEvent.FilterMoviesClicked)
+        }
+    }
+
     private fun collectState(state: MovieListUiState) {
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 Log.d("FRAGMENT", state.movies.toString())
-                adapter.submitData(state.movies)
-            }
+//                binding.recyclerMovies.visibility =
+//                    if (state.listVisibility) View.VISIBLE else View.INVISIBLE
+                state.movies?.let {
+                    adapter.submitData(it)
+                }
         }
         binding.progressLoadMovies.visibility =
             if (state.progressVisibility) View.VISIBLE else View.GONE
-        binding.recyclerMovies.visibility =
-            if (state.listVisibility) View.VISIBLE else View.INVISIBLE
 
     }
 
@@ -161,10 +187,11 @@ class MovieListFragment : Fragment() {
         }
     }
 
-
     private fun clearData() {
+        lifecycleScope.launch {
+            adapter.submitData(PagingData.empty())
+        }
 
-        adapter.submitData(viewLifecycleOwner.lifecycle, PagingData.empty())
     }
 
     private fun navigateTo(fragment: Fragment) {
