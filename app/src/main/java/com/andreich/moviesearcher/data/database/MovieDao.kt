@@ -17,16 +17,21 @@ interface MovieDao {
      @Query(
         "SELECT * FROM movie WHERE requestId = :requestId AND (:genreFilter = '' OR genres LIKE '%' || :genreFilter || '%') " +
                 "AND (:countryFilter = '' OR countries LIKE '%' || :countryFilter || '%') " +
+                "AND (:networkFilter = '' OR network LIKE '%' || :networkFilter || '%') " +
                 "AND (type = :movieTypeFilter OR :movieTypeFilter = '') " +
-                "AND (network = :networkFilter OR :networkFilter = '')" +
-                " ORDER BY page"
+                "AND (rating > :ratingFilter OR :ratingFilter IS NULL) " +
+                "AND (year BETWEEN COALESCE(:yearStartFilter, year) AND COALESCE(:yearEndFilter, year) OR :yearStartFilter IS NULL OR :yearEndFilter IS NULL) " +
+                "ORDER BY page"
     )
     fun loadMovies(
         requestId: String,
         genreFilter: String,
         countryFilter: String,
         movieTypeFilter: String,
-        networkFilter: String
+        networkFilter: String,
+        ratingFilter: Double?,
+        yearStartFilter: Int?,
+        yearEndFilter: Int?
     ): PagingSource<Int, MovieEntity>
 
     @Query("SELECT * FROM movie WHERE id = :id")

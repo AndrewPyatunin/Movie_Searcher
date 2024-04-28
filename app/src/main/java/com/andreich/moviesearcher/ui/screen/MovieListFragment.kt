@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.andreich.moviesearcher.MovieApp
@@ -37,7 +38,7 @@ class MovieListFragment : Fragment() {
 
         private const val QUERY_FILTER = "query_filter"
 
-        fun getInstance(query: java.io.Serializable): MovieListFragment {
+        fun getInstance(query: java.io.Serializable?): MovieListFragment {
             return MovieListFragment().apply {
                 arguments = Bundle().apply {
                     putSerializable(QUERY_FILTER, query)
@@ -108,11 +109,12 @@ class MovieListFragment : Fragment() {
             recyclerMovies.layoutManager = LinearLayoutManager(requireContext())
             recyclerMovies.adapter = MovieListAdapter()
             adapter = recyclerMovies.adapter as MovieListAdapter
-            if (queryFilter != null && (queryFilter as Map<String, String>).isNotEmpty()) {
+            listenAdapter()
+            if (queryFilter != null && (queryFilter as Map<String, List<String>>).isNotEmpty()) {
                 clearData()
                 store.dispatch(
                     MovieListEvent.MovieListUiEvent.FilterSearchClicked(
-                        queryFilter as Map<String, String>,
+                        queryFilter as Map<String, List<String>>,
                         lifecycleScope
                     )
                 )
@@ -164,12 +166,14 @@ class MovieListFragment : Fragment() {
 
     private fun collectState(state: MovieListUiState) {
         viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 Log.d("FRAGMENT", state.movies.toString())
 //                binding.recyclerMovies.visibility =
 //                    if (state.listVisibility) View.VISIBLE else View.INVISIBLE
                 state.movies?.let {
                     adapter.submitData(it)
                 }
+            }
         }
         binding.progressLoadMovies.visibility =
             if (state.progressVisibility) View.VISIBLE else View.GONE
@@ -191,7 +195,16 @@ class MovieListFragment : Fragment() {
         lifecycleScope.launch {
             adapter.submitData(PagingData.empty())
         }
+    }
 
+    private fun listenAdapter() {
+        adapter.addLoadStateListener {
+            if (it.refresh is LoadState.Loading || it.append is LoadState.Loading) {
+                store.dispatch(MovieListEvent.MovieListUiEvent.PaginationLoad)
+            } else {
+                store.dispatch(MovieListEvent.MovieListUiEvent.PaginationStopLoad)
+            }
+        }
     }
 
     private fun navigateTo(fragment: Fragment) {

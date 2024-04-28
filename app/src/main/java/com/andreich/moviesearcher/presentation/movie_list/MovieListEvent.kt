@@ -16,7 +16,11 @@ sealed interface MovieListEvent {
 
         object FilterMoviesClicked : MovieListUiEvent
 
-        class FilterSearchClicked(val query: Map<String, String>, val scope: CoroutineScope) : MovieListUiEvent
+        object PaginationLoad : MovieListUiEvent
+
+        object PaginationStopLoad : MovieListUiEvent
+
+        class FilterSearchClicked(val query: Map<String, List<String>>, val scope: CoroutineScope) : MovieListUiEvent
 
         class MovieItemClicked(val movie: MovieItem) : MovieListUiEvent
     }

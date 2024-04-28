@@ -30,6 +30,12 @@ class AnalyticsTracker @Inject constructor() {
             MovieListEvent.MovieListUiEvent.FilterMoviesClicked -> {
 
             }
+            MovieListEvent.MovieListUiEvent.PaginationLoad -> {
+
+            }
+            MovieListEvent.MovieListUiEvent.PaginationStopLoad -> {
+
+            }
         }
     }
 
@@ -48,6 +54,12 @@ class AnalyticsTracker @Inject constructor() {
                 Log.d("MovieAnalytics", "Load data ${state.movies}")
             }
             MovieListEvent.MovieListUiEvent.FilterMoviesClicked -> {
+
+            }
+            MovieListEvent.MovieListUiEvent.PaginationLoad -> {
+
+            }
+            MovieListEvent.MovieListUiEvent.PaginationStopLoad -> {
 
             }
         }

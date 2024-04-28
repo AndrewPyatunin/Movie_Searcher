@@ -12,14 +12,26 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val fragment = MovieListFragment.getInstance(null)
+        supportFragmentManager.beginTransaction()
+            .add(R.id.fragment_container, fragment)
+            .addToBackStack(fragment.tag)
+            .commit()
     }
 
     override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount > 0) {
+        val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+        if (fragment is MovieListFragment) {
+            finish()
             Log.d("Fragment", "backstack")
-            supportFragmentManager.popBackStack()
         } else {
-            super.onBackPressedDispatcher.onBackPressed()
+            if (supportFragmentManager.backStackEntryCount > 0) {
+                Log.d("Fragment", "backstack")
+                supportFragmentManager.popBackStack()
+            } else {
+                super.onBackPressedDispatcher.onBackPressed()
+            }
         }
     }
+
 }

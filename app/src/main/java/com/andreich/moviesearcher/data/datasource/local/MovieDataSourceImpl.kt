@@ -10,8 +10,26 @@ class MovieDataSourceImpl @Inject constructor(
     private val movieDao: MovieDao
 ) : MovieDataSource {
 
-    override fun getMovies(requestId: String, genreFilter: String, countryFilter: String, movieTypeFilter: String, networkFilter: String): PagingSource<Int, MovieEntity> {
-        if (requestId.trim().isEmpty()) return movieDao.loadMovies(requestId, genreFilter, countryFilter, movieTypeFilter, networkFilter)
+    override fun getMovies(
+        requestId: String,
+        genreFilter: String,
+        countryFilter: String,
+        movieTypeFilter: String,
+        networkFilter: String,
+        ratingFilter: Double?,
+        yearStartFilter: Int?,
+        yearEndFilter: Int?
+    ): PagingSource<Int, MovieEntity> {
+        if (requestId.trim().isEmpty()) return movieDao.loadMovies(
+            requestId,
+            genreFilter,
+            countryFilter,
+            movieTypeFilter,
+            networkFilter,
+            ratingFilter,
+            yearStartFilter,
+            yearEndFilter
+        )
         return movieDao.getMovies(requestId)
     }
 

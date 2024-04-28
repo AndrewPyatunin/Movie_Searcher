@@ -14,9 +14,9 @@ class MovieListFilteredSearchCommandHandler @Inject constructor(private val sear
         return commands.filterIsInstance<MovieListCommand.SearchFiltered>()
             .flatMapLatest { command ->
                 searchUseCase.execute(
-                    scope = command.scope,
                     pageSize = 10,
                     requestId = "",
+                    scope = command.scope,
                     filters = command.filters
                 ).map {
                     MovieListEvent.MovieListCommandsResultEvent.DataIsReady(it)

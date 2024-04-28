@@ -1,7 +1,6 @@
 package com.andreich.moviesearcher.presentation.movie_list
 
 import android.util.Log
-import androidx.paging.PagingData
 import com.andreich.moviesearcher.presentation.AnalyticsTracker
 import ru.tinkoff.kotea.core.dsl.DslUpdate
 import com.andreich.moviesearcher.presentation.movie_list.MovieListEvent.*
@@ -35,6 +34,12 @@ class MovieListUpdate @Inject constructor(
                 handleUiEvent(event)
             }
             is MovieListUiEvent.FilterMoviesClicked -> {
+                handleUiEvent(event)
+            }
+            is MovieListUiEvent.PaginationLoad -> {
+                handleUiEvent(event)
+            }
+            is MovieListUiEvent.PaginationStopLoad -> {
                 handleUiEvent(event)
             }
         }
@@ -74,6 +79,12 @@ class MovieListUpdate @Inject constructor(
             }
             MovieListUiEvent.FilterMoviesClicked -> {
                 news(MovieListNews.NavigateTo(FilterFragment.newInstance()))
+            }
+            MovieListUiEvent.PaginationLoad -> {
+                state { copy(isLoading = true) }
+            }
+            MovieListUiEvent.PaginationStopLoad -> {
+                state { copy(isLoading = false) }
             }
         }
     }

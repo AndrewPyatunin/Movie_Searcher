@@ -34,8 +34,10 @@ class MovieDtoToMovieMapper @Inject constructor(
                 personMapper.map(it, item, requestId)
             },
             votes = fromDto.votes?.kp,
-            network = fromDto.networks?.items?.joinToString(", ") ?: "",
-            seasonsAmount = fromDto.seasonsInfo.size,
+            network = fromDto.networks?.items?.map {
+                it.name ?: ""
+            } ?: emptyList(),
+            seasonsAmount = fromDto.seasonsInfo?.size,
             top250 = fromDto.top250 ?: 0,
             movieLength = fromDto.movieLength ?: -1,
             isSeries = fromDto.isSeries ?: false,

@@ -19,6 +19,8 @@ import com.andreich.moviesearcher.ui.screen.FilterFragment.Companion.QUERY_COUNT
 import com.andreich.moviesearcher.ui.screen.FilterFragment.Companion.QUERY_GENRE
 import com.andreich.moviesearcher.ui.screen.FilterFragment.Companion.QUERY_MOVIE_TYPE
 import com.andreich.moviesearcher.ui.screen.FilterFragment.Companion.QUERY_NETWORKS
+import com.andreich.moviesearcher.ui.screen.FilterFragment.Companion.QUERY_RATING
+import com.andreich.moviesearcher.ui.screen.FilterFragment.Companion.QUERY_YEAR
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -46,7 +48,7 @@ class MovieRepositoryImpl @Inject constructor(
         pageSize: Int,
         requestId: String,
         name: String?,
-        filters: Map<String, String>
+        filters: Map<String, List<String>>,
     ): Flow<PagingData<Movie>> {
         Log.d("SEARCH_IN_REPO", "$pageSize")
         return Pager(
@@ -58,19 +60,22 @@ class MovieRepositoryImpl @Inject constructor(
             pagingSourceFactory = {
                 movieDataSource.getMovies(
                     requestId,
-                    filters[QUERY_GENRE] ?: "",
-                    filters[QUERY_COUNTRY] ?: "",
-                    filters[QUERY_MOVIE_TYPE] ?: "",
-                    filters[QUERY_NETWORKS] ?: ""
+                    filters[QUERY_GENRE]?.get(0) ?: "",
+                    filters[QUERY_COUNTRY]?.get(0) ?: "",
+                    filters[QUERY_MOVIE_TYPE]?.get(0) ?: "",
+                    filters[QUERY_NETWORKS]?.get(0) ?: "",
+                    filters[QUERY_RATING]?.get(0)?.toDoubleOrNull(),
+                    filters[QUERY_YEAR]?.get(0)?.substringBefore('-')?.toIntOrNull(),
+                    filters[QUERY_YEAR]?.get(0)?.substringAfter('-')?.toIntOrNull()
                 )
             },
             remoteMediator = MovieRemoteMediator(
                 database,
                 remoteDataSource,
                 apiKey,
+                remoteKeyDao = remoteKeyDao,
                 movieMapper = movieMapper,
                 personMapper = personMapper,
-                remoteKeyDao = remoteKeyDao,
                 name = name,
                 requestId = requestId,
                 filters = filters

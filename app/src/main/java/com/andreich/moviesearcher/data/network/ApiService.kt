@@ -17,7 +17,12 @@ interface ApiService {
     suspend fun searchWithFilters(
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 10,
-        @QueryMap filters: Map<String, String>,
+        @Query(QUERY_COUNTRY) country: List<String> = emptyList(),
+        @Query(QUERY_GENRE) genres: List<String> = emptyList(),
+        @Query(QUERY_NETWORKS) network: List<String> = emptyList(),
+        @Query(QUERY_MOVIE_TYPE) movie_type: List<String> = emptyList(),
+        @Query(QUERY_YEAR) years: List<String> = emptyList(),
+        @Query(QUERY_RATING) rating: List<String> = emptyList()
     ): RequestResultDto<MovieDto>
 
     @GET("person?selectFields=id&selectFields=name&selectFields=enName" +

@@ -10,10 +10,10 @@
         android:id="@+id/spinnerGenres"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewGenresTag" />
+        app:layout_constraintStart_toEndOf="@+id/textViewGenresTag"
+        app:layout_constraintTop_toTopOf="@+id/textViewGenresTag" />
 
     <TextView
         android:id="@+id/textViewGenresTag"
@@ -52,10 +52,10 @@
         android:id="@+id/spinnerCountries"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewCountriesTag" />
+        app:layout_constraintStart_toEndOf="@+id/textViewCountriesTag"
+        app:layout_constraintTop_toTopOf="@+id/textViewCountriesTag" />
 
     <TextView
         android:id="@+id/textViewTypeTag"
@@ -72,10 +72,10 @@
         android:id="@+id/spinnerMovieTypes"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewTypeTag" />
+        app:layout_constraintStart_toEndOf="@+id/textViewTypeTag"
+        app:layout_constraintTop_toTopOf="@+id/textViewTypeTag" />
 
     <TextView
         android:id="@+id/textViewYearTag"
@@ -86,13 +86,14 @@
         android:layout_marginTop="8dp"
         android:text="@string/years"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerMovieTypes" />
+        app:layout_constraintTop_toBottomOf="@+id/spinnerNetwork" />
 
     <EditText
         android:id="@+id/editTextStartYear"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:layout_marginHorizontal="4dp"
         android:hint="@string/from"
         android:inputType="number"
         app:layout_constraintEnd_toStartOf="@id/editTextEndYear"
@@ -116,20 +117,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:text="@string/rating"
+        app:layout_constraintBottom_toBottomOf="@+id/editTextRating"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextStartYear" />
+        app:layout_constraintTop_toTopOf="@+id/editTextRating" />
 
     <EditText
         android:id="@+id/editTextRating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:hint="@string/input_value"
         android:inputType="numberDecimal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewRatingTag" />
+        app:layout_constraintStart_toEndOf="@+id/textViewRatingTag"
+        app:layout_constraintTop_toBottomOf="@+id/editTextStartYear" />
 
     <TextView
         android:id="@+id/textViewNetwork"
@@ -140,16 +142,16 @@
         android:layout_marginTop="8dp"
         android:text="@string/network"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextRating" />
+        app:layout_constraintTop_toBottomOf="@+id/spinnerMovieTypes" />
 
     <Spinner
         android:id="@+id/spinnerNetwork"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewNetwork" />
+        app:layout_constraintStart_toEndOf="@+id/textViewNetwork"
+        app:layout_constraintTop_toTopOf="@+id/textViewNetwork" />
 
     <Button
         android:id="@+id/buttonFilterApply"
@@ -158,5 +160,5 @@
         android:text="@string/apply"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerNetwork" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextRating" />
 </androidx.constraintlayout.widget.ConstraintLayout>
