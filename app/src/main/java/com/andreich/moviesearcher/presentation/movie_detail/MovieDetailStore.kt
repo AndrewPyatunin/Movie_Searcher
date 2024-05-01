@@ -13,5 +13,4 @@ class MovieDetailStore @Inject constructor(
     initialState = initialState,
     commandsFlowHandlers = commandHandlers,
     update = update,
-) {
-}
+)

@@ -36,10 +36,6 @@ class ReviewRemoteMediator(
             val endOfPaginationReached = reviews.isEmpty()
 
             database.withTransaction {
-                if (loadType == LoadType.REFRESH) {
-//                    remoteKeyDao.clearRemoteKeys()
-//                    movieDao.clearAllMovies()
-                }
                 val prevKey = if (page > 1) page - 1 else null
                 val nextKey = if (endOfPaginationReached) null else page + 1
                 val remoteKeys = reviews.map {

@@ -10,4 +10,6 @@ sealed interface MovieListCommand {
         MovieListCommand
 
     class SearchFiltered(val filters: Map<String, List<String>>, val scope: CoroutineScope) : MovieListCommand
+
+    object GetHistory : MovieListCommand
 }

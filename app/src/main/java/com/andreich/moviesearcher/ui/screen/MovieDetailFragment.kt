@@ -180,12 +180,14 @@ class MovieDetailFragment : Fragment() {
                             transition: Transition<in Drawable>?
                         ) {
                             movieDetailImage.setImageDrawable(resource)
-                            progressImage.visibility = GONE
+                            shimmerDetail.visibility = GONE
+                            movieDetailImage.visibility = VISIBLE
                         }
 
                         override fun onLoadCleared(placeholder: Drawable?) {
                             movieDetailImage.setImageDrawable(placeholder)
-                            progressImage.visibility = GONE
+                            shimmerDetail.visibility = GONE
+                            movieDetailImage.visibility = VISIBLE
                         }
                     })
                 movieDetailDescription.text = it.description

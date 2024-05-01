@@ -7,19 +7,37 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.andreich.moviesearcher.MovieApp
 import com.andreich.moviesearcher.R
 import com.andreich.moviesearcher.databinding.FragmentFilterBinding
+import com.andreich.moviesearcher.presentation.movie_filter.*
+import com.andreich.moviesearcher.ui.state.MovieFilterUiState
+import ru.tinkoff.kotea.android.lifecycle.collectOnCreate
+import ru.tinkoff.kotea.android.storeViaViewModel
 
-class FilterFragment : Fragment(), AdapterView.OnItemSelectedListener {
+class MovieFilterFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private var _binding: FragmentFilterBinding? = null
     private val binding: FragmentFilterBinding
         get() = _binding ?: throw RuntimeException("Binding is null!")
 
+    private val component by lazy { (requireActivity().application as MovieApp).component }
+
     val query = mutableMapOf<String, List<String>>()
 
+    private val store by storeViaViewModel {
+        MovieFilterStore(
+            MovieFilterUpdate(), MovieFilterState(
+                emptyMap(), emptyMap()
+            )
+        )
+    }
+
     companion object {
+
+        const val QUERY_STATE = "initial_filter_state"
 
         const val QUERY_COUNTRY = "countries.name"
         const val QUERY_GENRE = "genres.name"
@@ -28,9 +46,20 @@ class FilterFragment : Fragment(), AdapterView.OnItemSelectedListener {
         const val QUERY_YEAR = "year"
         const val QUERY_RATING = "rating.kp"
 
-        fun newInstance(): FilterFragment {
-            return FilterFragment()
+        fun newInstance(): MovieFilterFragment {
+            return MovieFilterFragment()
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        component.inject(this)
+        store.collectOnCreate(
+            fragment = this,
+            uiStateMapper = MovieFilterUiStateMapper(),
+            newsCollector = ::handleNews,
+            stateCollector = ::collectState
+        )
     }
 
     override fun onCreateView(
@@ -44,16 +73,49 @@ class FilterFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initViews()
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
+    }
+
+    private fun collectState(state: MovieFilterUiState) {
+        initViews()
+        with(binding) {
+            spinnerNetwork.setSelection(state.networkPosition)
+            spinnerMovieTypes.setSelection(state.movieTypePosition)
+            spinnerCountries.setSelection(state.countryPosition)
+            spinnerGenres.setSelection(state.genresPosition)
+            editTextStartYear.setText(state.yearStart)
+            editTextEndYear.setText(state.yearEnd)
+            editTextRating.setText(state.rating)
+        }
+    }
+
+    private fun handleNews(news: MovieFilterNews) {
+        when (news) {
+            is MovieFilterNews.NavigateTo -> {
+                navigateTo(news.fragment)
+            }
+            is MovieFilterNews.ShowError -> {
+                Toast.makeText(requireContext(), news.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun initViews() {
         with(binding) {
             createSpinnerAdapter(R.array.countries, spinnerCountries)
             createSpinnerAdapter(R.array.genres, spinnerGenres)
             createSpinnerAdapter(R.array.network, spinnerNetwork)
             createSpinnerAdapter(R.array.content_types, spinnerMovieTypes)
             query.clear()
-            spinnerCountries.onItemSelectedListener = this@FilterFragment
-            spinnerGenres.onItemSelectedListener = this@FilterFragment
-            spinnerNetwork.onItemSelectedListener = this@FilterFragment
-            spinnerMovieTypes.onItemSelectedListener = this@FilterFragment
+            spinnerCountries.onItemSelectedListener = this@MovieFilterFragment
+            spinnerGenres.onItemSelectedListener = this@MovieFilterFragment
+            spinnerNetwork.onItemSelectedListener = this@MovieFilterFragment
+            spinnerMovieTypes.onItemSelectedListener = this@MovieFilterFragment
 
             buttonFilterApply.setOnClickListener {
                 if (editTextStartYear.text.isNotEmpty()) {
@@ -66,16 +128,10 @@ class FilterFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 if (editTextRating.text.isNotEmpty()) {
                     query[QUERY_RATING] = listOf("${editTextRating.text.trim()}-10")
                 }
-
-                navigateTo(MovieListFragment.getInstance(query as java.io.Serializable))
+                store.dispatch(MovieFilterUiEvent.ApplyFilters(query))
             }
         }
 
-    }
-
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
     }
 
     private fun createSpinnerAdapter(resId: Int, spinner: Spinner) {
@@ -84,9 +140,7 @@ class FilterFragment : Fragment(), AdapterView.OnItemSelectedListener {
             resId,
             android.R.layout.simple_spinner_item
         ).also { adapter ->
-            // Specify the layout to use when the list of choices appears.
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            // Apply the adapter to the spinner.
             spinner.adapter = adapter
         }
     }
@@ -115,41 +169,30 @@ class FilterFragment : Fragment(), AdapterView.OnItemSelectedListener {
             R.id.spinnerCountries -> {
                 if (position == 0) return
                 val country = parent.getItemAtPosition(position).toString()
+                MovieFilterUiEvent.ApplyPositions(mapOf(Pair(QUERY_COUNTRY, position)))
                 query[QUERY_COUNTRY] = listOf(country)
             }
             R.id.spinnerGenres -> {
                 if (position == 0) return
                 val genre = parent.getItemAtPosition(position).toString().lowercase()
+                MovieFilterUiEvent.ApplyPositions(mapOf(Pair(QUERY_GENRE, position)))
                 query[QUERY_GENRE] = listOf(genre)
             }
             R.id.spinnerNetwork -> {
                 if (position == 0) return
                 val network = parent.getItemAtPosition(position).toString()
+                MovieFilterUiEvent.ApplyPositions(mapOf(Pair(QUERY_NETWORKS, position)))
                 query[QUERY_NETWORKS] = listOf(network)
             }
             R.id.spinnerMovieTypes -> {
                 if (position == 0) return
                 val type = parent.getItemAtPosition(position).toString()
+                MovieFilterUiEvent.ApplyPositions(mapOf(Pair(QUERY_MOVIE_TYPE, position)))
                 query[QUERY_MOVIE_TYPE] = listOf(type.movieType())
             }
         }
     }
 
-
     override fun onNothingSelected(parent: AdapterView<*>?) {
-        when (parent?.id) {
-            R.id.spinnerCountries -> {
-                query.remove(QUERY_COUNTRY)
-            }
-            R.id.spinnerGenres -> {
-                query.remove(QUERY_GENRE)
-            }
-            R.id.spinnerNetwork -> {
-                query.remove(QUERY_NETWORKS)
-            }
-            R.id.spinnerMovieTypes -> {
-                query.remove(QUERY_MOVIE_TYPE)
-            }
-        }
     }
 }

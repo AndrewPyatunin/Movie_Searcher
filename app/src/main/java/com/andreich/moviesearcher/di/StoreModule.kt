@@ -2,7 +2,7 @@ package com.andreich.moviesearcher.di
 
 import androidx.paging.PagingData
 import com.andreich.moviesearcher.domain.usecase.*
-import com.andreich.moviesearcher.presentation.*
+import com.andreich.moviesearcher.presentation.AnalyticsTracker
 import com.andreich.moviesearcher.presentation.movie_detail.MovieDetailCommandsFlowHandler
 import com.andreich.moviesearcher.presentation.movie_detail.MovieDetailState
 import com.andreich.moviesearcher.presentation.movie_detail.MovieDetailStore
@@ -15,14 +15,18 @@ import dagger.Provides
 class StoreModule {
 
     @Provides
-    fun provideMovieListStore(searchUseCase: SearchFilteredFilmsUseCase): MovieListStore {
+    fun provideMovieListStore(
+        searchUseCase: SearchFilteredFilmsUseCase,
+        getMovieHistoryUseCase: GetMovieHistoryUseCase
+    ): MovieListStore {
         return MovieListStore(
             initialState = MovieListState(true, PagingData.empty()),
             update = MovieListUpdate(AnalyticsTracker()),
             commandsHandlers = listOf(
                 MovieListCommandsFlowHandler(searchUseCase),
                 MovieListSearchFilmCommandHandler(searchUseCase),
-                MovieListFilteredSearchCommandHandler(searchUseCase)
+                MovieListFilteredSearchCommandHandler(searchUseCase),
+                MovieListShowHistoryCommandHandler(getMovieHistoryUseCase)
             )
         )
     }

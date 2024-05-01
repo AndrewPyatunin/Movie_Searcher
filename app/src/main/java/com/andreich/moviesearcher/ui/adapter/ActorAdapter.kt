@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -40,7 +41,20 @@ class ActorAdapter() :
     override fun onBindViewHolder(holder: PersonViewHolder, position: Int) {
         val person = getItem(position)
         with(holder) {
-            Glide.with(itemView.context).load(person.photoUrl).into(personAvatar)
+            Glide.with(itemView.context).load(person.photoUrl).into(object : CustomTarget<Drawable>() {
+                override fun onResourceReady(
+                    resource: Drawable,
+                    transition: Transition<in Drawable>?
+                ) {
+                    avatarProgress.visibility = View.GONE
+                    personAvatar.setImageDrawable(resource)
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    avatarProgress.visibility = View.GONE
+                    personAvatar.setImageDrawable(placeholder)
+                }
+            })
             personName.text = person.name
             personEnName.text = person.enName
             personCareer.text = person.profession
@@ -54,5 +68,6 @@ class ActorAdapter() :
         val personCareer = itemView.findViewById<TextView>(R.id.person_career_textView)
         val personEnName = itemView.findViewById<TextView>(R.id.person_en_name_textView)
         val personDescription = itemView.findViewById<TextView>(R.id.person_description_textView)
+        val avatarProgress = itemView.findViewById<ProgressBar>(R.id.actor_avatar_progress)
     }
 }

@@ -7,6 +7,7 @@ const val QUERY_GENRE = "genres.name"
 const val QUERY_NETWORKS = "networks.items.name"
 const val QUERY_MOVIE_TYPE = "type"
 const val QUERY_YEAR = "year"
+const val QUERY_YEAR_END = "year_end"
 const val QUERY_RATING = "rating.kp"
 
 data class MovieSearchFilters(

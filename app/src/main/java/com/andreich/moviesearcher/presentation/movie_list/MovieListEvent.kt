@@ -2,6 +2,7 @@ package com.andreich.moviesearcher.presentation.movie_list
 
 import androidx.paging.PagingData
 import com.andreich.moviesearcher.domain.model.Movie
+import com.andreich.moviesearcher.domain.model.MovieSearchHistory
 import com.andreich.moviesearcher.ui.MovieItem
 import kotlinx.coroutines.CoroutineScope
 
@@ -23,6 +24,8 @@ sealed interface MovieListEvent {
         class FilterSearchClicked(val query: Map<String, List<String>>, val scope: CoroutineScope) : MovieListUiEvent
 
         class MovieItemClicked(val movie: MovieItem) : MovieListUiEvent
+
+        object GetHistory : MovieListUiEvent
     }
 
     sealed interface MovieListCommandsResultEvent : MovieListEvent {
@@ -31,5 +34,6 @@ sealed interface MovieListEvent {
 
         class LoadError(val message: String) : MovieListCommandsResultEvent
 
+        class SearchHistoryIsReady(val history: List<MovieSearchHistory>) : MovieListCommandsResultEvent
     }
 }

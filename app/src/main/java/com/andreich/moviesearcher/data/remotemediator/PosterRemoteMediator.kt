@@ -39,8 +39,6 @@ class PosterRemoteMediator(
 
             database.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-//                    remoteKeyDao.clearRemoteKeys()
-//                    movieDao.clearAllMovies()
                 }
                 val prevKey = if (page > 1) page - 1 else null
                 val nextKey = if (endOfPaginationReached) null else page + 1

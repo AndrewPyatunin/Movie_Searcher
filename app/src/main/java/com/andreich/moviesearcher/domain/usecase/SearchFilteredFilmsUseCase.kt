@@ -19,6 +19,7 @@ class SearchFilteredFilmsUseCase @Inject constructor(
         name: String? = null,
         scope: CoroutineScope,
         filters: Map<String, List<String>> = emptyMap(),
+        completeRequest: Boolean = false
     ): Flow<PagingData<Movie>> {
         return repository.searchFilteredFilms(
             searchParams,
@@ -26,6 +27,7 @@ class SearchFilteredFilmsUseCase @Inject constructor(
             requestId,
             name,
             filters,
+            completeRequest
         ).cachedIn(scope)
     }
 }

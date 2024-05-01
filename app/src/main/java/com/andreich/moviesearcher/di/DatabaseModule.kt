@@ -4,7 +4,6 @@ import android.content.Context
 import com.andreich.moviesearcher.data.database.*
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 
 @Module
 class DatabaseModule {
@@ -28,6 +27,11 @@ class DatabaseModule {
     @Provides
     fun provideReviewDao(database: MovieDatabase): ReviewDao {
         return database.reviewDao()
+    }
+
+    @Provides
+    fun provideHistoryDao(database: MovieDatabase): MovieSearchHistoryDao {
+        return database.historyDao()
     }
 
     @Provides

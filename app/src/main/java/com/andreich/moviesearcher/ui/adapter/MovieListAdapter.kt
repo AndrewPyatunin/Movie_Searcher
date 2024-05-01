@@ -15,6 +15,7 @@ import com.andreich.moviesearcher.ui.MovieItem
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.facebook.shimmer.ShimmerFrameLayout
 
 object DiffCallback : DiffUtil.ItemCallback<MovieItem>() {
 
@@ -39,22 +40,27 @@ class MovieListAdapter() :
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-        Log.d("FRAGMENT_ADAPtER", "$position")
+        Log.d("FRAGMENT_ADAPTER", "$position")
         val movie = getItem(position)
         movie?.let {
             with(holder) {
-                    movieTitle.text = movie.name
-                    movieRating.setBackgroundColor (movie.ratingColor)
-                    movieRating.text = movie.rating
-                    year.text = movie.year
-                    genres.text = movie.genres
-                    altName.text = movie.alternativeName
-                    countries.text = movie.countries
-                    Glide.with(holder.itemView.context).load(movie.previewUrl).into(object : CustomTarget<Drawable>() {
+                movieTitle.text = movie.name
+                movieRating.setBackgroundColor(movie.ratingColor)
+                movieRating.text = movie.rating
+                year.text = movie.year
+                genres.text = movie.genres
+                altName.text = movie.alternativeName
+                countries.text = movie.countries
+                personAvatar.visibility = View.GONE
+                shimmer_item.visibility = View.VISIBLE
+                Glide.with(holder.itemView.context).load(movie.previewUrl)
+                    .into(object : CustomTarget<Drawable>() {
                         override fun onResourceReady(
                             resource: Drawable,
                             transition: Transition<in Drawable>?
                         ) {
+                            shimmer_item.visibility = View.GONE
+                            personAvatar.visibility = View.VISIBLE
                             personAvatar.setImageDrawable(resource)
                         }
 
@@ -62,9 +68,9 @@ class MovieListAdapter() :
                             personAvatar.setImageDrawable(placeholder)
                         }
                     })
-                    itemView.setOnClickListener {
-                        onMovieClick?.onMovieClick(movie)
-                    }
+                itemView.setOnClickListener {
+                    onMovieClick?.onMovieClick(movie)
+                }
             }
         }
 
@@ -72,6 +78,7 @@ class MovieListAdapter() :
 
     inner class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+        val shimmer_item = itemView.findViewById<ShimmerFrameLayout>(R.id.shimmer_movie_item)
         val personAvatar = itemView.findViewById<ImageView>(R.id.movie_image)
         val year = itemView.findViewById<TextView>(R.id.movie_creation_date)
         val movieTitle = itemView.findViewById<TextView>(R.id.movie_title)

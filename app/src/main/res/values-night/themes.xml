@@ -22,6 +22,10 @@
         <item name="marginHorizontal">4dp</item>
     </style>
 
+    <style name="IconHistory">
+        <item name="android:src">@drawable/history_icon_night</item>
+    </style>
+
     <style name="IconStyleDown">
         <item name="android:src">@drawable/arrow_down_night</item>
     </style>

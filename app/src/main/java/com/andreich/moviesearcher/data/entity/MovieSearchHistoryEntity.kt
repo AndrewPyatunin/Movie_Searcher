@@ -8,6 +8,5 @@ data class MovieSearchHistoryEntity(
     @PrimaryKey
     val id: String,
     val movieTitle: String,
-//    val query: Map<String, String>,
-    val movies: List<MovieEntity>,
+    val time: Long
 )

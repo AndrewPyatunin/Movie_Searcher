@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.paging.*
 import com.andreich.moviesearcher.data.database.MovieDatabase
 import com.andreich.moviesearcher.data.database.MovieRemoteKeyDao
+import com.andreich.moviesearcher.data.datasource.local.HistoryDataSource
 import com.andreich.moviesearcher.data.datasource.local.MovieDataSource
 import com.andreich.moviesearcher.data.datasource.remote.RemoteDataSource
 import com.andreich.moviesearcher.data.entity.MovieEntity
@@ -12,15 +13,16 @@ import com.andreich.moviesearcher.data.mapper.EntityToModelMapper
 import com.andreich.moviesearcher.data.mapper.MovieMapper
 import com.andreich.moviesearcher.data.remotemediator.MovieRemoteMediator
 import com.andreich.moviesearcher.domain.model.Movie
+import com.andreich.moviesearcher.domain.model.MovieSearchHistory
 import com.andreich.moviesearcher.domain.pojo.MovieDto
 import com.andreich.moviesearcher.domain.pojo.PersonDto
 import com.andreich.moviesearcher.domain.repo.MovieRepository
-import com.andreich.moviesearcher.ui.screen.FilterFragment.Companion.QUERY_COUNTRY
-import com.andreich.moviesearcher.ui.screen.FilterFragment.Companion.QUERY_GENRE
-import com.andreich.moviesearcher.ui.screen.FilterFragment.Companion.QUERY_MOVIE_TYPE
-import com.andreich.moviesearcher.ui.screen.FilterFragment.Companion.QUERY_NETWORKS
-import com.andreich.moviesearcher.ui.screen.FilterFragment.Companion.QUERY_RATING
-import com.andreich.moviesearcher.ui.screen.FilterFragment.Companion.QUERY_YEAR
+import com.andreich.moviesearcher.ui.screen.MovieFilterFragment.Companion.QUERY_COUNTRY
+import com.andreich.moviesearcher.ui.screen.MovieFilterFragment.Companion.QUERY_GENRE
+import com.andreich.moviesearcher.ui.screen.MovieFilterFragment.Companion.QUERY_MOVIE_TYPE
+import com.andreich.moviesearcher.ui.screen.MovieFilterFragment.Companion.QUERY_NETWORKS
+import com.andreich.moviesearcher.ui.screen.MovieFilterFragment.Companion.QUERY_RATING
+import com.andreich.moviesearcher.ui.screen.MovieFilterFragment.Companion.QUERY_YEAR
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -29,6 +31,7 @@ class MovieRepositoryImpl @Inject constructor(
     private val database: MovieDatabase,
     private val remoteDataSource: RemoteDataSource,
     private val movieDataSource: MovieDataSource,
+    private val historyDataSource: HistoryDataSource,
     private val apiKey: String,
     private val movieMapper: MovieMapper<MovieDto, MovieEntity>,
     private val personMapper: MovieMapper<PersonDto, PersonEntity>,
@@ -49,6 +52,7 @@ class MovieRepositoryImpl @Inject constructor(
         requestId: String,
         name: String?,
         filters: Map<String, List<String>>,
+        completeRequest: Boolean
     ): Flow<PagingData<Movie>> {
         Log.d("SEARCH_IN_REPO", "$pageSize")
         return Pager(
@@ -56,6 +60,7 @@ class MovieRepositoryImpl @Inject constructor(
                 pageSize = pageSize,
                 prefetchDistance = 10,
                 initialLoadSize = pageSize,
+                enablePlaceholders = true,
             ),
             pagingSourceFactory = {
                 movieDataSource.getMovies(
@@ -64,7 +69,7 @@ class MovieRepositoryImpl @Inject constructor(
                     filters[QUERY_COUNTRY]?.get(0) ?: "",
                     filters[QUERY_MOVIE_TYPE]?.get(0) ?: "",
                     filters[QUERY_NETWORKS]?.get(0) ?: "",
-                    filters[QUERY_RATING]?.get(0)?.toDoubleOrNull(),
+                    filters[QUERY_RATING]?.get(0)?.substringBefore('-')?.toDoubleOrNull(),
                     filters[QUERY_YEAR]?.get(0)?.substringBefore('-')?.toIntOrNull(),
                     filters[QUERY_YEAR]?.get(0)?.substringAfter('-')?.toIntOrNull()
                 )
@@ -78,13 +83,20 @@ class MovieRepositoryImpl @Inject constructor(
                 personMapper = personMapper,
                 name = name,
                 requestId = requestId,
-                filters = filters
+                filters = filters,
+                completeRequest = completeRequest
             )
         ).flow.map {
             it.map {
                 Log.d("SEARCH_IN_REPO_MAP", it.name)
                 movieEntityMapper.map(it)
             }
+        }
+    }
+
+    override suspend fun getMovieHistory(): List<MovieSearchHistory> {
+        return historyDataSource.getHistory().map {
+            MovieSearchHistory(it.id, it.movieTitle)
         }
     }
 

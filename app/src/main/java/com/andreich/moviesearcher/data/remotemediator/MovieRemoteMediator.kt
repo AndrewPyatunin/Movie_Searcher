@@ -8,6 +8,7 @@ import com.andreich.moviesearcher.data.datasource.remote.RemoteDataSource
 import com.andreich.moviesearcher.data.entity.*
 import com.andreich.moviesearcher.data.mapper.MovieMapper
 import com.andreich.moviesearcher.domain.pojo.*
+import kotlinx.coroutines.sync.Semaphore
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -22,32 +23,31 @@ class MovieRemoteMediator(
     private val name: String? = null,
     private val requestId: String,
     private val filters: Map<String, List<String>> = emptyMap(),
+    private val completeRequest: Boolean
 ) : BaseRemoteMediator<MovieEntity, MovieRemoteKeyDao>(remoteKeyDao, MovieEntity::class, ) {
     val movieDao = database.movieDao()
+    val historyDao = database.historyDao()
 
     override suspend fun workWithNetworkAndDatabase(page: Int, loadType: LoadType): MediatorResult {
         try {
             val apiResponse = name?.let {
-                remoteDataSource.searchFilm(apiKey, page, movieName = name)
+                remoteDataSource.searchFilm(apiKey, page, 10, name)
             } ?: remoteDataSource.searchWithFilters(apiKey = apiKey, page = page, filters = filters)
             val movies = apiResponse.docs
-            movies.map {
-                it.persons.map { person ->
-                    personMapper.map(person, page, requestId)
-                }
-            }.forEach {
-                database.personDao().insertActors(it)
-            }
-            if (name != null) {
-                MovieSearchHistoryEntity(requestId, name, movies.map {
-                    movieMapper.map(it, page, requestId)
-                }).let {
-                    database.historyDao().insertElement(it)
-                }
-            }
             val endOfPaginationReached = apiResponse.page == apiResponse.total || apiResponse.docs.isEmpty()
 //
             database.withTransaction {
+                name?.let {
+                    if (it.trim().isNotEmpty()) {
+                        MovieSearchHistoryEntity(movieTitle = name, id = name.lowercase().trim(), time = System.currentTimeMillis()).let {
+                            if (historyDao.getTableSize() >= 20) {
+                                historyDao.deleteOldest()
+                            }
+                            historyDao.insertElement(it)
+                        }
+                    }
+                }
+
                 movies.map {
                     it.persons.map { person ->
                         personMapper.map(person, page, requestId)
@@ -55,16 +55,7 @@ class MovieRemoteMediator(
                 }.forEach {
                     database.personDao().insertActors(it)
                 }
-//                if (name != null) {
-//                    MovieSearchHistoryEntity(requestId, name, movies.map {
-//                        movieMapper.map(it, page, requestId)
-//                    }).let {
-//                        database.historyDao().insertElement(it)
-//                    }
-//                }
                 if (loadType == LoadType.REFRESH) {
-    //                    remoteKeyDao.clearRemoteKeys()
-    //                    movieDao.clearAllMovies()
                     Log.d("REMOTE_MEDIATOR", "refresh$page")
                 }
                 val prevKey = if (page == 1) null else page - 1

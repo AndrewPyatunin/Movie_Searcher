@@ -1,23 +1,31 @@
 package com.andreich.moviesearcher.data.database
 
-import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.andreich.moviesearcher.data.entity.MovieEntity
 import com.andreich.moviesearcher.data.entity.MovieSearchHistoryEntity
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MovieSearchHistoryDao {
 
     @Query("SELECT * FROM history ORDER BY id")
-    fun getValues(): Flow<MovieSearchHistoryEntity>
+    suspend fun getValues(): List<MovieSearchHistoryEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertElement(list: MovieSearchHistoryEntity)
+    suspend fun insertElement(request: MovieSearchHistoryEntity)
 
-    @Query("UPDATE history SET movies = :movies WHERE id = :id")
-    suspend fun updateMoviesHistory(movies: List<MovieEntity>, id: Long)
+    @Query("SELECT COUNT(*) FROM history")
+    suspend fun getTableSize(): Int
+
+    @Query("SELECT time FROM history ORDER BY time ASC LIMIT 1")
+    suspend fun getOldest(): Long
+
+    @Query("DELETE FROM history WHERE time = :time")
+    suspend fun deleteByTime(time: Long)
+
+    suspend fun deleteOldest() {
+        val oldest = getOldest()
+        deleteByTime(oldest)
+    }
 }

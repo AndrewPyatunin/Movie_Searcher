@@ -4,7 +4,7 @@ import android.util.Log
 import com.andreich.moviesearcher.presentation.AnalyticsTracker
 import ru.tinkoff.kotea.core.dsl.DslUpdate
 import com.andreich.moviesearcher.presentation.movie_list.MovieListEvent.*
-import com.andreich.moviesearcher.ui.screen.FilterFragment
+import com.andreich.moviesearcher.ui.screen.MovieFilterFragment
 import com.andreich.moviesearcher.ui.screen.MovieDetailFragment
 import javax.inject.Inject
 
@@ -19,6 +19,9 @@ class MovieListUpdate @Inject constructor(
                 handleResult(event)
             }
             is MovieListCommandsResultEvent.LoadError -> {
+                handleResult(event)
+            }
+            is MovieListCommandsResultEvent.SearchHistoryIsReady -> {
                 handleResult(event)
             }
             is MovieListUiEvent.FilterSearchClicked -> {
@@ -42,6 +45,9 @@ class MovieListUpdate @Inject constructor(
             is MovieListUiEvent.PaginationStopLoad -> {
                 handleUiEvent(event)
             }
+            is MovieListUiEvent.GetHistory -> {
+                handleUiEvent(event)
+            }
         }
     }
 
@@ -54,6 +60,10 @@ class MovieListUpdate @Inject constructor(
             is MovieListCommandsResultEvent.LoadError -> {
                 state { copy(isLoading = false) }
                 news(MovieListNews.ShowErrorToast(event.message))
+            }
+            is MovieListCommandsResultEvent.SearchHistoryIsReady -> {
+                Log.d("HISTORY_HANDLE", event.history.size.toString())
+                news(MovieListNews.ShowHistory(event.history))
             }
         }
     }
@@ -78,13 +88,16 @@ class MovieListUpdate @Inject constructor(
                 state { copy(isLoading = true) }
             }
             MovieListUiEvent.FilterMoviesClicked -> {
-                news(MovieListNews.NavigateTo(FilterFragment.newInstance()))
+                news(MovieListNews.NavigateTo(MovieFilterFragment.newInstance()))
             }
             MovieListUiEvent.PaginationLoad -> {
                 state { copy(isLoading = true) }
             }
             MovieListUiEvent.PaginationStopLoad -> {
                 state { copy(isLoading = false) }
+            }
+            MovieListUiEvent.GetHistory -> {
+                commands(MovieListCommand.GetHistory)
             }
         }
     }
