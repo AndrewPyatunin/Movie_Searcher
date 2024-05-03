@@ -2,6 +2,7 @@ package com.andreich.moviesearcher.ui.view
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
@@ -44,6 +45,8 @@ class CustomTextViewWithImage @JvmOverloads constructor(
                 typedArray.getString(R.styleable.CustomTextViewWithImage_category_text)
             movieInfoTag.text = categoryText
             val expandSvg = typedArray.getDrawable(R.styleable.CustomTextViewWithImage_expand_svg)
+            val textSize = typedArray.getDimensionPixelSize(R.styleable.CustomTextViewWithImage_category_text_size, 0) / 2
+            movieInfoTag.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize.toFloat())
             expandSvg?.let {
                 expand.setImageDrawable(it)
             }

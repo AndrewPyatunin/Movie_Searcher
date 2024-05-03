@@ -4,21 +4,24 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.andreich.moviesearcher.MovieApp
 import com.andreich.moviesearcher.R
 import com.andreich.moviesearcher.databinding.FragmentMovieListBinding
+import com.andreich.moviesearcher.domain.QUERY_AGE_RATING
+import com.andreich.moviesearcher.domain.QUERY_COUNTRY
+import com.andreich.moviesearcher.domain.QUERY_YEAR
 import com.andreich.moviesearcher.presentation.movie_list.MovieListEvent
 import com.andreich.moviesearcher.presentation.movie_list.MovieListNews
 import com.andreich.moviesearcher.presentation.movie_list.MovieListStore
@@ -29,6 +32,7 @@ import com.andreich.moviesearcher.ui.MovieItem
 import com.andreich.moviesearcher.ui.MovieListUiState
 import com.andreich.moviesearcher.ui.adapter.HistoryAdapter
 import com.andreich.moviesearcher.ui.adapter.MovieListAdapter
+import com.andreich.moviesearcher.ui.view.CustomTextViewWithImage
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -98,7 +102,6 @@ class MovieListFragment : Fragment() {
             stateCollector = ::collectState,
             newsCollector = ::handleNews,
         )
-
     }
 
     override fun onCreateView(
@@ -132,57 +135,88 @@ class MovieListFragment : Fragment() {
             } else {
                 store.dispatch(MovieListEvent.MovieListUiEvent.LoadData(lifecycleScope))
             }
-            historyAdapter.onCLick = {
-                cardHistory.visibility = GONE
-                searchView.clearFocus()
-                clearData()
-                store.dispatch(
-                    MovieListEvent.MovieListUiEvent.SearchClicked(
-                        it.movieTitle,
-                        lifecycleScope,
-                        it.movieTitle
-                    )
-                )
-                binding.searchView.setQuery(it.movieTitle, true)
-            }
+            listenAdapter()
+            onHistoryAdapterClick()
+            clickSort()
             clickFilter()
-            var previousText = ""
+            onSearchQuery()
             searchView.setOnQueryTextFocusChangeListener { v, hasFocus ->
-                Log.d("HISTORY_CLICK", previousText)
                 if (hasFocus) {
                     store.dispatch(MovieListEvent.MovieListUiEvent.GetHistory)
                 } else cardHistory.visibility = GONE
             }
-            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(query: String): Boolean {
-                    Log.d("FRAGMENT", query)
-                    clearData()
-                    store.dispatch(
-                        MovieListEvent.MovieListUiEvent.SearchClicked(
-                            query,
-                            lifecycleScope,
-                            query
-                        )
-                    )
-                    return true
-                }
-
-                override fun onQueryTextChange(newText: String): Boolean {
-                    Log.d("Fragment", "$newText $previousText")
-                    if (newText != previousText) {
-                        previousText = newText
-                        debounce.offer(newText)
-                        Log.d("Fragment_list", "clear")
-                    }
-                    return true
-                }
-
-            })
             adapter.onMovieClick = object : MovieListAdapter.OnMovieClickListener {
                 override fun onMovieClick(movie: MovieItem) {
                     store.dispatch(MovieListEvent.MovieListUiEvent.MovieItemClicked(movie))
                 }
             }
+        }
+    }
+
+    private fun onHistoryAdapterClick() {
+        historyAdapter.onCLick = {
+            binding.cardHistory.visibility = GONE
+            binding.searchView.clearFocus()
+            clearData()
+            store.dispatch(
+                MovieListEvent.MovieListUiEvent.SearchClicked(
+                    it.movieTitle,
+                    lifecycleScope,
+                    it.movieTitle
+                )
+            )
+            binding.searchView.setQuery(it.movieTitle, true)
+        }
+    }
+
+    private fun onSearchQuery() {
+        var previousText = ""
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                clearData()
+                store.dispatch(
+                    MovieListEvent.MovieListUiEvent.SearchClicked(
+                        query,
+                        lifecycleScope,
+                        query
+                    )
+                )
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                if (newText != previousText) {
+                    previousText = newText
+                    debounce.offer(newText)
+                }
+                return true
+            }
+        })
+    }
+
+    private fun View.changeVisibility() {
+        visibility = if (visibility == GONE) {
+            VISIBLE
+        } else GONE
+    }
+
+    private fun CustomTextViewWithImage.changeImageRes() {
+        get(1).changeVisibility()
+        get(2).changeVisibility()
+    }
+
+    private fun clickSort() {
+        with(binding) {
+            sortCountry.onSortClick()
+            sortDate.onSortClick()
+            sortAgeRating.onSortClick()
+        }
+    }
+
+    private fun CustomTextViewWithImage.onSortClick() {
+        setOnClickListener {
+            (it as CustomTextViewWithImage).sortClick(it.get(1).visibility == GONE)
+            it.changeImageRes()
         }
     }
 
@@ -192,20 +226,58 @@ class MovieListFragment : Fragment() {
         }
     }
 
+    private fun CustomTextViewWithImage.sortClick(isDown: Boolean, sortQuery: Map<String, Int> = emptyMap()) {
+        val sortType = if (isDown) -1 else 1
+        when (this.id) {
+            R.id.sort_age_rating -> {
+                clearData()
+                store.dispatch(
+                    MovieListEvent.MovieListUiEvent.SortedSearchCLicked(
+                        mapOf(
+                            Pair(
+                                QUERY_AGE_RATING, sortType
+                            )
+                        ), "sort_ageRating $sortType",
+                        lifecycleScope
+                    )
+                )
+            }
+            R.id.sort_country -> {
+                clearData()
+                store.dispatch(
+                    MovieListEvent.MovieListUiEvent.SortedSearchCLicked(
+                        mapOf(
+                            Pair(QUERY_COUNTRY, sortType)
+                        ),"sort_country $sortType",
+                        lifecycleScope
+                    )
+                )
+            }
+            R.id.sort_date -> {
+                clearData()
+                store.dispatch(
+                    MovieListEvent.MovieListUiEvent.SortedSearchCLicked(
+                        mapOf(
+                            Pair(QUERY_YEAR, sortType)
+                        ), "sort_date $sortType"
+                        , lifecycleScope
+                    )
+                )
+            }
+        }
+    }
+
     private fun collectState(state: MovieListUiState) {
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                Log.d("FRAGMENT", state.movies.toString())
                 state.movies?.let {
                     adapter.submitData(it)
                 }
             }
         }
+        Log.d("PAGING_PROGRESS", "${state.progressVisibility}")
         binding.progressLoadMovies.visibility =
-            if (state.progressVisibility) VISIBLE else GONE
-        binding.recyclerMovies.visibility =
-            if (state.progressVisibility) VISIBLE else VISIBLE
-
+            if (state.progressVisibility) VISIBLE else INVISIBLE
     }
 
     private fun handleNews(news: MovieListNews) {
@@ -218,8 +290,17 @@ class MovieListFragment : Fragment() {
             }
             is MovieListNews.ShowHistory -> {
                 binding.cardHistory.visibility = VISIBLE
-                Log.d("HISTORY_ADAPTER", news.history.size.toString())
                 historyAdapter.submitList(news.history)
+            }
+        }
+    }
+
+    private fun listenAdapter() {
+        adapter.addLoadStateListener {
+            if (it.refresh is LoadState.Loading || it.append is LoadState.Loading) {
+                store.dispatch(MovieListEvent.MovieListUiEvent.PaginationLoad)
+            } else if (it.append.endOfPaginationReached && it.source.refresh is LoadState.NotLoading) {
+                store.dispatch(MovieListEvent.MovieListUiEvent.PaginationStopLoad)
             }
         }
     }

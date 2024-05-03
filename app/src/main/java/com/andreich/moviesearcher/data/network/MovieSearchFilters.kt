@@ -10,6 +10,9 @@ const val QUERY_YEAR = "year"
 const val QUERY_YEAR_END = "year_end"
 const val QUERY_RATING = "rating.kp"
 
+const val QUERY_PARAM_SORT_FIELD = "sortField"
+const val QUERY_PARAM_SORT_TYPE = "sortType"
+
 data class MovieSearchFilters(
     @Query(QUERY_COUNTRY) val country: List<String>,
     @Query(QUERY_GENRE) val genres: List<String>,

@@ -13,6 +13,8 @@ class RemoteDataSourceImpl @Inject constructor(
         page: Int,
         limit: Int,
         filters: Map<String, List<String>>,
+        sortField: Map<String, String>,
+        sortType: Map<String, String>
     ): RequestResultDto<MovieDto> {
         return apiService.searchWithFilters(
             page = page,
@@ -22,7 +24,8 @@ class RemoteDataSourceImpl @Inject constructor(
             network = filters[QUERY_NETWORKS] ?: emptyList(),
             movie_type = filters[QUERY_MOVIE_TYPE] ?: emptyList(),
             years = filters[QUERY_YEAR] ?: emptyList(),
-            rating = filters[QUERY_RATING] ?: emptyList()
+            rating = filters[QUERY_RATING] ?: emptyList(),
+            sortField = sortField,
         )
     }
 

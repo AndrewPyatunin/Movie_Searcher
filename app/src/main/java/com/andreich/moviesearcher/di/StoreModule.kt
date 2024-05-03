@@ -26,6 +26,7 @@ class StoreModule {
                 MovieListCommandsFlowHandler(searchUseCase),
                 MovieListSearchFilmCommandHandler(searchUseCase),
                 MovieListFilteredSearchCommandHandler(searchUseCase),
+                MovieListSortCommandHandler(searchUseCase),
                 MovieListShowHistoryCommandHandler(getMovieHistoryUseCase)
             )
         )

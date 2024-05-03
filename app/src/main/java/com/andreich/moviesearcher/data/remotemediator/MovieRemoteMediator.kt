@@ -7,8 +7,9 @@ import com.andreich.moviesearcher.data.database.*
 import com.andreich.moviesearcher.data.datasource.remote.RemoteDataSource
 import com.andreich.moviesearcher.data.entity.*
 import com.andreich.moviesearcher.data.mapper.MovieMapper
+import com.andreich.moviesearcher.data.network.QUERY_PARAM_SORT_FIELD
+import com.andreich.moviesearcher.data.network.QUERY_PARAM_SORT_TYPE
 import com.andreich.moviesearcher.domain.pojo.*
-import kotlinx.coroutines.sync.Semaphore
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -23,6 +24,7 @@ class MovieRemoteMediator(
     private val name: String? = null,
     private val requestId: String,
     private val filters: Map<String, List<String>> = emptyMap(),
+    private val sortFilter: Map<String, String> = emptyMap(),
     private val completeRequest: Boolean
 ) : BaseRemoteMediator<MovieEntity, MovieRemoteKeyDao>(remoteKeyDao, MovieEntity::class, ) {
     val movieDao = database.movieDao()
@@ -32,10 +34,18 @@ class MovieRemoteMediator(
         try {
             val apiResponse = name?.let {
                 remoteDataSource.searchFilm(apiKey, page, 10, name)
-            } ?: remoteDataSource.searchWithFilters(apiKey = apiKey, page = page, filters = filters)
+            } ?: remoteDataSource.searchWithFilters(
+                apiKey = apiKey,
+                page = page,
+                filters = filters,
+                sortType = sortFilter.filterKeys {
+                    it == QUERY_PARAM_SORT_TYPE
+                },
+                sortField = sortFilter
+            )
             val movies = apiResponse.docs
             val endOfPaginationReached = apiResponse.page == apiResponse.total || apiResponse.docs.isEmpty()
-//
+            Log.d("MEDIATOR_PAGING", endOfPaginationReached.toString())
             database.withTransaction {
                 name?.let {
                     if (it.trim().isNotEmpty()) {
@@ -140,9 +150,11 @@ class MovieRemoteMediator(
     }
 
     private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, MovieEntity>): MovieRemoteKeyEntity? {
+        Log.d("MEDIATOR_REMOTE_KEY_START", "movie.id.toString()")
         return state.pages.lastOrNull {
             it.data.isNotEmpty()
         }?.data?.lastOrNull()?.let { movie ->
+            Log.d("MEDIATOR_REMOTE_KEY", movie.id.toString())
             remoteKeyDao.getRemoteKeyByValueID(movie.id)
         }
     }

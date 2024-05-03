@@ -39,6 +39,9 @@ class AnalyticsTracker @Inject constructor() {
             MovieListEvent.MovieListUiEvent.GetHistory -> {
 
             }
+            is MovieListEvent.MovieListUiEvent.SortedSearchCLicked -> {
+
+            }
         }
     }
 
@@ -66,6 +69,9 @@ class AnalyticsTracker @Inject constructor() {
 
             }
             MovieListEvent.MovieListUiEvent.GetHistory -> {
+
+            }
+            is MovieListEvent.MovieListUiEvent.SortedSearchCLicked -> {
 
             }
         }

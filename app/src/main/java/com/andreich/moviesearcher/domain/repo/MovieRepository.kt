@@ -17,7 +17,8 @@ interface MovieRepository {
         requestId: String,
         name: String?,
         filters: Map<String, List<String>>,
-        completeRequest: Boolean
+        completeRequest: Boolean,
+        sortFilters: Map<String, Int>
     ): Flow<PagingData<Movie>>
 
     suspend fun getMovieHistory(): List<MovieSearchHistory>

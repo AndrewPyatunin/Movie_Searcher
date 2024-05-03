@@ -37,6 +37,8 @@ class MovieFilterFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     companion object {
 
+        const val SORT_QUERY_AGE = ""
+
         const val QUERY_STATE = "initial_filter_state"
 
         const val QUERY_COUNTRY = "countries.name"

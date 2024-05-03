@@ -48,6 +48,9 @@ class MovieListUpdate @Inject constructor(
             is MovieListUiEvent.GetHistory -> {
                 handleUiEvent(event)
             }
+            is MovieListUiEvent.SortedSearchCLicked -> {
+                handleUiEvent(event)
+            }
         }
     }
 
@@ -98,6 +101,10 @@ class MovieListUpdate @Inject constructor(
             }
             MovieListUiEvent.GetHistory -> {
                 commands(MovieListCommand.GetHistory)
+            }
+            is MovieListUiEvent.SortedSearchCLicked -> {
+                commands(MovieListCommand.SearchSorted(event.sortQuery, event.sortId, event.scope))
+                state { copy(isLoading = true) }
             }
         }
     }

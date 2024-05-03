@@ -28,6 +28,7 @@ class MovieDtoToMovieMapper @Inject constructor(
             countries = fromDto.countries.map {
                 it.name.toString()
             },
+            firstCountry = if (fromDto.countries.size > 0) fromDto.countries[0].name else null,
             url = fromDto.poster?.url ?: "",
             previewUrl = fromDto.poster?.previewUrl ?: "",
             actors = fromDto.persons.map {

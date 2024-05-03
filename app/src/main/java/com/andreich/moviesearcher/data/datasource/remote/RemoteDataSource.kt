@@ -9,6 +9,8 @@ interface RemoteDataSource {
         page: Int = 1,
         limit: Int = 10,
         filters: Map<String, List<String>> = emptyMap(),
+        sortField: Map<String, String> = emptyMap(),
+        sortType: Map<String, String> = emptyMap()
     ): RequestResultDto<MovieDto>
 
     suspend fun getActors(

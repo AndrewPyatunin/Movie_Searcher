@@ -23,6 +23,8 @@ sealed interface MovieListEvent {
 
         class FilterSearchClicked(val query: Map<String, List<String>>, val scope: CoroutineScope) : MovieListUiEvent
 
+        class SortedSearchCLicked(val sortQuery: Map<String, Int>, val sortId: String, val scope: CoroutineScope) : MovieListUiEvent
+
         class MovieItemClicked(val movie: MovieItem) : MovieListUiEvent
 
         object GetHistory : MovieListUiEvent

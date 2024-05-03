@@ -17,6 +17,13 @@ interface MovieDataSource {
         yearEndFilter: Int?
     ): PagingSource<Int, MovieEntity>
 
+    fun getSortedMovies(
+        requestId: String,
+        yearSortAsc: Boolean?,
+        ageSortAsc: Boolean?,
+        countrySortAsc: Boolean?
+    ): PagingSource<Int, MovieEntity>
+
     fun getMovie(id: Int): Flow<MovieEntity>
 
     suspend fun insertMovies(list: List<MovieEntity>)

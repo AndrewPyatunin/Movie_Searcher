@@ -27,7 +27,7 @@
             android:background="@color/shimmer"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shimmer_duration="1000" />
+            app:shimmer_duration="700" />
 
         <ImageView
             android:id="@+id/movie_detail_image"
@@ -154,7 +154,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
             android:layout_marginVertical="4dp"
-            android:textSize="18sp"
+            android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/movie_description_tag"
             app:layout_constraintWidth_default="percent"
@@ -164,7 +164,9 @@
             android:id="@+id/movie_actors_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
             app:category_text="@string/actors"
+            app:category_text_size="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/movie_detail_description" />
 
@@ -179,7 +181,9 @@
             android:id="@+id/movie_reviews_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
             app:category_text="@string/reviews"
+            app:category_text_size="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/movie_detail_actors_recycler" />
 
@@ -194,7 +198,9 @@
             android:id="@+id/movie_posters_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
             app:category_text="@string/posters"
+            app:category_text_size="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/movie_detail_reviews_recycler" />
 

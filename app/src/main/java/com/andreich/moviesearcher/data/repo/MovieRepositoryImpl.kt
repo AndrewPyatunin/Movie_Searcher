@@ -12,17 +12,12 @@ import com.andreich.moviesearcher.data.entity.PersonEntity
 import com.andreich.moviesearcher.data.mapper.EntityToModelMapper
 import com.andreich.moviesearcher.data.mapper.MovieMapper
 import com.andreich.moviesearcher.data.remotemediator.MovieRemoteMediator
+import com.andreich.moviesearcher.domain.*
 import com.andreich.moviesearcher.domain.model.Movie
 import com.andreich.moviesearcher.domain.model.MovieSearchHistory
 import com.andreich.moviesearcher.domain.pojo.MovieDto
 import com.andreich.moviesearcher.domain.pojo.PersonDto
 import com.andreich.moviesearcher.domain.repo.MovieRepository
-import com.andreich.moviesearcher.ui.screen.MovieFilterFragment.Companion.QUERY_COUNTRY
-import com.andreich.moviesearcher.ui.screen.MovieFilterFragment.Companion.QUERY_GENRE
-import com.andreich.moviesearcher.ui.screen.MovieFilterFragment.Companion.QUERY_MOVIE_TYPE
-import com.andreich.moviesearcher.ui.screen.MovieFilterFragment.Companion.QUERY_NETWORKS
-import com.andreich.moviesearcher.ui.screen.MovieFilterFragment.Companion.QUERY_RATING
-import com.andreich.moviesearcher.ui.screen.MovieFilterFragment.Companion.QUERY_YEAR
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -52,7 +47,8 @@ class MovieRepositoryImpl @Inject constructor(
         requestId: String,
         name: String?,
         filters: Map<String, List<String>>,
-        completeRequest: Boolean
+        completeRequest: Boolean,
+        sortFilters: Map<String, Int>
     ): Flow<PagingData<Movie>> {
         Log.d("SEARCH_IN_REPO", "$pageSize")
         return Pager(
@@ -63,16 +59,25 @@ class MovieRepositoryImpl @Inject constructor(
                 enablePlaceholders = true,
             ),
             pagingSourceFactory = {
-                movieDataSource.getMovies(
-                    requestId,
-                    filters[QUERY_GENRE]?.get(0) ?: "",
-                    filters[QUERY_COUNTRY]?.get(0) ?: "",
-                    filters[QUERY_MOVIE_TYPE]?.get(0) ?: "",
-                    filters[QUERY_NETWORKS]?.get(0) ?: "",
-                    filters[QUERY_RATING]?.get(0)?.substringBefore('-')?.toDoubleOrNull(),
-                    filters[QUERY_YEAR]?.get(0)?.substringBefore('-')?.toIntOrNull(),
-                    filters[QUERY_YEAR]?.get(0)?.substringAfter('-')?.toIntOrNull()
-                )
+                if (sortFilters.isEmpty()) {
+                    movieDataSource.getMovies(
+                        requestId,
+                        filters[QUERY_GENRE]?.get(0) ?: "",
+                        filters[QUERY_COUNTRY]?.get(0) ?: "",
+                        filters[QUERY_MOVIE_TYPE]?.get(0) ?: "",
+                        filters[QUERY_NETWORKS]?.get(0) ?: "",
+                        filters[QUERY_RATING]?.get(0)?.substringBefore('-')?.toDoubleOrNull(),
+                        filters[QUERY_YEAR]?.get(0)?.substringBefore('-')?.toIntOrNull(),
+                        filters[QUERY_YEAR]?.get(0)?.substringAfter('-')?.toIntOrNull()
+                    )
+                } else
+                    movieDataSource.getSortedMovies(
+                        requestId,
+                        sortFilters[QUERY_YEAR]?.let { it == 1 },
+                        sortFilters[QUERY_AGE_RATING]?.let { it == 1 },
+                        sortFilters[QUERY_COUNTRY]?.let { it == 1 }
+                    )
+
             },
             remoteMediator = MovieRemoteMediator(
                 database,
@@ -84,7 +89,29 @@ class MovieRepositoryImpl @Inject constructor(
                 name = name,
                 requestId = requestId,
                 filters = filters,
-                completeRequest = completeRequest
+                completeRequest = completeRequest,
+                sortFilter = mutableMapOf<String, String>().apply {
+                    sortFilters.forEach {
+                        when (it.key) {
+                            QUERY_AGE_RATING -> {
+                                this[QUERY_PARAM_SORT_FIELD] = QUERY_AGE_RATING
+                                this[QUERY_PARAM_SORT_TYPE] = it.value.toString()
+                            }
+                            QUERY_COUNTRY -> {
+
+                                this[QUERY_PARAM_SORT_FIELD] = QUERY_COUNTRY
+                                this[QUERY_PARAM_SORT_TYPE] = it.value.toString()
+                            }
+                            QUERY_YEAR -> {
+
+                                this[QUERY_PARAM_SORT_FIELD] = QUERY_YEAR
+                                this[QUERY_PARAM_SORT_TYPE] = it.value.toString()
+                            }
+                            else -> {
+                            }
+                        }
+                    }
+                }
             )
         ).flow.map {
             it.map {

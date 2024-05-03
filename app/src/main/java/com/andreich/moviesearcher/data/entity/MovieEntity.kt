@@ -18,6 +18,7 @@ data class MovieEntity(
     val ageRating: Int,
     val genres: List<String>,
     val countries: List<String>,
+    val firstCountry: String?,
     val url: String,
     val previewUrl: String,
     val actors: List<PersonEntity>,

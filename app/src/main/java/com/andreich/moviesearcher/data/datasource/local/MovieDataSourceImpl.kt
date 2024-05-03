@@ -33,6 +33,15 @@ class MovieDataSourceImpl @Inject constructor(
         return movieDao.getMovies(requestId)
     }
 
+    override fun getSortedMovies(
+        requestId: String,
+        yearSortAsc: Boolean?,
+        ageSortAsc: Boolean?,
+        countrySortAsc: Boolean?
+    ): PagingSource<Int, MovieEntity> {
+        return movieDao.loadSortedMovies(requestId)
+    }
+
     override fun getMovie(id: Int): Flow<MovieEntity> {
         return movieDao.getMovie(id)
     }

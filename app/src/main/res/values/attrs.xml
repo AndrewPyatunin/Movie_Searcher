@@ -3,6 +3,7 @@
     <declare-styleable name="CustomTextViewWithImage">
 
         <attr name="category_text" format="string"/>
+        <attr name="category_text_size" format="dimension"/>
         <attr name="expand_svg" format="reference"/>
         <attr name="shorten_svg" format="reference"/>
         <attr name="iconColor" format="color"/>
