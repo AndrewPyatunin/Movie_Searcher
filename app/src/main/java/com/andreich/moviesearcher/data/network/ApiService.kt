@@ -29,10 +29,12 @@ interface ApiService {
         @QueryMap sortType: Map<String, String> = emptyMap()
     ): RequestResultDto<MovieDto>
 
-    @GET("person?selectFields=id&selectFields=name&selectFields=enName" +
-            "&selectFields=photo&selectFields=sex&selectFields=birthday&selectFields=age" +
-            "&selectFields=countAwards&selectFields=profession&sortField=countAwards" +
-            "&sortField=movies.general&sortType=-1&sortType=-1")
+    @GET(
+        "person?selectFields=id&selectFields=name&selectFields=enName" +
+                "&selectFields=photo&selectFields=sex&selectFields=birthday&selectFields=age" +
+                "&selectFields=countAwards&selectFields=profession&sortField=countAwards" +
+                "&sortField=movies.general&sortType=-1&sortType=-1"
+    )
     suspend fun getActors(
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 10,
@@ -47,8 +49,10 @@ interface ApiService {
         @Query(QUERY_PARAM_MOVIE_SEARCH_NAME) movieName: String,
     ): RequestResultDto<MovieDto>
 
-    @GET("review?selectFields=id&selectFields=movieId&selectFields=title" +
-            "&selectFields=type&selectFields=review&selectFields=date&selectFields=author")
+    @GET(
+        "review?selectFields=id&selectFields=movieId&selectFields=title" +
+                "&selectFields=type&selectFields=review&selectFields=date&selectFields=author"
+    )
     suspend fun getReviews(
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 10,
@@ -56,10 +60,12 @@ interface ApiService {
         @Query(QUERY_PARAM_SELECT_FIELDS) vararg filters: String,
     ): RequestResultDto<ReviewDto>
 
-    @GET("season?selectFields=movieId&selectFields=poster&selectFields=number" +
-            "&selectFields=name&selectFields=enName&selectFields=description" +
-            "&selectFields=enDescription&selectFields=episodesCount&selectFields=airDate" +
-            "&selectFields=episodes&sortField=airDate&sortField=episodes.date&sortType=1&sortType=1&number=1-30")
+    @GET(
+        "season?selectFields=movieId&selectFields=poster&selectFields=number" +
+                "&selectFields=name&selectFields=enName&selectFields=description" +
+                "&selectFields=enDescription&selectFields=episodesCount&selectFields=airDate" +
+                "&selectFields=episodes&sortField=airDate&sortField=episodes.date&sortType=1&sortType=1&number=1-30"
+    )
     suspend fun getSeasons(
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 10,
@@ -75,9 +81,7 @@ interface ApiService {
     ): RequestResultDto<PosterDto>
 
     @GET("movie/{movieId}")
-    suspend fun getFilmById(
-        @Query("movieId") movieId: Int,
-    )
+    suspend fun getFilmById(@Query("movieId") movieId: Int)
 
     companion object {
 

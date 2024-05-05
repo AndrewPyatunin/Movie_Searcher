@@ -6,8 +6,11 @@ import dagger.BindsInstance
 import dagger.Component
 
 @AppScope
-@Component(modules = [DataModule::class, DomainModule::class, DatabaseModule::class,
-    EntityMapperModule::class, ApiModule::class, DtoModule::class, StoreModule::class])
+@Component(
+    modules = [DataModule::class, DomainModule::class, DatabaseModule::class,
+        EntityMapperModule::class, ApiModule::class, DtoModule::class, StoreModule::class,
+        HtmlFormatterModule::class, UiStateMapperModule::class]
+)
 interface AppComponent {
 
     @Component.Factory

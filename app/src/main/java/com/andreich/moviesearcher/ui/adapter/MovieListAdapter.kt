@@ -20,6 +20,7 @@ import com.facebook.shimmer.ShimmerFrameLayout
 object DiffCallback : DiffUtil.ItemCallback<MovieItem>() {
 
     override fun areItemsTheSame(oldItem: MovieItem, newItem: MovieItem): Boolean {
+        Log.d("DIFFCALLBACK", "${oldItem.id == newItem.id}")
         return oldItem.id == newItem.id
     }
 
@@ -28,7 +29,7 @@ object DiffCallback : DiffUtil.ItemCallback<MovieItem>() {
     }
 }
 
-class MovieListAdapter() :
+class MovieListAdapter :
     PagingDataAdapter<MovieItem, MovieListAdapter.MovieViewHolder>(DiffCallback) {
 
     var onMovieClick: OnMovieClickListener? = null

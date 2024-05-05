@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface MovieDataSource {
 
+    @Suppress("LongParameterList")
     fun getMovies(
         requestId: String,
         genreFilter: String,

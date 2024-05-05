@@ -5,6 +5,7 @@ import com.andreich.moviesearcher.domain.model.Movie
 import com.andreich.moviesearcher.domain.model.Person
 import com.andreich.moviesearcher.domain.model.Poster
 import com.andreich.moviesearcher.domain.model.Review
+import com.andreich.moviesearcher.ui.ReviewItem
 import kotlinx.coroutines.CoroutineScope
 
 sealed interface MovieDetailEvent {

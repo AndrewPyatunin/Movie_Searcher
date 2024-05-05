@@ -28,9 +28,8 @@ class PersonDiffCallback : DiffUtil.ItemCallback<Person>() {
 
 }
 
-class ActorAdapter() :
+class ActorAdapter :
     ListAdapter<Person, ActorAdapter.PersonViewHolder>(PersonDiffCallback()) {
-    //RecyclerView.Adapter<PersonAdapter.PersonViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PersonViewHolder {
         val view =

@@ -1,5 +1,6 @@
 package com.andreich.moviesearcher.presentation.movie_detail
 
+import androidx.paging.map
 import com.andreich.moviesearcher.domain.usecase.GetMovieUseCase
 import com.andreich.moviesearcher.domain.usecase.GetPersonsUseCase
 import com.andreich.moviesearcher.domain.usecase.GetPostersUseCase

@@ -94,18 +94,16 @@ class MovieRepositoryImpl @Inject constructor(
                     sortFilters.forEach {
                         when (it.key) {
                             QUERY_AGE_RATING -> {
-                                this[QUERY_PARAM_SORT_FIELD] = QUERY_AGE_RATING
-                                this[QUERY_PARAM_SORT_TYPE] = it.value.toString()
+                                QUERY_PARAM_SORT_FIELD to QUERY_AGE_RATING
+                                QUERY_PARAM_SORT_TYPE to it.value.toString()
                             }
                             QUERY_COUNTRY -> {
-
-                                this[QUERY_PARAM_SORT_FIELD] = QUERY_COUNTRY
-                                this[QUERY_PARAM_SORT_TYPE] = it.value.toString()
+                                QUERY_PARAM_SORT_FIELD to QUERY_COUNTRY
+                                QUERY_PARAM_SORT_TYPE to it.value.toString()
                             }
                             QUERY_YEAR -> {
-
-                                this[QUERY_PARAM_SORT_FIELD] = QUERY_YEAR
-                                this[QUERY_PARAM_SORT_TYPE] = it.value.toString()
+                                QUERY_PARAM_SORT_FIELD to QUERY_YEAR
+                                QUERY_PARAM_SORT_TYPE to it.value.toString()
                             }
                             else -> {
                             }

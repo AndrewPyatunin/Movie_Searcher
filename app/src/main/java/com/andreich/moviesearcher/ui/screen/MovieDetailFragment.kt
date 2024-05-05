@@ -60,6 +60,9 @@ class MovieDetailFragment : Fragment() {
     @Inject
     lateinit var movieDetailStore: MovieDetailStore
 
+    @Inject
+    lateinit var mapper: MovieDetailUiStateMapper
+
     private val store by storeViaViewModel(Dispatchers.Default + coroutineExceptionHandler) { movieDetailStore }
 
     private val movieId by lazy { arguments?.getInt(KEY_MOVIE) }
@@ -67,9 +70,15 @@ class MovieDetailFragment : Fragment() {
     private val binding: FragmentMovieDetailBinding
         get() = _binding ?: throw RuntimeException("Binding is null!")
 
-    lateinit var reviewAdapter: ReviewListAdapter
-    lateinit var posterAdapter: PosterAdapter
-    lateinit var actorAdapter: ActorAdapter
+    private val reviewAdapter: ReviewListAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        ReviewListAdapter()
+    }
+    private val posterAdapter: PosterAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        PosterAdapter()
+    }
+    private val actorAdapter: ActorAdapter by lazy(LazyThreadSafetyMode.NONE) {
+         ActorAdapter()
+    }
 
     private val component by lazy { (activity?.application as MovieApp).component }
 
@@ -78,7 +87,7 @@ class MovieDetailFragment : Fragment() {
         component.inject(this)
         store.collectOnCreate(
             fragment = this,
-            uiStateMapper = MovieDetailUiStateMapper(),
+            uiStateMapper = mapper,
             stateCollector = ::collectState,
             newsCollector = ::handleNews,
         )
@@ -107,6 +116,7 @@ class MovieDetailFragment : Fragment() {
         }
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                Log.d("PosterAdapterFragment", state.posters.toString())
                 posterAdapter.submitData(state.posters)
             }
         }
@@ -140,13 +150,10 @@ class MovieDetailFragment : Fragment() {
         val recyclerViewActors = binding.movieDetailActorsRecycler
         val recyclerViewReviews = binding.movieDetailReviewsRecycler
         val recyclerViewPosters = binding.movieDetailPostersRecycler
-        recyclerViewActors.adapter = ActorAdapter()
-        recyclerViewReviews.adapter = ReviewListAdapter()
-        recyclerViewPosters.adapter = PosterAdapter()
 
-        reviewAdapter = recyclerViewReviews.adapter as ReviewListAdapter
-        posterAdapter = recyclerViewPosters.adapter as PosterAdapter
-        actorAdapter = recyclerViewActors.adapter as ActorAdapter
+        recyclerViewActors.adapter = actorAdapter
+        recyclerViewReviews.adapter = reviewAdapter
+        recyclerViewPosters.adapter = posterAdapter
 
         recyclerViewActors.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)

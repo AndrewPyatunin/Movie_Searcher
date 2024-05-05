@@ -1,5 +1,6 @@
 package com.andreich.moviesearcher.ui.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,9 +27,8 @@ class PosterDiffCallback : DiffUtil.ItemCallback<Poster>() {
 
 }
 
-class PosterAdapter() :
+class PosterAdapter :
     PagingDataAdapter<Poster, PosterAdapter.PosterViewHolder>(PosterDiffCallback()) {
-    //RecyclerView.Adapter<PosterAdapter.PosterViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PosterViewHolder {
         val view =
@@ -38,6 +38,7 @@ class PosterAdapter() :
 
     override fun onBindViewHolder(holder: PosterViewHolder, position: Int) {
         val poster = getItem(position)
+        Log.d("PosterAdapter", poster?.previewUrl.toString())
         with(holder) {
             Glide.with(itemView.context).load(poster?.previewUrl).into(posterImage)
         }

@@ -38,8 +38,6 @@ class PosterRemoteMediator(
             val endOfPaginationReached = posters.isEmpty()
 
             database.withTransaction {
-                if (loadType == LoadType.REFRESH) {
-                }
                 val prevKey = if (page > 1) page - 1 else null
                 val nextKey = if (endOfPaginationReached) null else page + 1
                 val remoteKeys = posters.map {
