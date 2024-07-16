@@ -9,10 +9,11 @@ interface MovieRepository {
 
     fun getMovie(movieId: Int): Flow<Movie>
 
+    suspend fun insertMovies(movies: List<Movie>)
+
     suspend fun searchFilm(name: String)
 
     fun searchFilteredFilms(
-        requestParams: String?,
         pageSize: Int,
         requestId: String,
         name: String?,
@@ -20,6 +21,8 @@ interface MovieRepository {
         completeRequest: Boolean,
         sortFilters: Map<String, Int>
     ): Flow<PagingData<Movie>>
+
+    suspend fun insertMovieHistory(request: MovieSearchHistory)
 
     suspend fun getMovieHistory(): List<MovieSearchHistory>
 }

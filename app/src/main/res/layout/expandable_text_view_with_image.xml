@@ -8,6 +8,7 @@
     android:layout_height="wrap_content">
 
     <TextView
+        style="@style/ExpandBackground"
         android:id="@+id/movie_info_tag"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -16,8 +17,7 @@
         android:layout_marginVertical="4dp"
         android:textAlignment="textStart"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         style="@style/IconStyleDown"

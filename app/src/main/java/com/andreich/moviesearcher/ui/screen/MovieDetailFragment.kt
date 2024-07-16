@@ -66,6 +66,7 @@ class MovieDetailFragment : Fragment() {
     private val store by storeViaViewModel(Dispatchers.Default + coroutineExceptionHandler) { movieDetailStore }
 
     private val movieId by lazy { arguments?.getInt(KEY_MOVIE) }
+    
     private var _binding: FragmentMovieDetailBinding? = null
     private val binding: FragmentMovieDetailBinding
         get() = _binding ?: throw RuntimeException("Binding is null!")
@@ -161,7 +162,6 @@ class MovieDetailFragment : Fragment() {
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         recyclerViewPosters.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-
 
         binding.movieReviewsTag.setOnClickListener {
             recyclerViewReviews.changeVisibility()

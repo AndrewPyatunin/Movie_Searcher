@@ -14,14 +14,14 @@ class MovieListSortCommandHandler @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun handle(commands: Flow<MovieListCommand>): Flow<MovieListEvent.MovieListCommandsResultEvent> {
         return commands.filterIsInstance<MovieListCommand.SearchSorted>().flatMapLatest {
-            Log.d("COMMAND_HANDLER_SORT", "start")
+            Log.d("COMMAND_HANDLER_SORT", it.sortFilters.entries.joinToString(", "))
             searchFilteredFilmsUseCase.execute(
                 pageSize = 10,
                 requestId = it.sortId,
                 scope = it.scope,
                 sortFilters = it.sortFilters
-            ).mapLatest {
-                Log.d("COMMAND_HANDLER_DATA", "data")
+            ).map {
+                Log.d("COMMAND_HANDLER_SORT", "data")
                 MovieListEvent.MovieListCommandsResultEvent.DataIsReady(it)
             }.catch {
                 MovieListEvent.MovieListCommandsResultEvent.LoadError(it.message.toString())

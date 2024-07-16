@@ -11,15 +11,16 @@
     <string name="posters">Posters</string>
     <string name="reviews">Reviews</string>
     <string name="actors">Actors</string>
-    <string name="choose_filters">Выберите фильтры</string>
-    <string name="content_type">Тип контента</string>
-    <string name="years">Годы выхода</string>
-    <string name="rating">Рейтинг</string>
-    <string name="input_value">Введите значение:</string>
-    <string name="network">Сеть производства</string>
-    <string name="from">С</string>
-    <string name="until">До</string>
-    <string name="apply">Применить</string>
+    <string name="choose_filters">Choose filters</string>
+    <string name="content_type">Content type</string>
+    <string name="years">Years</string>
+    <string name="rating">Rating</string>
+    <string name="input_value">Input value:</string>
+    <string name="network">Network</string>
+    <string name="from">From</string>
+    <string name="until">Until</string>
+    <string name="apply">Apply</string>
+    <string name="reset_filters">Reset filters</string>
     <string-array name="countries">
         <item>Выберите страну</item>
         <item>США</item>

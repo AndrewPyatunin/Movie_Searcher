@@ -1,6 +1,7 @@
 package com.andreich.moviesearcher.ui.screen
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,13 +28,16 @@ class MovieFilterFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     val query = mutableMapOf<String, List<String>>()
 
+    val positions = mutableMapOf<String, Int>()
+
     private val store by storeViaViewModel {
         MovieFilterStore(
-            MovieFilterUpdate(), MovieFilterState(
-                emptyMap(), emptyMap()
-            )
+            MovieFilterUpdate(), filterState
         )
     }
+
+    private val filterState by lazy { arguments?.getParcelable<MovieFilterState>(QUERY_STATE) ?: MovieFilterState(
+        emptyMap(), emptyMap()) }
 
     companion object {
 
@@ -48,8 +52,13 @@ class MovieFilterFragment : Fragment(), AdapterView.OnItemSelectedListener {
         const val QUERY_YEAR = "year"
         const val QUERY_RATING = "rating.kp"
 
-        fun newInstance(): MovieFilterFragment {
-            return MovieFilterFragment()
+        fun newInstance(state: MovieFilterState? = null): MovieFilterFragment {
+            return MovieFilterFragment().apply {
+                arguments = Bundle().apply {
+                    Log.d("FILTER_STATE", state.toString())
+                    putParcelable(QUERY_STATE, state)
+                }
+            }
         }
     }
 
@@ -84,8 +93,8 @@ class MovieFilterFragment : Fragment(), AdapterView.OnItemSelectedListener {
     }
 
     private fun collectState(state: MovieFilterUiState) {
-        initViews()
         with(binding) {
+            Log.d("FILTER_STATE_COLLECT", state.toString())
             spinnerNetwork.setSelection(state.networkPosition)
             spinnerMovieTypes.setSelection(state.movieTypePosition)
             spinnerCountries.setSelection(state.countryPosition)
@@ -103,6 +112,19 @@ class MovieFilterFragment : Fragment(), AdapterView.OnItemSelectedListener {
             }
             is MovieFilterNews.ShowError -> {
                 Toast.makeText(requireContext(), news.message, Toast.LENGTH_SHORT).show()
+            }
+            MovieFilterNews.ResetFilters -> {
+                with(binding) {
+                    spinnerNetwork.setSelection(0)
+                    spinnerMovieTypes.setSelection(0)
+                    spinnerCountries.setSelection(0)
+                    spinnerGenres.setSelection(0)
+                    editTextStartYear.setText("")
+                    editTextEndYear.setText("")
+                    editTextRating.setText("")
+                }
+                query.clear()
+                positions.clear()
             }
         }
     }
@@ -130,7 +152,17 @@ class MovieFilterFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 if (editTextRating.text.isNotEmpty()) {
                     query[QUERY_RATING] = listOf("${editTextRating.text.trim()}-10")
                 }
-                store.dispatch(MovieFilterUiEvent.ApplyFilters(query))
+                store.dispatch(MovieFilterUiEvent.ApplyFilters(query, positions))
+            }
+            buttonReset.setOnClickListener {
+                spinnerNetwork.setSelection(0)
+                spinnerMovieTypes.setSelection(0)
+                spinnerCountries.setSelection(0)
+                spinnerGenres.setSelection(0)
+                editTextStartYear.setText("")
+                editTextEndYear.setText("")
+                editTextRating.setText("")
+                store.dispatch(MovieFilterUiEvent.ResetFilters)
             }
         }
 
@@ -171,26 +203,30 @@ class MovieFilterFragment : Fragment(), AdapterView.OnItemSelectedListener {
             R.id.spinnerCountries -> {
                 if (position == 0) return
                 val country = parent.getItemAtPosition(position).toString()
-                MovieFilterUiEvent.ApplyPositions(mapOf(Pair(QUERY_COUNTRY, position)))
+                positions[QUERY_COUNTRY] = position
                 query[QUERY_COUNTRY] = listOf(country)
+                MovieFilterUiEvent.ApplyPositions(mapOf(Pair(QUERY_COUNTRY, position)))
             }
             R.id.spinnerGenres -> {
                 if (position == 0) return
                 val genre = parent.getItemAtPosition(position).toString().lowercase()
-                MovieFilterUiEvent.ApplyPositions(mapOf(Pair(QUERY_GENRE, position)))
+                positions[QUERY_GENRE] = position
                 query[QUERY_GENRE] = listOf(genre)
+                MovieFilterUiEvent.ApplyPositions(mapOf(Pair(QUERY_GENRE, position)))
             }
             R.id.spinnerNetwork -> {
                 if (position == 0) return
                 val network = parent.getItemAtPosition(position).toString()
-                MovieFilterUiEvent.ApplyPositions(mapOf(Pair(QUERY_NETWORKS, position)))
                 query[QUERY_NETWORKS] = listOf(network)
+                positions[QUERY_NETWORKS] = position
+                MovieFilterUiEvent.ApplyPositions(mapOf(Pair(QUERY_NETWORKS, position)))
             }
             R.id.spinnerMovieTypes -> {
                 if (position == 0) return
                 val type = parent.getItemAtPosition(position).toString()
-                MovieFilterUiEvent.ApplyPositions(mapOf(Pair(QUERY_MOVIE_TYPE, position)))
                 query[QUERY_MOVIE_TYPE] = listOf(type.movieType())
+                positions[QUERY_MOVIE_TYPE] = position
+                MovieFilterUiEvent.ApplyPositions(mapOf(Pair(QUERY_MOVIE_TYPE, position)))
             }
         }
     }

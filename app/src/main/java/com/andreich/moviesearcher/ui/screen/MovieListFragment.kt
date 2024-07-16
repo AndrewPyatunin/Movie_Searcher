@@ -22,6 +22,7 @@ import com.andreich.moviesearcher.databinding.FragmentMovieListBinding
 import com.andreich.moviesearcher.domain.QUERY_AGE_RATING
 import com.andreich.moviesearcher.domain.QUERY_COUNTRY
 import com.andreich.moviesearcher.domain.QUERY_YEAR
+import com.andreich.moviesearcher.presentation.movie_filter.MovieFilterState
 import com.andreich.moviesearcher.presentation.movie_list.MovieListEvent
 import com.andreich.moviesearcher.presentation.movie_list.MovieListNews
 import com.andreich.moviesearcher.presentation.movie_list.MovieListStore
@@ -40,23 +41,24 @@ import ru.tinkoff.kotea.android.lifecycle.collectOnCreate
 import ru.tinkoff.kotea.android.storeViaViewModel
 import javax.inject.Inject
 
+
 class MovieListFragment : Fragment() {
 
     companion object {
 
         private const val QUERY_FILTER = "query_filter"
 
-        fun getInstance(query: java.io.Serializable?): MovieListFragment {
+        fun getInstance(query: MovieFilterState?): MovieListFragment {
             return MovieListFragment().apply {
                 arguments = Bundle().apply {
-                    putSerializable(QUERY_FILTER, query)
+                    putParcelable(QUERY_FILTER, query)
                 }
             }
         }
     }
 
     private val queryFilter by lazy {
-        arguments?.getSerializable(QUERY_FILTER) ?: FilterState.filters
+        arguments?.getParcelable(QUERY_FILTER) ?: FilterState.filters
     }
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -74,11 +76,11 @@ class MovieListFragment : Fragment() {
     private val binding: FragmentMovieListBinding
         get() = _binding ?: throw RuntimeException("Binding is null!")
 
-
     private val component by lazy { (activity?.application as MovieApp).component }
 
     private val debounce by lazy {
         Debounce(1000, lifecycleScope) {
+            Log.d("LIST_FRAGMENT_SEARCH", it)
             clearData()
             store.dispatch(
                 MovieListEvent.MovieListUiEvent.SearchClicked(
@@ -122,10 +124,10 @@ class MovieListFragment : Fragment() {
             recyclerHistory.adapter = HistoryAdapter()
             historyAdapter = recyclerHistory.adapter as HistoryAdapter
             adapter = recyclerMovies.adapter as MovieListAdapter
-            val filters = queryFilter as Map<String, List<String>>
+            val filters = queryFilter?.filters ?: emptyMap()
             if ((filters).isNotEmpty()) {
+                Log.d("LIST_FRAGMENT", "${filters.size}")
                 clearData()
-                FilterState.filters = filters
                 store.dispatch(
                     MovieListEvent.MovieListUiEvent.FilterSearchClicked(
                         filters,
@@ -133,6 +135,7 @@ class MovieListFragment : Fragment() {
                     )
                 )
             } else {
+                Log.d("LIST_FRAGMENT", "0")
                 store.dispatch(MovieListEvent.MovieListUiEvent.LoadData(lifecycleScope))
             }
             listenAdapter()
@@ -173,6 +176,7 @@ class MovieListFragment : Fragment() {
         var previousText = ""
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
+                Log.d("LIST_FRAGMENT_SEARCH", query.length.toString())
                 clearData()
                 store.dispatch(
                     MovieListEvent.MovieListUiEvent.SearchClicked(
@@ -214,55 +218,63 @@ class MovieListFragment : Fragment() {
     }
 
     private fun CustomTextViewWithImage.onSortClick() {
-        setOnClickListener {
-            (it as CustomTextViewWithImage).sortClick(it.get(1).visibility == GONE)
-            it.changeImageRes()
+        with(binding) {
+            val sortList = mutableListOf(sortCountry, sortAgeRating, sortDate)
+            setOnClickListener {
+                sortList.remove(it)
+                (it as CustomTextViewWithImage).sortClick(it[1].visibility == GONE)
+                it.changeImageRes()
+                sortList.forEach {
+                    it.changeToInitialBackground()
+                }
+            }
         }
     }
 
     private fun clickFilter() {
         binding.searchFilterImage.setOnClickListener {
-            store.dispatch(MovieListEvent.MovieListUiEvent.FilterMoviesClicked)
+            store.dispatch(MovieListEvent.MovieListUiEvent.FilterMoviesClicked(queryFilter))
         }
     }
 
-    private fun CustomTextViewWithImage.sortClick(isDown: Boolean, sortQuery: Map<String, Int> = emptyMap()) {
+    private fun CustomTextViewWithImage.sortClick(
+        isDown: Boolean,
+        sortQuery: Map<String, Int> = emptyMap()
+    ) {
+        clearData()
         val sortType = if (isDown) -1 else 1
         when (this.id) {
             R.id.sort_age_rating -> {
-                clearData()
                 store.dispatch(
                     MovieListEvent.MovieListUiEvent.SortedSearchCLicked(
                         mapOf(
-                            Pair(
-                                QUERY_AGE_RATING, sortType
-                            )
-                        ), "sort_ageRating $sortType",
+                            Pair(QUERY_AGE_RATING, sortType)
+                        ), "sort_ageRating_$sortType",
                         lifecycleScope
                     )
                 )
             }
             R.id.sort_country -> {
-                clearData()
                 store.dispatch(
                     MovieListEvent.MovieListUiEvent.SortedSearchCLicked(
                         mapOf(
                             Pair(QUERY_COUNTRY, sortType)
-                        ),"sort_country $sortType",
+                        ), "sort_country_$sortType",
                         lifecycleScope
                     )
                 )
             }
             R.id.sort_date -> {
-                clearData()
                 store.dispatch(
                     MovieListEvent.MovieListUiEvent.SortedSearchCLicked(
                         mapOf(
                             Pair(QUERY_YEAR, sortType)
-                        ), "sort_date $sortType"
-                        , lifecycleScope
+                        ), "sort_date_$sortType", lifecycleScope
                     )
                 )
+            }
+            else -> {
+
             }
         }
     }

@@ -13,7 +13,6 @@ class SearchFilteredFilmsUseCase @Inject constructor(
 ) {
 
     fun execute(
-        searchParams: String? = null,
         pageSize: Int,
         requestId: String,
         name: String? = null,
@@ -23,7 +22,6 @@ class SearchFilteredFilmsUseCase @Inject constructor(
         sortFilters: Map<String, Int> = emptyMap()
     ): Flow<PagingData<Movie>> {
         return repository.searchFilteredFilms(
-            searchParams,
             pageSize,
             requestId,
             name,

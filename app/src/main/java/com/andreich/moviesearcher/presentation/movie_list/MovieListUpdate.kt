@@ -90,8 +90,8 @@ class MovieListUpdate @Inject constructor(
                 commands(MovieListCommand.LoadData(event.scope))
                 state { copy(isLoading = true) }
             }
-            MovieListUiEvent.FilterMoviesClicked -> {
-                news(MovieListNews.NavigateTo(MovieFilterFragment.newInstance()))
+            is MovieListUiEvent.FilterMoviesClicked -> {
+                news(MovieListNews.NavigateTo(MovieFilterFragment.newInstance(event.filterState)))
             }
             MovieListUiEvent.PaginationLoad -> {
                 state { copy(isLoading = true) }

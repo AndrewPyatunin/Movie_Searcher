@@ -1,24 +1,14 @@
 package com.andreich.moviesearcher.data.network
 
-import android.content.Context
 import android.util.Log
+import com.andreich.moviesearcher.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.Response
-import java.io.BufferedReader
-import java.io.IOException
 
-class ApiKeyInterceptor(private val context: Context) : Interceptor {
+class ApiKeyInterceptor : Interceptor {
 
     private fun readApiKeyFromFile(): String {
-        return try {
-            context.assets
-                .open("api_key.txt")
-                .bufferedReader()
-                .use(BufferedReader::readText)
-        } catch (e: IOException) {
-            e.printStackTrace()
-            ""
-        }
+        return BuildConfig.API_KEY
     }
 
     override fun intercept(chain: Interceptor.Chain): Response {

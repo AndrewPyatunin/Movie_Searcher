@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.SearchView
 import android.window.OnBackInvokedDispatcher
 import androidx.fragment.app.FragmentManager
 import com.andreich.moviesearcher.MovieApp

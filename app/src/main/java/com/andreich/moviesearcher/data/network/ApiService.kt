@@ -14,7 +14,7 @@ interface ApiService {
                 "&selectFields=poster&selectFields=logo&selectFields=networks&selectFields=persons" +
                 "&selectFields=sequelsAndPrequels&selectFields=top250" +
                 "&notNullFields=year&notNullFields=ageRating&notNullFields=countries.name" +
-                "&votes.kp=1000-6666666&status=!announced&status=!pre-production"
+                "&votes.kp=1000-6666665"
     )
     suspend fun searchWithFilters(
         @Query("page") page: Int = 1,
@@ -26,7 +26,6 @@ interface ApiService {
         @Query(QUERY_YEAR) years: List<String> = emptyList(),
         @Query(QUERY_RATING) rating: List<String> = emptyList(),
         @QueryMap sortField: Map<String, String> = emptyMap(),
-        @QueryMap sortType: Map<String, String> = emptyMap()
     ): RequestResultDto<MovieDto>
 
     @GET(

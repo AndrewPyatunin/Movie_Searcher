@@ -3,6 +3,7 @@ package com.andreich.moviesearcher.presentation.movie_list
 import androidx.paging.PagingData
 import com.andreich.moviesearcher.domain.model.Movie
 import com.andreich.moviesearcher.domain.model.MovieSearchHistory
+import com.andreich.moviesearcher.presentation.movie_filter.MovieFilterState
 import com.andreich.moviesearcher.ui.MovieItem
 import kotlinx.coroutines.CoroutineScope
 
@@ -15,7 +16,7 @@ sealed interface MovieListEvent {
         class SearchClicked(val name: String, val scope: CoroutineScope, val requestId: String) :
             MovieListUiEvent
 
-        object FilterMoviesClicked : MovieListUiEvent
+        class FilterMoviesClicked(val filterState: MovieFilterState?) : MovieListUiEvent
 
         object PaginationLoad : MovieListUiEvent
 

@@ -21,6 +21,7 @@
     <string name="from">С</string>
     <string name="until">До</string>
     <string name="apply">Применить</string>
+    <string name="reset_filters">Сбросить фильтры</string>
     <string-array name="countries">
         <item>Выберите страну</item>
         <item>США</item>

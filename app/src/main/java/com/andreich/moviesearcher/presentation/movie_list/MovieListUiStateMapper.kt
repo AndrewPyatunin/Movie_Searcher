@@ -31,7 +31,7 @@ class MovieListUiStateMapper : UiStateMapper<MovieListState, MovieListUiState> {
         return MovieListUiState(
             movies = movies,
             progressVisibility = state.isLoading,
-            listVisibility = !state.isLoading
+            listVisibility = !state.isLoading,
         )
     }
 

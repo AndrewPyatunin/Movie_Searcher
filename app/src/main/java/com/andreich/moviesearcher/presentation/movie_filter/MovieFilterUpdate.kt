@@ -1,8 +1,8 @@
 package com.andreich.moviesearcher.presentation.movie_filter
 
+import android.util.Log
 import com.andreich.moviesearcher.ui.screen.MovieListFragment
 import ru.tinkoff.kotea.core.dsl.DslUpdate
-import java.io.Serializable
 import javax.inject.Inject
 
 class MovieFilterUpdate @Inject constructor() :
@@ -11,10 +11,15 @@ class MovieFilterUpdate @Inject constructor() :
     override fun NextBuilder.update(event: MovieFilterUiEvent) {
         when (event) {
             is MovieFilterUiEvent.ApplyFilters -> {
-                news(MovieFilterNews.NavigateTo(MovieListFragment.getInstance(event.filters as Serializable)))
+                Log.d("FILTER_STATE_POS", event.positions.toString())
+                news(MovieFilterNews.NavigateTo(MovieListFragment.getInstance(MovieFilterState(event.filters, event.positions))))
             }
             is MovieFilterUiEvent.ApplyPositions -> {
                 state { copy(positions = event.positions) }
+            }
+            MovieFilterUiEvent.ResetFilters -> {
+                state { copy(filters = emptyMap(), positions = emptyMap()) }
+                news(MovieFilterNews.ResetFilters)
             }
         }
     }

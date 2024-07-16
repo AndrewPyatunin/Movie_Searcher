@@ -24,7 +24,7 @@ class AnalyticsTracker @Inject constructor() {
             is MovieListEvent.MovieListUiEvent.SearchClicked -> {
                 trackUiEvent(state, event)
             }
-            MovieListEvent.MovieListUiEvent.FilterMoviesClicked -> {
+            is MovieListEvent.MovieListUiEvent.FilterMoviesClicked -> {
 
             }
             MovieListEvent.MovieListUiEvent.PaginationLoad -> {
@@ -59,7 +59,7 @@ class AnalyticsTracker @Inject constructor() {
             is MovieListEvent.MovieListUiEvent.SearchClicked -> {
                 Log.d("MovieAnalytics", "Load data ${state.movies}")
             }
-            MovieListEvent.MovieListUiEvent.FilterMoviesClicked -> {
+            is MovieListEvent.MovieListUiEvent.FilterMoviesClicked -> {
 
             }
             MovieListEvent.MovieListUiEvent.PaginationLoad -> {

@@ -20,7 +20,7 @@ class MovieListShowHistoryCommandHandler @Inject constructor(
                     getMovieHistoryUseCase.execute()
                 }
                     .map {
-                        Log.d("HISTORY_HANDLER", it.size.toString())
+                        Log.d("COMMAND_HANDLER_HISTORY", it.size.toString())
                         MovieListEvent.MovieListCommandsResultEvent.SearchHistoryIsReady(it)
                     }
                     .getOrElse {

@@ -32,6 +32,7 @@ class MovieRemoteMediator(
 
     override suspend fun workWithNetworkAndDatabase(page: Int, loadType: LoadType): MediatorResult {
         try {
+            Log.d("SORT_REPO_MEDIATOR", sortFilter.values.joinToString(", "))
             val apiResponse = name?.let {
                 remoteDataSource.searchFilm(apiKey, page, 10, name)
             } ?: remoteDataSource.searchWithFilters(
@@ -43,6 +44,7 @@ class MovieRemoteMediator(
                 },
                 sortField = sortFilter
             )
+            Log.d("MEDIATOR_FILTER", sortFilter.values.joinToString(", "))
             val movies = apiResponse.docs
             val endOfPaginationReached = apiResponse.page == apiResponse.total || apiResponse.docs.isEmpty()
             Log.d("MEDIATOR_PAGING", endOfPaginationReached.toString())

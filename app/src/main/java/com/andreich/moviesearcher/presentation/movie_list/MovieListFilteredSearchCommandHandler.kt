@@ -1,5 +1,6 @@
 package com.andreich.moviesearcher.presentation.movie_list
 
+import android.util.Log
 import com.andreich.moviesearcher.domain.usecase.SearchFilteredFilmsUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -19,6 +20,7 @@ class MovieListFilteredSearchCommandHandler @Inject constructor(private val sear
                     scope = command.scope,
                     filters = command.filters
                 ).map {
+                    Log.d("COMMAND_HANDLER_FILTERED", command.filters.size.toString())
                     MovieListEvent.MovieListCommandsResultEvent.DataIsReady(it)
                 }
                     .catch {

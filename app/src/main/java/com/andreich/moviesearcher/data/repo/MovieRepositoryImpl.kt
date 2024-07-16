@@ -8,6 +8,7 @@ import com.andreich.moviesearcher.data.datasource.local.HistoryDataSource
 import com.andreich.moviesearcher.data.datasource.local.MovieDataSource
 import com.andreich.moviesearcher.data.datasource.remote.RemoteDataSource
 import com.andreich.moviesearcher.data.entity.MovieEntity
+import com.andreich.moviesearcher.data.entity.MovieSearchHistoryEntity
 import com.andreich.moviesearcher.data.entity.PersonEntity
 import com.andreich.moviesearcher.data.mapper.EntityToModelMapper
 import com.andreich.moviesearcher.data.mapper.MovieMapper
@@ -19,6 +20,7 @@ import com.andreich.moviesearcher.domain.pojo.MovieDto
 import com.andreich.moviesearcher.domain.pojo.PersonDto
 import com.andreich.moviesearcher.domain.repo.MovieRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -40,9 +42,43 @@ class MovieRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun insertMovies(movies: List<Movie>) {
+        movieDataSource.insertMovies(movies.map {
+            with(it) {
+                MovieEntity(
+                    id,
+                    name,
+                    alternativeName,
+                    type,
+                    year,
+                    slogan,
+                    description,
+                    rating,
+                    ratingImdb,
+                    ageRating,
+                    genres,
+                    countries,
+                    countries[0],
+                    url,
+                    previewUrl,
+                    emptyList(),
+                    100,
+                    network,
+                    seasonsAmount,
+                    top250,
+                    movieLength ?: 0,
+                    isSeries,
+                    seriesLength ?: 0,
+                    page,
+                    requestId
+                )
+            }
+
+        })
+    }
+
     @OptIn(ExperimentalPagingApi::class)
     override fun searchFilteredFilms(
-        requestParams: String?,
         pageSize: Int,
         requestId: String,
         name: String?,
@@ -92,18 +128,19 @@ class MovieRepositoryImpl @Inject constructor(
                 completeRequest = completeRequest,
                 sortFilter = mutableMapOf<String, String>().apply {
                     sortFilters.forEach {
+                        Log.d("SORT_REPO", it.key)
                         when (it.key) {
                             QUERY_AGE_RATING -> {
-                                QUERY_PARAM_SORT_FIELD to QUERY_AGE_RATING
-                                QUERY_PARAM_SORT_TYPE to it.value.toString()
+                                this[QUERY_PARAM_SORT_FIELD] = QUERY_AGE_RATING
+                                this[QUERY_PARAM_SORT_TYPE] = it.value.toString()
                             }
                             QUERY_COUNTRY -> {
-                                QUERY_PARAM_SORT_FIELD to QUERY_COUNTRY
-                                QUERY_PARAM_SORT_TYPE to it.value.toString()
+                                this[QUERY_PARAM_SORT_FIELD] = QUERY_COUNTRY
+                                this[QUERY_PARAM_SORT_TYPE] = it.value.toString()
                             }
                             QUERY_YEAR -> {
-                                QUERY_PARAM_SORT_FIELD to QUERY_YEAR
-                                QUERY_PARAM_SORT_TYPE to it.value.toString()
+                                this[QUERY_PARAM_SORT_FIELD] = QUERY_YEAR
+                                this[QUERY_PARAM_SORT_TYPE] = it.value.toString()
                             }
                             else -> {
                             }
@@ -113,10 +150,26 @@ class MovieRepositoryImpl @Inject constructor(
             )
         ).flow.map {
             it.map {
-                Log.d("SEARCH_IN_REPO_MAP", it.name)
-                movieEntityMapper.map(it)
+                try {
+                    Log.d("SEARCH_IN_REPO_MAP", it.name)
+                    movieEntityMapper.map(it)
+                } catch (e: Exception) {
+                    throw e
+                }
             }
+        }.catch { ex ->
+            ex.printStackTrace()
         }
+    }
+
+    override suspend fun insertMovieHistory(request: MovieSearchHistory) {
+        historyDataSource.insertRequest(
+            MovieSearchHistoryEntity(
+                request.id,
+                request.movieTitle,
+                System.currentTimeMillis()
+            )
+        )
     }
 
     override suspend fun getMovieHistory(): List<MovieSearchHistory> {

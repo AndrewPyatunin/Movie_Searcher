@@ -15,7 +15,7 @@ class MovieListCommandsFlowHandler @Inject constructor(private val searchUseCase
         return commands.filterIsInstance<MovieListCommand.LoadData>()
             .flatMapLatest { command ->
                 Log.d("COMMAND_HANDLER", "loadData")
-                searchUseCase.execute(null, 10, "", null, command.scope).map {
+                searchUseCase.execute(10, "", null, command.scope).map {
                     Log.d("COMMAND_HANDLER_SUCCESS", it.toString())
                     MovieListEvent.MovieListCommandsResultEvent.DataIsReady(it)
                 }

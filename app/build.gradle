@@ -17,6 +17,12 @@ android {
         versionCode 1
         versionName "1.0"
 
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+        def apiKey = properties.getProperty('api.key')
+        buildConfigField("String", "API_KEY", "$apiKey")
+        multiDexEnabled true
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -52,8 +58,10 @@ dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
 
     implementation("androidx.paging:paging-runtime-ktx:3.2.1")
+    implementation("androidx.paging:paging-testing:3.2.1")
 
     implementation("androidx.room:room-runtime:2.5.2")
+    testImplementation 'junit:junit:4.12'
     // To use Kotlin annotation processing tool (kapt)
     kapt("androidx.room:room-compiler:2.5.2")
     implementation("androidx.room:room-ktx:2.5.2")
@@ -77,4 +85,21 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    testImplementation "org.mockito.kotlin:mockito-kotlin:5.0.0"
+    androidTestImplementation 'org.mockito.kotlin:mockito-kotlin:5.0.0'
+
+
+    testImplementation "org.mockito:mockito-core:5.8.0"
+//    androidTestImplementation "org.mockito:mockito-android:5.8.0"
+
+    implementation("org.mockito:mockito-android:5.8.0")
+
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.11.0")
+    androidTestImplementation("com.squareup.okhttp3:mockwebserver:4.11.0")
 }

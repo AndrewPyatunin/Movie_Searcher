@@ -15,8 +15,8 @@ class MovieListSearchFilmCommandHandler @Inject constructor(private val searchUs
         return commands.filterIsInstance<MovieListCommand.SearchFilm>()
             .flatMapLatest { command ->
                 Log.d("COMMAND_HANDLER", "loadData")
-                searchUseCase.execute(null, 10, command.requestId, command.name, command.scope).map {
-                    Log.d("COMMAND_HANDLER_SUCCESS_SEARCH", it.toString())
+                searchUseCase.execute(10, command.requestId, command.name, command.scope).map {
+                    Log.d("COMMAND_HANDLER_NAME_SEARCH", it.toString())
                     MovieListEvent.MovieListCommandsResultEvent.DataIsReady(it)
                 }
                     .catch {
