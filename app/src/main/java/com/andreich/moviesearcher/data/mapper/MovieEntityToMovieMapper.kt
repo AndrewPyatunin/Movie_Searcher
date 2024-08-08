@@ -13,32 +13,33 @@ class MovieEntityToMovieMapper @Inject constructor(
     override fun map(from: MovieEntity): Movie {
         return with(from) {
             Movie(
-            id = id ?: 0,
-            name = name ?: "",
-            alternativeName = alternativeName ?: "",
-            type = type,
-            year = year,
-            slogan = slogan.toString(),
-            description = description ?: "",
-            rating = rating ?: 0.0,
-            ratingImdb = ratingImdb ?: 0.0,
-            ageRating = ageRating ?: 0,
-            genres = genres,
-            countries = countries,
-            url = url.toString(),
-            previewUrl = previewUrl.toString(),
-            actors = actors.map {
-                            personMapper.map(it)
-            },
-            votes = votes ?: 0,
-            network = network,
-            seasonsAmount = seasonsAmount,
-            top250 = top250 ?: 0,
-            movieLength = movieLength,
-            isSeries = isSeries ?: false,
-            seriesLength = seriesLength,
-            page = 1,
-            requestId = requestId
+                id = id ?: 0,
+                name = name ?: "",
+                alternativeName = alternativeName ?: "",
+                type = type,
+                year = year,
+                slogan = slogan.toString(),
+                description = description ?: "",
+                rating = rating ?: 0.0,
+                ratingImdb = ratingImdb ?: 0.0,
+                ageRating = ageRating ?: 0,
+                genres = genres,
+                countries = countries,
+                url = url.toString(),
+                previewUrl = previewUrl.toString(),
+                actors = actors.map {
+                    personMapper.map(it)
+                },
+                votes = votes ?: 0,
+                network = network,
+                seasonsAmount = seasonsAmount,
+                top250 = top250 ?: 0,
+                movieLength = movieLength,
+                isSeries = isSeries ?: false,
+                seriesLength = seriesLength,
+                page = 1,
+                requestId = requestId,
+                bookmark = bookmark
             )
         }
     }

@@ -21,6 +21,13 @@
     <string name="until">Until</string>
     <string name="apply">Apply</string>
     <string name="reset_filters">Reset filters</string>
+    <string name="actor_movies">Фильмография</string>
+    <string name="actor_career">Карьера</string>
+    <string name="date_of_death">Дата смерти</string>
+    <string name="actor_birth_place">Место Рождения</string>
+    <string name="actor_birthday">Дата рождения</string>
+    <string name="actor_about">О персоне</string>
+    <string name="actor_growth">Рост</string>
     <string-array name="countries">
         <item>Выберите страну</item>
         <item>США</item>

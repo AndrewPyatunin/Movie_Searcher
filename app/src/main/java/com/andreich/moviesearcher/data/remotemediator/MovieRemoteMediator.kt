@@ -64,9 +64,9 @@ class MovieRemoteMediator(
                     it.persons.map { person ->
                         personMapper.map(person, page, requestId)
                     }
-                }.forEach {
+                }/*.forEach {
                     database.personDao().insertActors(it)
-                }
+                }*/
                 if (loadType == LoadType.REFRESH) {
                     Log.d("REMOTE_MEDIATOR", "refresh$page")
                 }

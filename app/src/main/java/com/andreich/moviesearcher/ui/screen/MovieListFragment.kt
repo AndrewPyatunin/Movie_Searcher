@@ -37,6 +37,7 @@ import com.andreich.moviesearcher.ui.view.CustomTextViewWithImage
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import ru.tinkoff.kotea.android.lifecycle.collectOnCreate
 import ru.tinkoff.kotea.android.storeViaViewModel
 import javax.inject.Inject
@@ -92,8 +93,13 @@ class MovieListFragment : Fragment() {
         }
     }
 
-    lateinit var adapter: MovieListAdapter
-    lateinit var historyAdapter: HistoryAdapter
+    private val movieListAdapter: MovieListAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        MovieListAdapter()
+    }
+
+    private val historyAdapter: HistoryAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        HistoryAdapter()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -119,11 +125,9 @@ class MovieListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         with(binding) {
             recyclerMovies.layoutManager = LinearLayoutManager(requireContext())
-            recyclerHistory.layoutManager = LinearLayoutManager(requireContext())
-            recyclerMovies.adapter = MovieListAdapter()
-            recyclerHistory.adapter = HistoryAdapter()
-            historyAdapter = recyclerHistory.adapter as HistoryAdapter
-            adapter = recyclerMovies.adapter as MovieListAdapter
+            recyclerHistory.layoutManager = LinearLayoutManager(context)
+            recyclerMovies.adapter = movieListAdapter
+            recyclerHistory.adapter = historyAdapter
             val filters = queryFilter?.filters ?: emptyMap()
             if ((filters).isNotEmpty()) {
                 Log.d("LIST_FRAGMENT", "${filters.size}")
@@ -136,7 +140,7 @@ class MovieListFragment : Fragment() {
                 )
             } else {
                 Log.d("LIST_FRAGMENT", "0")
-                store.dispatch(MovieListEvent.MovieListUiEvent.LoadData(lifecycleScope))
+                store.dispatch(MovieListEvent.MovieListUiEvent.LoadData(lifecycleScope + Dispatchers.Default))
             }
             listenAdapter()
             onHistoryAdapterClick()
@@ -144,11 +148,9 @@ class MovieListFragment : Fragment() {
             clickFilter()
             onSearchQuery()
             searchView.setOnQueryTextFocusChangeListener { v, hasFocus ->
-                if (hasFocus) {
-                    store.dispatch(MovieListEvent.MovieListUiEvent.GetHistory)
-                } else cardHistory.visibility = GONE
+                if (hasFocus) store.dispatch(MovieListEvent.MovieListUiEvent.GetHistory)
             }
-            adapter.onMovieClick = object : MovieListAdapter.OnMovieClickListener {
+            movieListAdapter.onMovieClick = object : MovieListAdapter.OnMovieClickListener {
                 override fun onMovieClick(movie: MovieItem) {
                     store.dispatch(MovieListEvent.MovieListUiEvent.MovieItemClicked(movie))
                 }
@@ -280,10 +282,10 @@ class MovieListFragment : Fragment() {
     }
 
     private fun collectState(state: MovieListUiState) {
-        viewLifecycleOwner.lifecycleScope.launch {
+        lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 state.movies?.let {
-                    adapter.submitData(it)
+                    movieListAdapter.submitData(it)
                 }
             }
         }
@@ -308,7 +310,7 @@ class MovieListFragment : Fragment() {
     }
 
     private fun listenAdapter() {
-        adapter.addLoadStateListener {
+        movieListAdapter.addLoadStateListener {
             if (it.refresh is LoadState.Loading || it.append is LoadState.Loading) {
                 store.dispatch(MovieListEvent.MovieListUiEvent.PaginationLoad)
             } else if (it.append.endOfPaginationReached && it.source.refresh is LoadState.NotLoading) {
@@ -319,7 +321,7 @@ class MovieListFragment : Fragment() {
 
     private fun clearData() {
         lifecycleScope.launch {
-            adapter.submitData(PagingData.empty())
+            movieListAdapter.submitData(PagingData.empty())
         }
     }
 

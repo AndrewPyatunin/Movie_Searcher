@@ -44,7 +44,8 @@ class MovieDtoToMovieMapper @Inject constructor(
             isSeries = fromDto.isSeries ?: false,
             seriesLength = fromDto.seriesLength ?: -1,
             page = item,
-            requestId = requestId
+            requestId = requestId,
+            bookmark = false
         )
     }
 }

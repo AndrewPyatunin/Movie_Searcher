@@ -126,6 +126,21 @@ class MovieFilterFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 query.clear()
                 positions.clear()
             }
+            MovieFilterNews.ApplyFilters -> {
+                with(binding) {
+                    if (editTextStartYear.text.isNotEmpty()) {
+                        query[QUERY_YEAR] =
+                            if (editTextEndYear.text.isNotEmpty())
+                                listOf("${editTextStartYear.text.trim()}-${editTextEndYear.text.trim()}")
+                            else listOf(editTextStartYear.text.trim().toString())
+                    }
+
+                    if (editTextRating.text.isNotEmpty()) {
+                        query[QUERY_RATING] = listOf("${editTextRating.text.trim()}-10")
+                    }
+                    store.dispatch(MovieFilterUiEvent.ApplyFilters(query, positions))
+                }
+            }
         }
     }
 
@@ -142,26 +157,9 @@ class MovieFilterFragment : Fragment(), AdapterView.OnItemSelectedListener {
             spinnerMovieTypes.onItemSelectedListener = this@MovieFilterFragment
 
             buttonFilterApply.setOnClickListener {
-                if (editTextStartYear.text.isNotEmpty()) {
-                    query[QUERY_YEAR] =
-                        if (editTextEndYear.text.isNotEmpty())
-                            listOf("${editTextStartYear.text.trim()}-${editTextEndYear.text.trim()}")
-                        else listOf(editTextStartYear.text.trim().toString())
-                }
-
-                if (editTextRating.text.isNotEmpty()) {
-                    query[QUERY_RATING] = listOf("${editTextRating.text.trim()}-10")
-                }
-                store.dispatch(MovieFilterUiEvent.ApplyFilters(query, positions))
+                store.dispatch(MovieFilterUiEvent.ApplyFiltersClicked)
             }
             buttonReset.setOnClickListener {
-                spinnerNetwork.setSelection(0)
-                spinnerMovieTypes.setSelection(0)
-                spinnerCountries.setSelection(0)
-                spinnerGenres.setSelection(0)
-                editTextStartYear.setText("")
-                editTextEndYear.setText("")
-                editTextRating.setText("")
                 store.dispatch(MovieFilterUiEvent.ResetFilters)
             }
         }

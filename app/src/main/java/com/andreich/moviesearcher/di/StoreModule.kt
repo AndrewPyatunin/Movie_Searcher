@@ -3,6 +3,10 @@ package com.andreich.moviesearcher.di
 import androidx.paging.PagingData
 import com.andreich.moviesearcher.domain.usecase.*
 import com.andreich.moviesearcher.presentation.AnalyticsTracker
+import com.andreich.moviesearcher.presentation.actor_detail.ActorDetailCommandsFlowHandler
+import com.andreich.moviesearcher.presentation.actor_detail.ActorDetailState
+import com.andreich.moviesearcher.presentation.actor_detail.ActorDetailStore
+import com.andreich.moviesearcher.presentation.actor_detail.ActorDetailUpdate
 import com.andreich.moviesearcher.presentation.movie_detail.MovieDetailCommandsFlowHandler
 import com.andreich.moviesearcher.presentation.movie_detail.MovieDetailState
 import com.andreich.moviesearcher.presentation.movie_detail.MovieDetailStore
@@ -56,6 +60,17 @@ class StoreModule {
                     getMovieUseCase
                 )
             )
+        )
+    }
+
+    @Provides
+    fun provideActorDetailStore(
+        getActorUseCase: GetActorUseCase
+    ): ActorDetailStore {
+        return ActorDetailStore(
+            actorState = ActorDetailState(null, true),
+            commandsFlowHandler = listOf(ActorDetailCommandsFlowHandler(getActorUseCase)),
+            update = ActorDetailUpdate()
         )
     }
 }

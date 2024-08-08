@@ -6,5 +6,7 @@ sealed interface MovieFilterUiEvent {
 
     class ApplyPositions(val positions: Map<String, Int>) : MovieFilterUiEvent
 
+    object ApplyFiltersClicked : MovieFilterUiEvent
+
     object ResetFilters : MovieFilterUiEvent
 }

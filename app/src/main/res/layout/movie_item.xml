@@ -2,11 +2,11 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:cardElevation="8dp"
-    app:cardUseCompatPadding="true"
     android:id="@+id/movie_card_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    app:cardElevation="8dp"
+    app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,43 +17,46 @@
             android:layout_width="70dp"
             android:layout_height="100dp"
             android:background="@color/shimmer"
-            app:shimmer_duration="800"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline_movie_item"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:shimmer_duration="800" />
 
         <ImageView
             android:id="@+id/movie_image"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            android:visibility="gone"
             android:scaleType="centerCrop"
-            app:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@id/guideline_movie_item"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/movie_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="4dp"
-            android:textSize="16sp"
             android:ellipsize="end"
             android:maxLength="24"
+            android:textSize="16sp"
             app:layout_constraintStart_toEndOf="@id/guideline_movie_item"
-            tools:text="@string/movie_name_test"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/movie_name_test" />
+
         <TextView
             android:id="@+id/movie_creation_date"
-            android:textSize="16sp"
-            android:textColor="@color/orange"
-            android:layout_marginHorizontal="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:textColor="@color/orange"
+            android:textSize="16sp"
             app:layout_constraintStart_toEndOf="@id/movie_title"
-            tools:text="2007"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="2007" />
+
         <TextView
             android:id="@+id/movie_alt_name_with_length"
             android:layout_width="wrap_content"
@@ -63,17 +66,21 @@
             android:maxLength="32"
             android:textSize="14sp"
             app:layout_constraintStart_toEndOf="@id/guideline_movie_item"
-            app:layout_constraintTop_toBottomOf="@id/movie_title"/>
+            app:layout_constraintTop_toBottomOf="@id/movie_title"
+            tools:text="@string/actors" />
+
         <TextView
             android:id="@+id/movie_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="4dp"
-            android:textSize="28sp"
             android:textColor="@color/white"
-            app:layout_constraintTop_toTopOf="parent"
+            android:textSize="28sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/actors" />
+
         <TextView
             android:id="@+id/movie_countries"
             android:layout_width="wrap_content"
@@ -83,7 +90,9 @@
             android:maxLength="32"
             android:textSize="14sp"
             app:layout_constraintStart_toEndOf="@id/guideline_movie_item"
-            app:layout_constraintTop_toBottomOf="@id/movie_alt_name_with_length"/>
+            app:layout_constraintTop_toBottomOf="@id/movie_alt_name_with_length"
+            tools:text="@string/actors"  />
+
         <TextView
             android:id="@+id/movie_genres"
             android:layout_width="wrap_content"
@@ -93,7 +102,8 @@
             android:maxLength="32"
             android:textSize="14sp"
             app:layout_constraintStart_toEndOf="@id/guideline_movie_item"
-            app:layout_constraintTop_toBottomOf="@id/movie_countries"/>
+            app:layout_constraintTop_toBottomOf="@id/movie_countries"
+            tools:text="@string/actors"  />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_movie_item"

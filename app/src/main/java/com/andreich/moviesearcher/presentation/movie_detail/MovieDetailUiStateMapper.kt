@@ -43,6 +43,7 @@ class MovieDetailUiStateMapper(
             countries = countries.joinToString(", "),
             url = url,
             actors = actors,
+            bookmark = bookmark
         )
     }
 }

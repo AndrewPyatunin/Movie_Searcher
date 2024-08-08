@@ -80,7 +80,12 @@ interface ApiService {
     ): RequestResultDto<PosterDto>
 
     @GET("movie/{movieId}")
-    suspend fun getFilmById(@Query("movieId") movieId: Int)
+    suspend fun getFilmById(@Path("movieId") movieId: Int): MovieDto
+
+    @GET("person/{actorId}")
+    suspend fun getActor(
+        @Path("actorId") actorId: Int
+    ): ActorDto
 
     companion object {
 

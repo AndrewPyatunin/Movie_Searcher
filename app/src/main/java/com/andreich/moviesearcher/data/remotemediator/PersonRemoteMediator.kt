@@ -10,6 +10,7 @@ import com.andreich.moviesearcher.data.datasource.remote.RemoteDataSource
 import com.andreich.moviesearcher.data.entity.PersonEntity
 import com.andreich.moviesearcher.data.entity.PersonRemoteKeyEntity
 import com.andreich.moviesearcher.data.mapper.MovieMapper
+import com.andreich.moviesearcher.domain.pojo.ActorDto
 import com.andreich.moviesearcher.domain.pojo.PersonDto
 import retrofit2.HttpException
 import java.io.IOException

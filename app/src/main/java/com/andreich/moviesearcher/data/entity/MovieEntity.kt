@@ -30,5 +30,6 @@ data class MovieEntity(
     val isSeries: Boolean,
     val seriesLength: Int,
     val page: Int,
-    val requestId: String
+    val requestId: String,
+    val bookmark: Boolean
 )

@@ -1,5 +1,6 @@
 package com.andreich.moviesearcher.presentation.movie_detail
 
+import android.util.Log
 import androidx.paging.map
 import com.andreich.moviesearcher.domain.usecase.GetMovieUseCase
 import com.andreich.moviesearcher.domain.usecase.GetPersonsUseCase
@@ -25,6 +26,7 @@ class MovieDetailCommandsFlowHandler @Inject constructor(
                     getPersonsUseCase.execute(it.movieId, scope = it.scope).flatMapLatest { persons ->
                         getReviewsUseCase.execute(it.movieId, scope = it.scope).flatMapLatest { reviews ->
                             getPostersUseCase.execute(it.movieId, scope = it.scope).map { posters ->
+                                Log.d("ACTORS_MOVIE_DETAIL", movie.actors.toString())
                                 MovieDetailEvent.MovieDetailCommandsResultEvent.DataIsReady(
                                     movie = movie,
                                     actors = persons,

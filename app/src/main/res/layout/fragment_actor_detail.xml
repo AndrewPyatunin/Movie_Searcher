@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.screen.ActorDetailFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_actor"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            android:background="@color/shimmer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/guideline_actor_image"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_actor_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="500dp"/>
+
+        <ImageView
+            android:id="@+id/actor_image"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/guideline_actor_image"/>
+
+        <TextView
+            android:id="@+id/text_view_actor_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:paddingTop="8dp"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guideline_actor_image"
+            tools:text="Морган Фриман"/>
+
+        <TextView
+            android:id="@+id/text_view_actor_en_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="@id/text_view_actor_name"
+            app:layout_constraintTop_toBottomOf="@id/text_view_actor_name"
+            tools:text="Morgan Freeman"/>
+
+        <TextView
+            android:id="@+id/text_view_about"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@string/actor_about"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_view_actor_en_name" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_actor"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.4"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/text_view_career_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/actor_career"
+            android:textColor="@color/gray"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@id/text_view_about"
+            app:layout_constraintTop_toBottomOf="@id/text_view_about" />
+
+        <TextView
+            android:id="@+id/text_view_career"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/guideline_actor"
+            app:layout_constraintTop_toTopOf="@id/text_view_career_tag" />
+
+        <View
+            android:id="@+id/point_blank"
+            android:layout_width="5dp"
+            android:layout_height="5dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginHorizontal="4dp"
+            android:background="@drawable/round_view"
+            app:layout_constraintStart_toEndOf="@id/text_view_career"
+            app:layout_constraintTop_toBottomOf="@id/text_view_about"
+            app:layout_constraintBottom_toBottomOf="@id/text_view_career"/>
+
+        <TextView
+            android:id="@+id/text_view_growth_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/actor_growth"
+            android:textColor="@color/gray"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@id/text_view_career_tag"
+            app:layout_constraintTop_toBottomOf="@id/text_view_career_tag" />
+
+        <TextView
+            android:id="@+id/text_view_growth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/guideline_actor"
+            app:layout_constraintTop_toTopOf="@id/text_view_growth_tag" />
+
+        <TextView
+            android:id="@+id/text_view_birthday_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/actor_birthday"
+            android:textColor="@color/gray"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@id/text_view_growth_tag"
+            app:layout_constraintTop_toBottomOf="@id/text_view_growth_tag" />
+
+        <TextView
+            android:id="@+id/text_view_birthday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/guideline_actor"
+            app:layout_constraintTop_toTopOf="@id/text_view_birthday_tag" />
+
+        <View
+            android:id="@+id/point"
+            android:layout_width="5dp"
+            android:layout_height="5dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginHorizontal="4dp"
+            android:background="@drawable/round_view"
+            app:layout_constraintStart_toEndOf="@id/text_view_birthday"
+            app:layout_constraintTop_toBottomOf="@id/text_view_growth_tag"
+            app:layout_constraintBottom_toBottomOf="@id/text_view_birthday"/>
+
+        <TextView
+            android:id="@+id/text_view_age"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:layout_marginStart="4dp"
+            app:layout_constraintStart_toEndOf="@id/point"
+            app:layout_constraintTop_toTopOf="@id/text_view_birthday_tag"
+            tools:text="35лет"/>
+
+        <TextView
+            android:id="@+id/text_view_birthplace_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/actor_birth_place"
+            android:textColor="@color/gray"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@id/text_view_birthday_tag"
+            app:layout_constraintTop_toBottomOf="@id/text_view_birthday_tag" />
+
+        <TextView
+            android:id="@+id/text_view_birthplace"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/guideline_actor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/text_view_birthplace_tag" />
+
+        <TextView
+            android:id="@+id/text_view_death_day_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:text="@string/date_of_death"
+            android:textColor="@color/gray"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@id/text_view_birthplace_tag"
+            app:layout_constraintTop_toBottomOf="@id/text_view_birthplace_tag" />
+
+        <TextView
+            android:id="@+id/text_view_death_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginStart="4dp"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/guideline_actor"
+            app:layout_constraintTop_toTopOf="@id/text_view_death_day_tag" />
+
+        <TextView
+            android:id="@+id/text_view_genres_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/genres"
+            android:textColor="@color/gray"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@id/text_view_death_day_tag"
+            app:layout_constraintTop_toBottomOf="@id/text_view_death_day_tag" />
+
+        <TextView
+            android:id="@+id/text_view_genres"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/guideline_actor"
+            app:layout_constraintTop_toTopOf="@id/text_view_genres_tag" />
+
+        <TextView
+            android:id="@+id/text_view_spouse_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:textColor="@color/gray"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@id/text_view_genres_tag"
+            app:layout_constraintTop_toBottomOf="@id/text_view_genres_tag" />
+
+        <TextView
+            android:id="@+id/text_view_spouse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginStart="4dp"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/guideline_actor"
+            app:layout_constraintTop_toTopOf="@id/text_view_spouse_tag" />
+
+        <TextView
+            android:id="@+id/text_view_movies_tag"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/actor_movies"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_view_spouse_tag" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_actor_detail_movies"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_view_movies_tag" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

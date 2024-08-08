@@ -19,9 +19,8 @@ import com.andreich.moviesearcher.domain.model.MovieSearchHistory
 import com.andreich.moviesearcher.domain.pojo.MovieDto
 import com.andreich.moviesearcher.domain.pojo.PersonDto
 import com.andreich.moviesearcher.domain.repo.MovieRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class MovieRepositoryImpl @Inject constructor(
@@ -37,9 +36,18 @@ class MovieRepositoryImpl @Inject constructor(
 ) : MovieRepository {
 
     override fun getMovie(movieId: Int): Flow<Movie> {
-        return movieDataSource.getMovie(movieId).map {
-            movieEntityMapper.map(it)
-        }
+        return flow {
+            var localMovie = movieDataSource.getMovie(movieId).firstOrNull()
+            if (localMovie == null || localMovie.actors.isEmpty()) {
+                val remoteMovie = remoteDataSource.getMovie(movieId)
+                movieDataSource.insertMovies(listOf(movieMapper.map(remoteMovie, 0, "")))
+                localMovie = movieDataSource.getMovie(movieId).firstOrNull()
+            }
+            if (localMovie == null) {
+                throw IllegalArgumentException("Movie with id $movieId not found in database.")
+            }
+            emit(movieEntityMapper.map(localMovie))
+        }.flowOn(Dispatchers.IO)
     }
 
     override suspend fun insertMovies(movies: List<Movie>) {
@@ -70,7 +78,8 @@ class MovieRepositoryImpl @Inject constructor(
                     isSeries,
                     seriesLength ?: 0,
                     page,
-                    requestId
+                    requestId,
+                    bookmark
                 )
             }
 

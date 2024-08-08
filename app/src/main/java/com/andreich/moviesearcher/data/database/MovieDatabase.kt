@@ -9,7 +9,7 @@ import com.andreich.moviesearcher.data.entity.*
 
 @Database(
     entities = [PersonEntity::class, MovieEntity::class, ReviewEntity::class,
-        PosterEntity::class, SeasonEntity::class, MovieSearchHistoryEntity::class,
+        PosterEntity::class, SeasonEntity::class, ActorEntity::class, MovieSearchHistoryEntity::class,
         PersonRemoteKeyEntity::class, ReviewRemoteKeyEntity::class, PosterRemoteKeyEntity::class,
         MovieRemoteKeyEntity::class],
     version = 1,

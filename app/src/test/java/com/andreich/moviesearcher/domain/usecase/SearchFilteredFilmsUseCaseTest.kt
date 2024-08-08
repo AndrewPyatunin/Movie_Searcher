@@ -71,28 +71,4 @@ class SearchFilteredFilmsUseCaseTest {
         }
 
     }
-
-//    @OptIn(ExperimentalCoroutinesApi::class)
-//    @Test
-//    fun execute() = runTest(UnconfinedTestDispatcher()) {
-//        val resultFlow = useCase.execute(
-//            pageSize = 1,
-//            requestId = "/",
-//            name = MOVIE_NAME,
-//            scope = TestScope(UnconfinedTestDispatcher()),
-//            filters = emptyMap(),
-//            completeRequest = false,
-//            sortFilters = emptyMap()
-//        )
-//
-//        val resultList = mutableListOf<Movie>()
-//        val job = launch {
-//            resultList.addAll(resultFlow.asSnapshot())
-//        }
-//
-//        advanceUntilIdle()
-//        job.join()
-//        assertEquals(listOf(movie), resultList)
-//        job.cancel()
-//    }
 }

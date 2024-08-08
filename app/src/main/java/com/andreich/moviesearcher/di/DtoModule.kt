@@ -24,4 +24,7 @@ interface DtoModule {
     @Binds
     fun bindPersonDtoMapper(impl: PersonDtoToPersonEntityMapper): MovieMapper<PersonDto, PersonEntity>
 
+    @Binds
+    fun bindActorDtoMapper(impl: ActorDtoToActorEntityMapper): MovieMapper<ActorDto, ActorEntity>
+
 }

@@ -50,4 +50,12 @@ interface RemoteDataSource {
         page: Int = 1,
         limit: Int = 10,
     ): RequestResultDto<PosterDto>
+
+    suspend fun getActor(
+        actorId: Int
+    ): ActorDto
+
+    suspend fun getMovie(
+        movieId: Int
+    ): MovieDto
 }

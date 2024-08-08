@@ -1,6 +1,7 @@
 package com.andreich.moviesearcher.ui.adapter
 
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,11 +26,13 @@ class PersonDiffCallback : DiffUtil.ItemCallback<Person>() {
     override fun areContentsTheSame(oldItem: Person, newItem: Person): Boolean {
         return oldItem == newItem
     }
-
 }
 
 class ActorAdapter :
     ListAdapter<Person, ActorAdapter.PersonViewHolder>(PersonDiffCallback()) {
+
+    var onClick: OnActorClickListener? = null
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PersonViewHolder {
         val view =
@@ -39,6 +42,7 @@ class ActorAdapter :
 
     override fun onBindViewHolder(holder: PersonViewHolder, position: Int) {
         val person = getItem(position)
+        Log.d("ACTORS_ADAPTER", person.toString())
         with(holder) {
             Glide.with(itemView.context).load(person.photoUrl).into(object : CustomTarget<Drawable>() {
                 override fun onResourceReady(
@@ -58,6 +62,9 @@ class ActorAdapter :
             personEnName.text = person.enName
             personCareer.text = person.profession
             personDescription.text = person.description
+            itemView.setOnClickListener {
+                onClick?.onPersonClick(person)
+            }
         }
     }
 
@@ -68,5 +75,10 @@ class ActorAdapter :
         val personEnName = itemView.findViewById<TextView>(R.id.person_en_name_textView)
         val personDescription = itemView.findViewById<TextView>(R.id.person_description_textView)
         val avatarProgress = itemView.findViewById<ProgressBar>(R.id.actor_avatar_progress)
+    }
+
+    interface OnActorClickListener {
+
+        fun onPersonClick(person: Person)
     }
 }

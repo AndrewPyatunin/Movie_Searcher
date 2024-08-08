@@ -21,6 +21,9 @@ class MovieFilterUpdate @Inject constructor() :
                 state { copy(filters = emptyMap(), positions = emptyMap()) }
                 news(MovieFilterNews.ResetFilters)
             }
+            MovieFilterUiEvent.ApplyFiltersClicked -> {
+                news(MovieFilterNews.ApplyFilters)
+            }
         }
     }
 }

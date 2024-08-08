@@ -39,6 +39,8 @@ class RemoteDataSourceImpl @Inject constructor(
         return apiService.getActors(page, limit, movieId, *filters)
     }
 
+
+
     override suspend fun searchFilm(
         apiKey: String,
         page: Int,
@@ -75,5 +77,13 @@ class RemoteDataSourceImpl @Inject constructor(
         limit: Int
     ): RequestResultDto<PosterDto> {
         return apiService.getPosters(movieId, page, limit)
+    }
+
+    override suspend fun getActor(actorId: Int): ActorDto {
+        return apiService.getActor(actorId)
+    }
+
+    override suspend fun getMovie(movieId: Int): MovieDto {
+        return apiService.getFilmById(movieId)
     }
 }

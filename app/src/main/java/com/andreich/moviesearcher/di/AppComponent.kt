@@ -28,4 +28,6 @@ interface AppComponent {
     fun inject(fragment: MovieListFragment)
 
     fun inject(fragment: MovieDetailFragment)
+
+    fun inject(fragment: ActorDetailFragment)
 }
