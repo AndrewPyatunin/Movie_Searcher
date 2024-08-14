@@ -7,4 +7,6 @@ sealed interface MovieDetailNews {
     class ShowError(val message: String) : MovieDetailNews
 
     class NavigateTo(val fragment: Fragment) : MovieDetailNews
+
+    class ShowToast(val message: String) : MovieDetailNews
 }

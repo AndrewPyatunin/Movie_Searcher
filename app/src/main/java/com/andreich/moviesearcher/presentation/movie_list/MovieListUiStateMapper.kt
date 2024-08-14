@@ -4,7 +4,7 @@ import androidx.paging.map
 import com.andreich.moviesearcher.R
 import com.andreich.moviesearcher.domain.model.Movie
 import com.andreich.moviesearcher.ui.MovieItem
-import com.andreich.moviesearcher.ui.MovieListUiState
+import com.andreich.moviesearcher.ui.state.MovieListUiState
 import ru.tinkoff.kotea.android.ui.ResourcesProvider
 import ru.tinkoff.kotea.android.ui.UiStateMapper
 

@@ -1,5 +1,6 @@
 package com.andreich.moviesearcher.ui.screen
 
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.View.*
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.core.graphics.alpha
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -30,7 +32,7 @@ import com.andreich.moviesearcher.presentation.movie_list.MovieListUiStateMapper
 import com.andreich.moviesearcher.ui.Debounce
 import com.andreich.moviesearcher.ui.FilterState
 import com.andreich.moviesearcher.ui.MovieItem
-import com.andreich.moviesearcher.ui.MovieListUiState
+import com.andreich.moviesearcher.ui.state.MovieListUiState
 import com.andreich.moviesearcher.ui.adapter.HistoryAdapter
 import com.andreich.moviesearcher.ui.adapter.MovieListAdapter
 import com.andreich.moviesearcher.ui.view.CustomTextViewWithImage
@@ -142,6 +144,7 @@ class MovieListFragment : Fragment() {
                 Log.d("LIST_FRAGMENT", "0")
                 store.dispatch(MovieListEvent.MovieListUiEvent.LoadData(lifecycleScope + Dispatchers.Default))
             }
+            clickFavourites()
             listenAdapter()
             onHistoryAdapterClick()
             clickSort()
@@ -226,9 +229,10 @@ class MovieListFragment : Fragment() {
                 sortList.remove(it)
                 (it as CustomTextViewWithImage).sortClick(it[1].visibility == GONE)
                 it.changeImageRes()
-                sortList.forEach {
-                    it.changeToInitialBackground()
-                }
+                it.changeToInitialBackground((background as ColorDrawable).color.alpha)
+//                sortList.forEach {
+//                    it.changeToInitialBackground()
+//                }
             }
         }
     }
@@ -236,6 +240,12 @@ class MovieListFragment : Fragment() {
     private fun clickFilter() {
         binding.searchFilterImage.setOnClickListener {
             store.dispatch(MovieListEvent.MovieListUiEvent.FilterMoviesClicked(queryFilter))
+        }
+    }
+
+    private fun clickFavourites() {
+        binding.imageOpenFavourites.setOnClickListener {
+            store.dispatch(MovieListEvent.MovieListUiEvent.FavouritesClicked)
         }
     }
 
@@ -313,7 +323,7 @@ class MovieListFragment : Fragment() {
         movieListAdapter.addLoadStateListener {
             if (it.refresh is LoadState.Loading || it.append is LoadState.Loading) {
                 store.dispatch(MovieListEvent.MovieListUiEvent.PaginationLoad)
-            } else if (it.append.endOfPaginationReached && it.source.refresh is LoadState.NotLoading) {
+            } else {
                 store.dispatch(MovieListEvent.MovieListUiEvent.PaginationStopLoad)
             }
         }

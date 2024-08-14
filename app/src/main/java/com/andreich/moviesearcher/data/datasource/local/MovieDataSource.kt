@@ -1,6 +1,7 @@
 package com.andreich.moviesearcher.data.datasource.local
 
 import androidx.paging.PagingSource
+import com.andreich.moviesearcher.data.entity.BookmarkMovieEntity
 import com.andreich.moviesearcher.data.entity.MovieEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -28,4 +29,12 @@ interface MovieDataSource {
     fun getMovie(id: Int): Flow<MovieEntity>
 
     suspend fun insertMovies(list: List<MovieEntity>)
+
+    suspend fun insertMovieBookmark(movie: BookmarkMovieEntity)
+
+    suspend fun removeMovieBookmark(movieId: Int)
+
+    fun getMovieBookmark(movieId: Int): Flow<BookmarkMovieEntity?>
+
+    fun getBookmarkMovies(): Flow<List<BookmarkMovieEntity>>
 }

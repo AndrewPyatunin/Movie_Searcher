@@ -1,11 +1,7 @@
 package com.andreich.moviesearcher.presentation.movie_detail
 
 import android.util.Log
-import androidx.paging.map
-import com.andreich.moviesearcher.domain.usecase.GetMovieUseCase
-import com.andreich.moviesearcher.domain.usecase.GetPersonsUseCase
-import com.andreich.moviesearcher.domain.usecase.GetPostersUseCase
-import com.andreich.moviesearcher.domain.usecase.GetReviewsUseCase
+import com.andreich.moviesearcher.domain.usecase.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import ru.tinkoff.kotea.core.CommandsFlowHandler
@@ -15,7 +11,8 @@ class MovieDetailCommandsFlowHandler @Inject constructor(
     private val getPostersUseCase: GetPostersUseCase,
     private val getPersonsUseCase: GetPersonsUseCase,
     private val getReviewsUseCase: GetReviewsUseCase,
-    private val getMovieUseCase: GetMovieUseCase
+    private val getMovieUseCase: GetMovieUseCase,
+    private val getMovieBookmarkUseCase: GetMovieBookmarkUseCase
 ) : CommandsFlowHandler<MovieDetailCommand, MovieDetailEvent.MovieDetailCommandsResultEvent> {
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -25,14 +22,17 @@ class MovieDetailCommandsFlowHandler @Inject constructor(
                 getMovieUseCase.execute(it.movieId).flatMapLatest { movie ->
                     getPersonsUseCase.execute(it.movieId, scope = it.scope).flatMapLatest { persons ->
                         getReviewsUseCase.execute(it.movieId, scope = it.scope).flatMapLatest { reviews ->
-                            getPostersUseCase.execute(it.movieId, scope = it.scope).map { posters ->
-                                Log.d("ACTORS_MOVIE_DETAIL", movie.actors.toString())
-                                MovieDetailEvent.MovieDetailCommandsResultEvent.DataIsReady(
-                                    movie = movie,
-                                    actors = persons,
-                                    reviews = reviews,
-                                    posters = posters
-                                )
+                            getPostersUseCase.execute(it.movieId, scope = it.scope).flatMapLatest { posters ->
+                                getMovieBookmarkUseCase.execute(it.movieId).map { movieBookmark ->
+                                    Log.d("ACTORS_MOVIE_DETAIL", movie.actors.toString())
+                                    MovieDetailEvent.MovieDetailCommandsResultEvent.DataIsReady(
+                                        movie = movie,
+                                        reviews = reviews,
+                                        actors = persons,
+                                        posters = posters,
+                                        isBookmark = movieBookmark?.bookmark == false
+                                    )
+                                }
                             }
                         }
                     }

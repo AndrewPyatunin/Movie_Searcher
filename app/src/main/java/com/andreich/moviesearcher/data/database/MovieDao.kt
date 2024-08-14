@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.andreich.moviesearcher.data.entity.BookmarkMovieEntity
 import com.andreich.moviesearcher.data.entity.MovieEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -44,6 +45,18 @@ interface MovieDao {
     @Query("SELECT * FROM movie WHERE id = :id")
     fun getMovie(id: Int): Flow<MovieEntity>
 
+    @Query("SELECT * FROM movie_bookmark")
+    fun getBookmarkMovies(): Flow<List<BookmarkMovieEntity>>
+
+    @Query("SELECT * FROM movie_bookmark WHERE id = :id")
+    fun getMovieBookMark(id: Int): Flow<BookmarkMovieEntity?>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMovies(list: List<MovieEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertMovie(movie: BookmarkMovieEntity)
+
+    @Query("DELETE FROM movie_bookmark WHERE id = :id")
+    suspend fun removeMovieFromBookmark(id: Int)
 }

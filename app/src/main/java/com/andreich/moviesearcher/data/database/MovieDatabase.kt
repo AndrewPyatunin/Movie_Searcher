@@ -11,7 +11,7 @@ import com.andreich.moviesearcher.data.entity.*
     entities = [PersonEntity::class, MovieEntity::class, ReviewEntity::class,
         PosterEntity::class, SeasonEntity::class, ActorEntity::class, MovieSearchHistoryEntity::class,
         PersonRemoteKeyEntity::class, ReviewRemoteKeyEntity::class, PosterRemoteKeyEntity::class,
-        MovieRemoteKeyEntity::class],
+        MovieRemoteKeyEntity::class, BookmarkMovieEntity::class],
     version = 1,
     exportSchema = false
 )

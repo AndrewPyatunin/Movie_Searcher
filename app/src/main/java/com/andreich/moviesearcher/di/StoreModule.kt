@@ -7,10 +7,8 @@ import com.andreich.moviesearcher.presentation.actor_detail.ActorDetailCommandsF
 import com.andreich.moviesearcher.presentation.actor_detail.ActorDetailState
 import com.andreich.moviesearcher.presentation.actor_detail.ActorDetailStore
 import com.andreich.moviesearcher.presentation.actor_detail.ActorDetailUpdate
-import com.andreich.moviesearcher.presentation.movie_detail.MovieDetailCommandsFlowHandler
-import com.andreich.moviesearcher.presentation.movie_detail.MovieDetailState
-import com.andreich.moviesearcher.presentation.movie_detail.MovieDetailStore
-import com.andreich.moviesearcher.presentation.movie_detail.MovieDetailUpdate
+import com.andreich.moviesearcher.presentation.movie_bookmark.*
+import com.andreich.moviesearcher.presentation.movie_detail.*
 import com.andreich.moviesearcher.presentation.movie_list.*
 import dagger.Module
 import dagger.Provides
@@ -41,11 +39,15 @@ class StoreModule {
         getPostersUseCase: GetPostersUseCase,
         getPersonsUseCase: GetPersonsUseCase,
         getReviewsUseCase: GetReviewsUseCase,
-        getMovieUseCase: GetMovieUseCase
+        getMovieUseCase: GetMovieUseCase,
+        insertMovieBookmarkUseCase: InsertMovieBookmarkUseCase,
+        getMovieBookmarkUseCase: GetMovieBookmarkUseCase,
+        removeMovieBookmarkUseCase: RemoveMovieBookmarkUseCase
     ): MovieDetailStore {
         return MovieDetailStore(
             initialState = MovieDetailState(
-                true,
+                isBookmark = false,
+                isLoading = true,
                 PagingData.empty(),
                 PagingData.empty(),
                 PagingData.empty(),
@@ -57,7 +59,12 @@ class StoreModule {
                     getPostersUseCase,
                     getPersonsUseCase,
                     getReviewsUseCase,
-                    getMovieUseCase
+                    getMovieUseCase,
+                    getMovieBookmarkUseCase
+                ), MovieDetailAddToBookmarkCommandHandler(
+                    getMovieUseCase,
+                    insertMovieBookmarkUseCase,
+                    removeMovieBookmarkUseCase
                 )
             )
         )
@@ -71,6 +78,21 @@ class StoreModule {
             actorState = ActorDetailState(null, true),
             commandsFlowHandler = listOf(ActorDetailCommandsFlowHandler(getActorUseCase)),
             update = ActorDetailUpdate()
+        )
+    }
+
+    @Provides
+    fun provideMovieBookmarkStore(
+        getBookmarkMoviesUseCase: GetBookmarkMoviesUseCase,
+        removeMovieBookmarkUseCase: RemoveMovieBookmarkUseCase
+    ): MovieBookmarkStore {
+        return MovieBookmarkStore(
+            initialState = MovieBookmarkState(true, emptyList()),
+            commandHandlers = listOf(
+                MovieBookmarkCommandsFlowHandler(getBookmarkMoviesUseCase),
+                MovieBookmarkRemoveCommandHandler(removeMovieBookmarkUseCase)
+            ),
+            update = MovieBookmarkUpdate()
         )
     }
 }

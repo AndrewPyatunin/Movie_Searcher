@@ -36,11 +36,13 @@
 
     <style name="IconStyleDown">
         <item name="android:src">@drawable/arrow_down</item>
-        <item name="background">@drawable/button_state</item>
     </style>
 
     <style name="IconStyleUp">
         <item name="android:src">@drawable/arrow_up</item>
-        <item name="background">@drawable/button_state</item>
+    </style>
+
+    <style name="IconOpenBookmarks">
+        <item name="android:src">@drawable/favourite_movies</item>
     </style>
 </resources>

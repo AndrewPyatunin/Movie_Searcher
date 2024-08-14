@@ -7,6 +7,7 @@ import com.andreich.moviesearcher.data.database.MovieRemoteKeyDao
 import com.andreich.moviesearcher.data.datasource.local.HistoryDataSource
 import com.andreich.moviesearcher.data.datasource.local.MovieDataSource
 import com.andreich.moviesearcher.data.datasource.remote.RemoteDataSource
+import com.andreich.moviesearcher.data.entity.BookmarkMovieEntity
 import com.andreich.moviesearcher.data.entity.MovieEntity
 import com.andreich.moviesearcher.data.entity.MovieSearchHistoryEntity
 import com.andreich.moviesearcher.data.entity.PersonEntity
@@ -32,6 +33,7 @@ class MovieRepositoryImpl @Inject constructor(
     private val movieMapper: MovieMapper<MovieDto, MovieEntity>,
     private val personMapper: MovieMapper<PersonDto, PersonEntity>,
     private val movieEntityMapper: EntityToModelMapper<MovieEntity, Movie>,
+    private val movieBookmarkEntityMapper: EntityToModelMapper<BookmarkMovieEntity, Movie>,
     private val remoteKeyDao: MovieRemoteKeyDao,
 ) : MovieRepository {
 
@@ -48,6 +50,71 @@ class MovieRepositoryImpl @Inject constructor(
             }
             emit(movieEntityMapper.map(localMovie))
         }.flowOn(Dispatchers.IO)
+    }
+
+    override fun getMovieBookmark(movieId: Int): Flow<Movie?> {
+        return movieDataSource.getMovieBookmark(movieId).map {
+            if (it != null) {
+                movieBookmarkEntityMapper.map(it)
+            } else null
+        }
+    }
+
+    override fun getBookmarkMovies(): Flow<List<Movie>> {
+        return movieDataSource.getBookmarkMovies().map {
+            it.map { entity ->
+                movieBookmarkEntityMapper.map(entity)
+            }
+        }
+    }
+
+    override suspend fun insertMovieBookmark(movie: Movie) {
+        movieDataSource.insertMovieBookmark(
+            with(movie) {
+                BookmarkMovieEntity(
+                    id,
+                    name,
+                    alternativeName,
+                    type,
+                    year,
+                    slogan,
+                    description,
+                    rating,
+                    ratingImdb,
+                    ageRating,
+                    genres,
+                    countries,
+                    countries[0],
+                    url,
+                    previewUrl,
+                    actors.map {
+                        PersonEntity(
+                            it.id ?: 0,
+                            it.photoUrl ?: "",
+                            it.name ?: "",
+                            it.enName ?: "",
+                            it.profession ?: "",
+                            it.enProfession ?: "",
+                            it.description ?: "",
+                            page
+                        )
+                    },
+                    100,
+                    network,
+                    seasonsAmount,
+                    top250,
+                    movieLength ?: 0,
+                    isSeries,
+                    seriesLength ?: 0,
+                    page,
+                    requestId,
+                )
+            }
+        )
+    }
+
+    override suspend fun removeMovieBookmark(movieId: Int) {
+        movieDataSource.removeMovieBookmark(movieId)
     }
 
     override suspend fun insertMovies(movies: List<Movie>) {
@@ -69,7 +136,18 @@ class MovieRepositoryImpl @Inject constructor(
                     countries[0],
                     url,
                     previewUrl,
-                    emptyList(),
+                    actors.map {
+                        PersonEntity(
+                            it.id ?: 0,
+                            it.photoUrl ?: "",
+                            it.name ?: "",
+                            it.enName ?: "",
+                            it.profession ?: "",
+                            it.enProfession ?: "",
+                            it.description ?: "",
+                            page
+                        )
+                    },
                     100,
                     network,
                     seasonsAmount,

@@ -8,6 +8,7 @@ import com.andreich.moviesearcher.ui.MovieDetailItem
 import com.andreich.moviesearcher.ui.ReviewItem
 
 data class MovieDetailUiState(
+    val bookmarkType: Boolean,
     val imageProgressVisibility: Boolean,
     val movieDetailItem: MovieDetailItem?,
     val actors: PagingData<Person>,

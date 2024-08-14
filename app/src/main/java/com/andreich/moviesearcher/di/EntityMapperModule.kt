@@ -26,4 +26,7 @@ interface EntityMapperModule {
 
     @Binds
     fun bindActorEntityMapper(impl: ActorEntityToActorMapper): EntityToModelMapper<ActorEntity, Actor>
+
+    @Binds
+    fun bindBookmarkMovieEntityMapper(impl: MovieBookmarkEntityToMovieMapper): EntityToModelMapper<BookmarkMovieEntity, Movie>
 }

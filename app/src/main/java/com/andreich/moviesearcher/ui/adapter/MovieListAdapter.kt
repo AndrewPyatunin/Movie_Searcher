@@ -1,12 +1,15 @@
 package com.andreich.moviesearcher.ui.adapter
 
+import android.app.AlertDialog
 import android.graphics.drawable.Drawable
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
+import androidx.appcompat.view.menu.MenuAdapter
+import androidx.appcompat.view.menu.MenuView
+import androidx.core.view.MenuProvider
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -33,6 +36,7 @@ class MovieListAdapter :
     PagingDataAdapter<MovieItem, MovieListAdapter.MovieViewHolder>(DiffCallback) {
 
     var onMovieClick: OnMovieClickListener? = null
+    var onMenuClick: OnMenuItemClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val view =
@@ -77,7 +81,7 @@ class MovieListAdapter :
 
     }
 
-    inner class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), MenuProvider {
 
         val shimmer_item = itemView.findViewById<ShimmerFrameLayout>(R.id.shimmer_movie_item)
         val personAvatar = itemView.findViewById<ImageView>(R.id.movie_image)
@@ -87,10 +91,64 @@ class MovieListAdapter :
         val countries = itemView.findViewById<TextView>(R.id.movie_countries)
         val genres = itemView.findViewById<TextView>(R.id.movie_genres)
         val altName = itemView.findViewById<TextView>(R.id.movie_alt_name_with_length)
+        val menuItem = itemView.findViewById<ImageView>(R.id.menu_item)
+
+        init {
+            menuItem.setOnClickListener {
+                popupMenu(it)
+            }
+        }
+
+        private fun popupMenu(v: View) {
+            val menu = PopupMenu(itemView.context, v)
+            menu.inflate(R.menu.movie_item_menu)
+            val movie = snapshot().items[absoluteAdapterPosition]
+            menu.setOnMenuItemClickListener {
+                when(it.itemId) {
+                    R.id.menu_add_bookmark -> {
+                        onMenuClick?.onAddBookmarkClick(movie)
+                        true
+                    }
+                    R.id.menu_remove_bookmark -> {
+                        AlertDialog.Builder(itemView.context)
+                            .setTitle("Убрать \"${movie.name}\" из избранного?")
+                            .setPositiveButton("Да") { dialog, _ ->
+                                onMenuClick?.onRemoveBookmarkClick(movie)
+                            }
+                            .setNegativeButton("Отмена") {_, _ ->}
+                            .create()
+                            .show()
+
+
+                        true
+                    }
+                    else -> {
+                        true
+                    }
+                }
+            }
+            menu.show()
+        }
+
+        override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+            menuInflater.inflate(R.menu.movie_item_menu, menu)
+        }
+
+        override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+
+            return true
+        }
     }
 
     interface OnMovieClickListener {
 
         fun onMovieClick(movie: MovieItem)
+    }
+
+    interface OnMenuItemClickListener {
+
+        fun onAddBookmarkClick(movie: MovieItem)
+
+        fun onRemoveBookmarkClick(movie: MovieItem)
     }
 }

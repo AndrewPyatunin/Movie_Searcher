@@ -29,6 +29,8 @@ sealed interface MovieListEvent {
         class MovieItemClicked(val movie: MovieItem) : MovieListUiEvent
 
         object GetHistory : MovieListUiEvent
+
+        object FavouritesClicked : MovieListUiEvent
     }
 
     sealed interface MovieListCommandsResultEvent : MovieListEvent {

@@ -29,5 +29,5 @@ data class Movie(
     val page: Int = 1,
     val requestId: String,
     val ratingImdb: Double = 0.0,
-    val bookmark: Boolean = false
+    val bookmark: Boolean
 ) : Parcelable

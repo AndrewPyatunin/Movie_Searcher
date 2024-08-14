@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.paging.map
 import com.andreich.moviesearcher.presentation.movie_detail.MovieDetailEvent.MovieDetailCommandsResultEvent
 import com.andreich.moviesearcher.presentation.movie_detail.MovieDetailEvent.MovieDetailUiEvent
+import kotlinx.coroutines.flow.first
 import ru.tinkoff.kotea.core.dsl.DslUpdate
 import javax.inject.Inject
 
@@ -17,6 +18,8 @@ class MovieDetailUpdate @Inject constructor() :
             is MovieDetailUiEvent.BackPress -> handleUiEvent(event)
             is MovieDetailUiEvent.LoadMovie -> handleUiEvent(event)
             is MovieDetailUiEvent.NavigateTo -> handleUiEvent(event)
+            is MovieDetailUiEvent.AddToBookmark -> handleUiEvent(event)
+            is MovieDetailCommandsResultEvent.Success -> handleResult(event)
         }
     }
 
@@ -28,6 +31,7 @@ class MovieDetailUpdate @Inject constructor() :
                 }
                 state {
                     state.copy(
+                        isBookmark = event.isBookmark,
                         isLoading = false,
                         movie = event.movie,
                         reviews = event.reviews,
@@ -39,6 +43,10 @@ class MovieDetailUpdate @Inject constructor() :
             is MovieDetailCommandsResultEvent.LoadError -> {
                 state { state.copy(isLoading = false) }
                 news(MovieDetailNews.ShowError(event.message))
+            }
+            is MovieDetailCommandsResultEvent.Success -> {
+                state { state.copy(isBookmark = event.isBookmark) }
+                news(MovieDetailNews.ShowToast(if (event.isBookmark) "Фильм удален из избранного" else "Фильм добавлен в избранное"))
             }
         }
     }
@@ -55,6 +63,9 @@ class MovieDetailUpdate @Inject constructor() :
             }
             is MovieDetailUiEvent.NavigateTo -> {
                 news(MovieDetailNews.NavigateTo(event.fragment))
+            }
+            is MovieDetailUiEvent.AddToBookmark -> {
+                commands(MovieDetailCommand.AddToBookmark(event.movieId, event.isBookmark))
             }
         }
     }

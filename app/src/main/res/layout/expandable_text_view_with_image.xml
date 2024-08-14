@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge
+    android:id="@+id/custom_view"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -8,7 +9,6 @@
     android:layout_height="wrap_content">
 
     <TextView
-        style="@style/ExpandBackground"
         android:id="@+id/movie_info_tag"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

@@ -9,6 +9,14 @@ interface MovieRepository {
 
     fun getMovie(movieId: Int): Flow<Movie>
 
+    fun getMovieBookmark(movieId: Int): Flow<Movie?>
+
+    fun getBookmarkMovies(): Flow<List<Movie>>
+
+    suspend fun insertMovieBookmark(movie: Movie)
+
+    suspend fun removeMovieBookmark(movieId: Int)
+
     suspend fun insertMovies(movies: List<Movie>)
 
     suspend fun searchFilm(name: String)

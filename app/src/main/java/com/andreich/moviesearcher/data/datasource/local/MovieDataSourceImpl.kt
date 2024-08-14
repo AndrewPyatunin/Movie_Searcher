@@ -2,6 +2,7 @@ package com.andreich.moviesearcher.data.datasource.local
 
 import androidx.paging.PagingSource
 import com.andreich.moviesearcher.data.database.MovieDao
+import com.andreich.moviesearcher.data.entity.BookmarkMovieEntity
 import com.andreich.moviesearcher.data.entity.MovieEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -48,5 +49,21 @@ class MovieDataSourceImpl @Inject constructor(
 
     override suspend fun insertMovies(list: List<MovieEntity>) {
         movieDao.insertMovies(list)
+    }
+
+    override suspend fun insertMovieBookmark(movie: BookmarkMovieEntity) {
+        movieDao.insertMovie(movie)
+    }
+
+    override suspend fun removeMovieBookmark(movieId: Int) {
+        movieDao.removeMovieFromBookmark(movieId)
+    }
+
+    override fun getMovieBookmark(movieId: Int): Flow<BookmarkMovieEntity?> {
+        return movieDao.getMovieBookMark(movieId)
+    }
+
+    override fun getBookmarkMovies(): Flow<List<BookmarkMovieEntity>> {
+        return movieDao.getBookmarkMovies()
     }
 }

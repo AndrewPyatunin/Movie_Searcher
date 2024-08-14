@@ -1,5 +1,6 @@
 package com.andreich.moviesearcher.ui.screen
 
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +10,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.graphics.alpha
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -19,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.andreich.moviesearcher.MovieApp
 import com.andreich.moviesearcher.R
 import com.andreich.moviesearcher.databinding.FragmentMovieDetailBinding
-import com.andreich.moviesearcher.domain.model.Actor
 import com.andreich.moviesearcher.domain.model.Person
 import com.andreich.moviesearcher.presentation.movie_detail.MovieDetailEvent
 import com.andreich.moviesearcher.presentation.movie_detail.MovieDetailNews
@@ -35,6 +36,7 @@ import com.andreich.moviesearcher.ui.view.CustomTextViewWithImage
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.android.material.color.utilities.MaterialDynamicColors.background
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -71,7 +73,7 @@ class MovieDetailFragment : Fragment() {
     private val store by storeViaViewModel(Dispatchers.Default + coroutineExceptionHandler) { movieDetailStore }
 
     private val movieId by lazy { arguments?.getInt(KEY_MOVIE) }
-    
+
     private var _binding: FragmentMovieDetailBinding? = null
     private val binding: FragmentMovieDetailBinding
         get() = _binding ?: throw RuntimeException("Binding is null!")
@@ -83,7 +85,7 @@ class MovieDetailFragment : Fragment() {
         PosterAdapter()
     }
     private val actorAdapter: ActorPagingAdapter by lazy(LazyThreadSafetyMode.NONE) {
-         ActorPagingAdapter()
+        ActorPagingAdapter()
     }
 
     private val personAdapter: ActorAdapter by lazy(LazyThreadSafetyMode.NONE) {
@@ -102,7 +104,12 @@ class MovieDetailFragment : Fragment() {
             newsCollector = ::handleNews,
         )
         Log.d("ACTORS_TO_MOVIE_DETAIL", movieId.toString())
-        store.dispatch(MovieDetailEvent.MovieDetailUiEvent.LoadMovie(lifecycleScope + Dispatchers.Default, movieId ?: 0))
+        store.dispatch(
+            MovieDetailEvent.MovieDetailUiEvent.LoadMovie(
+                lifecycleScope + Dispatchers.Default,
+                movieId ?: 0
+            )
+        )
     }
 
     override fun onCreateView(
@@ -139,7 +146,10 @@ class MovieDetailFragment : Fragment() {
         state.movieDetailItem?.let {
             initScreen(it)
         }
-
+        state.bookmarkType.let {
+            binding.bookmarkMovie.visibility = if (it) GONE else VISIBLE
+            binding.bookmarkMovieRemove.visibility = if (it) VISIBLE else GONE
+        }
     }
 
     private fun handleNews(news: MovieDetailNews) {
@@ -149,6 +159,9 @@ class MovieDetailFragment : Fragment() {
             }
             is MovieDetailNews.NavigateTo -> {
                 navigateTo(news.fragment)
+            }
+            is MovieDetailNews.ShowToast -> {
+                Toast.makeText(context, news.message, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -177,13 +190,25 @@ class MovieDetailFragment : Fragment() {
 
         actorAdapter.onActorClick = object : ActorPagingAdapter.OnActorPagingClickListener {
             override fun onActorClick(person: Person) {
-                store.dispatch(MovieDetailEvent.MovieDetailUiEvent.NavigateTo(ActorDetailFragment.getInstance(person.id ?: 0)))
+                store.dispatch(
+                    MovieDetailEvent.MovieDetailUiEvent.NavigateTo(
+                        ActorDetailFragment.getInstance(
+                            person.id ?: 0
+                        )
+                    )
+                )
             }
         }
 
         personAdapter.onClick = object : ActorAdapter.OnActorClickListener {
             override fun onPersonClick(person: Person) {
-                store.dispatch(MovieDetailEvent.MovieDetailUiEvent.NavigateTo(ActorDetailFragment.getInstance(person.id ?: 0)))
+                store.dispatch(
+                    MovieDetailEvent.MovieDetailUiEvent.NavigateTo(
+                        ActorDetailFragment.getInstance(
+                            person.id ?: 0
+                        )
+                    )
+                )
             }
         }
 
@@ -194,18 +219,37 @@ class MovieDetailFragment : Fragment() {
         recyclerViewPosters.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
 
-        binding.movieReviewsTag.setOnClickListener {
-            recyclerViewReviews.changeVisibility()
-            binding.movieReviewsTag.changeImageRes()
+        with(binding) {
+            bookmarkMovie.setOnClickListener {
+                bookmarkClick(false)
+            }
+            bookmarkMovieRemove.setOnClickListener {
+                bookmarkClick(true)
+            }
+            bookmarksOpen.setOnClickListener {
+                store.dispatch(MovieDetailEvent.MovieDetailUiEvent.NavigateTo(MovieBookmarkFragment.getInstance()))
+            }
+            movieReviewsTag.setOnClickListener {
+                movieReviewsTag.changeColorToInitial()
+                recyclerViewReviews.changeVisibility()
+                movieReviewsTag.changeImageRes()
+            }
+            movieActorsTag.setOnClickListener {
+                movieActorsTag.changeColorToInitial()
+                recyclerViewActors.changeVisibility()
+                movieActorsTag.changeImageRes()
+            }
+            moviePostersTag.setOnClickListener {
+                moviePostersTag.changeColorToInitial()
+                recyclerViewPosters.changeVisibility()
+                moviePostersTag.changeImageRes()
+            }
         }
-        binding.movieActorsTag.setOnClickListener {
-            recyclerViewActors.changeVisibility()
-            binding.movieActorsTag.changeImageRes()
-        }
-        binding.moviePostersTag.setOnClickListener {
-            recyclerViewPosters.changeVisibility()
-            binding.moviePostersTag.changeImageRes()
-        }
+
+    }
+
+    private fun CustomTextViewWithImage.changeColorToInitial() {
+        changeToInitialBackground((background as ColorDrawable).color.alpha)
     }
 
     private fun navigateTo(fragment: Fragment) {
@@ -213,6 +257,10 @@ class MovieDetailFragment : Fragment() {
             .addToBackStack(null)
             .replace(R.id.fragment_container, fragment)
             .commit()
+    }
+
+    private fun bookmarkClick(isBookmark: Boolean) {
+        store.dispatch(MovieDetailEvent.MovieDetailUiEvent.AddToBookmark(movieId ?: 0, isBookmark))
     }
 
     private fun initScreen(movie: MovieDetailItem) {

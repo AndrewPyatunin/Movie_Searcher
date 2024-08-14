@@ -15,6 +15,7 @@ class MovieDetailUiStateMapper(
 
     override fun ResourcesProvider.map(state: MovieDetailState): MovieDetailUiState {
         return MovieDetailUiState(
+            bookmarkType = state.isBookmark,
             imageProgressVisibility = state.isLoading,
             movieDetailItem = state.movie?.mapMovieToMovieDetailItem(),
             actors = state.persons,

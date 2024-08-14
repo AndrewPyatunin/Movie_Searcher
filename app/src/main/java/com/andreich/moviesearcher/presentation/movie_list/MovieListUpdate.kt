@@ -4,6 +4,7 @@ import android.util.Log
 import com.andreich.moviesearcher.presentation.AnalyticsTracker
 import ru.tinkoff.kotea.core.dsl.DslUpdate
 import com.andreich.moviesearcher.presentation.movie_list.MovieListEvent.*
+import com.andreich.moviesearcher.ui.screen.MovieBookmarkFragment
 import com.andreich.moviesearcher.ui.screen.MovieFilterFragment
 import com.andreich.moviesearcher.ui.screen.MovieDetailFragment
 import javax.inject.Inject
@@ -49,6 +50,9 @@ class MovieListUpdate @Inject constructor(
                 handleUiEvent(event)
             }
             is MovieListUiEvent.SortedSearchCLicked -> {
+                handleUiEvent(event)
+            }
+            is MovieListUiEvent.FavouritesClicked -> {
                 handleUiEvent(event)
             }
         }
@@ -105,6 +109,9 @@ class MovieListUpdate @Inject constructor(
             is MovieListUiEvent.SortedSearchCLicked -> {
                 commands(MovieListCommand.SearchSorted(event.sortQuery, event.sortId, event.scope))
                 state { copy(isLoading = true) }
+            }
+            is MovieListUiEvent.FavouritesClicked -> {
+                news(MovieListNews.NavigateTo(MovieBookmarkFragment.getInstance()))
             }
         }
     }
