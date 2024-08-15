@@ -42,7 +42,8 @@ class StoreModule {
         getMovieUseCase: GetMovieUseCase,
         insertMovieBookmarkUseCase: InsertMovieBookmarkUseCase,
         getMovieBookmarkUseCase: GetMovieBookmarkUseCase,
-        removeMovieBookmarkUseCase: RemoveMovieBookmarkUseCase
+        removeMovieBookmarkUseCase: RemoveMovieBookmarkUseCase,
+        insertMovieUseCase: InsertMovieUseCase
     ): MovieDetailStore {
         return MovieDetailStore(
             initialState = MovieDetailState(
@@ -63,6 +64,7 @@ class StoreModule {
                     getMovieBookmarkUseCase
                 ), MovieDetailAddToBookmarkCommandHandler(
                     getMovieUseCase,
+                    insertMovieUseCase,
                     insertMovieBookmarkUseCase,
                     removeMovieBookmarkUseCase
                 )
@@ -84,13 +86,15 @@ class StoreModule {
     @Provides
     fun provideMovieBookmarkStore(
         getBookmarkMoviesUseCase: GetBookmarkMoviesUseCase,
-        removeMovieBookmarkUseCase: RemoveMovieBookmarkUseCase
+        removeMovieBookmarkUseCase: RemoveMovieBookmarkUseCase,
+        getMovieUseCase: GetMovieUseCase,
+        insertMovieUseCase: InsertMovieUseCase
     ): MovieBookmarkStore {
         return MovieBookmarkStore(
             initialState = MovieBookmarkState(true, emptyList()),
             commandHandlers = listOf(
                 MovieBookmarkCommandsFlowHandler(getBookmarkMoviesUseCase),
-                MovieBookmarkRemoveCommandHandler(removeMovieBookmarkUseCase)
+                MovieBookmarkRemoveCommandHandler(removeMovieBookmarkUseCase, insertMovieUseCase, getMovieUseCase)
             ),
             update = MovieBookmarkUpdate()
         )

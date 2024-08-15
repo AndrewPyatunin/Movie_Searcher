@@ -50,6 +50,7 @@ class MovieListUiStateMapper : UiStateMapper<MovieListState, MovieListUiState> {
                 countries = countries.joinToString(", "),
                 previewUrl = previewUrl,
                 filmLength = if (isSeries) seriesLength.toString() else movieLength.toString(),
+                bookmark = bookmark
             )
         }
     }

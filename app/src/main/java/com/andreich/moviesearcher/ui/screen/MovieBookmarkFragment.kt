@@ -58,6 +58,7 @@ class MovieBookmarkFragment : Fragment() {
             ::handleNews
         )
         store.dispatch(MovieBookmarkEvent.MovieBookmarkUiEvent.LoadMovies)
+        movieAdapter.setFragmentTag(this.javaClass.simpleName)
     }
 
     override fun onCreateView(

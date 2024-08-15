@@ -3,13 +3,12 @@ package com.andreich.moviesearcher.ui.adapter
 import android.app.AlertDialog
 import android.graphics.drawable.Drawable
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
-import androidx.appcompat.view.menu.MenuAdapter
-import androidx.appcompat.view.menu.MenuView
-import androidx.core.view.MenuProvider
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +22,6 @@ import com.facebook.shimmer.ShimmerFrameLayout
 object DiffCallback : DiffUtil.ItemCallback<MovieItem>() {
 
     override fun areItemsTheSame(oldItem: MovieItem, newItem: MovieItem): Boolean {
-        Log.d("DIFFCALLBACK", "${oldItem.id == newItem.id}")
         return oldItem.id == newItem.id
     }
 
@@ -37,6 +35,7 @@ class MovieListAdapter :
 
     var onMovieClick: OnMovieClickListener? = null
     var onMenuClick: OnMenuItemClickListener? = null
+    private var tag: String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val view =
@@ -81,7 +80,7 @@ class MovieListAdapter :
 
     }
 
-    inner class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), MenuProvider {
+    inner class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         val shimmer_item = itemView.findViewById<ShimmerFrameLayout>(R.id.shimmer_movie_item)
         val personAvatar = itemView.findViewById<ImageView>(R.id.movie_image)
@@ -101,10 +100,17 @@ class MovieListAdapter :
 
         private fun popupMenu(v: View) {
             val menu = PopupMenu(itemView.context, v)
-            menu.inflate(R.menu.movie_item_menu)
             val movie = snapshot().items[absoluteAdapterPosition]
+            when (movie.bookmark) {
+                true -> {
+                    menu.inflate(R.menu.movie_item_remove)
+                }
+                false -> {
+                    menu.inflate(R.menu.movie_item_add)
+                }
+            }
             menu.setOnMenuItemClickListener {
-                when(it.itemId) {
+                when (it.itemId) {
                     R.id.menu_add_bookmark -> {
                         onMenuClick?.onAddBookmarkClick(movie)
                         true
@@ -115,11 +121,9 @@ class MovieListAdapter :
                             .setPositiveButton("Да") { dialog, _ ->
                                 onMenuClick?.onRemoveBookmarkClick(movie)
                             }
-                            .setNegativeButton("Отмена") {_, _ ->}
+                            .setNegativeButton("Отмена") { _, _ -> }
                             .create()
                             .show()
-
-
                         true
                     }
                     else -> {
@@ -129,15 +133,10 @@ class MovieListAdapter :
             }
             menu.show()
         }
+    }
 
-        override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-            menuInflater.inflate(R.menu.movie_item_menu, menu)
-        }
-
-        override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-
-            return true
-        }
+    fun setFragmentTag(fragmentName: String) {
+        tag = fragmentName
     }
 
     interface OnMovieClickListener {

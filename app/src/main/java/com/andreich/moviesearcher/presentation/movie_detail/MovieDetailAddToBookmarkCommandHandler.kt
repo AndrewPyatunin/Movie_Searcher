@@ -13,6 +13,7 @@ import javax.inject.Inject
 
 class MovieDetailAddToBookmarkCommandHandler @Inject constructor(
     private val getMovieUseCase: GetMovieUseCase,
+    private val insertMovieUseCase: InsertMovieUseCase,
     private val insertMovieBookmarkUseCase: InsertMovieBookmarkUseCase,
     private val removeMovieBookmarkUseCase: RemoveMovieBookmarkUseCase
 ) : CommandsFlowHandler<MovieDetailCommand, MovieDetailEvent.MovieDetailCommandsResultEvent> {
@@ -20,19 +21,24 @@ class MovieDetailAddToBookmarkCommandHandler @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun handle(commands: Flow<MovieDetailCommand>): Flow<MovieDetailEvent.MovieDetailCommandsResultEvent> {
         return commands.filterIsInstance<MovieDetailCommand.AddToBookmark>()
-            .mapLatest {
-                runCatchingCancellable {
-                    Log.d("MOVIE_BOOKMARK", it.movieId.toString())
-                    if (it.isBookmark) {
+            .flatMapLatest<MovieDetailCommand.AddToBookmark, MovieDetailEvent.MovieDetailCommandsResultEvent> {
+                getMovieUseCase.execute(it.movieId).flatMapLatest { movie ->
+                    Log.d("MOVIE_DETAIL_BOOKMARK", it.isBookmark.toString())
+                    if (movie.bookmark) {
+                        Log.d("MOVIE_DETAIL_BOOKMARK", "remove")
                         removeMovieBookmarkUseCase.execute(it.movieId)
-                    } else
-                        insertMovieBookmarkUseCase.execute(getMovieUseCase.execute(it.movieId).first())
-                    it
-                }.map {
-                    MovieDetailEvent.MovieDetailCommandsResultEvent.Success(it.isBookmark)
-                }.getOrElse {
-                    MovieDetailEvent.MovieDetailCommandsResultEvent.LoadError(it.message.toString())
+                    } else {
+                        Log.d("MOVIE_DETAIL_BOOKMARK", "insert")
+                        insertMovieBookmarkUseCase.execute(movie.copy(bookmark = true))
+                    }
+                    insertMovieUseCase.execute(movie.copy(bookmark = !movie.bookmark)).run {
+                        getMovieUseCase.execute(it.movieId).map {
+                            MovieDetailEvent.MovieDetailCommandsResultEvent.Success(it.bookmark)
+                        }
+                    }
                 }
+            }.catch {
+                MovieDetailEvent.MovieDetailCommandsResultEvent.LoadError(it.message.toString())
             }
     }
 }

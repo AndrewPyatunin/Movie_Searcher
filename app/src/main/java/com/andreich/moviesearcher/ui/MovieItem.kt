@@ -12,4 +12,5 @@ data class MovieItem(
     val countries: String,
     val previewUrl: String,
     val filmLength: String,
+    val bookmark: Boolean
 )

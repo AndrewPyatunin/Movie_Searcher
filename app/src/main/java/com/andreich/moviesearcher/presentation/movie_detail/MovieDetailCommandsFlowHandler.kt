@@ -30,7 +30,7 @@ class MovieDetailCommandsFlowHandler @Inject constructor(
                                         reviews = reviews,
                                         actors = persons,
                                         posters = posters,
-                                        isBookmark = movieBookmark?.bookmark == false
+                                        isBookmark = movie.bookmark
                                     )
                                 }
                             }

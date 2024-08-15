@@ -46,7 +46,7 @@ class MovieDetailUpdate @Inject constructor() :
             }
             is MovieDetailCommandsResultEvent.Success -> {
                 state { state.copy(isBookmark = event.isBookmark) }
-                news(MovieDetailNews.ShowToast(if (event.isBookmark) "Фильм удален из избранного" else "Фильм добавлен в избранное"))
+                news(MovieDetailNews.ShowToast(if (event.isBookmark) "Фильм добавлен в избранное" else "Фильм удален из избранного"))
             }
         }
     }

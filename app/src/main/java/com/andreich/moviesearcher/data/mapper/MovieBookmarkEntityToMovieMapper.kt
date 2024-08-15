@@ -39,7 +39,7 @@ class MovieBookmarkEntityToMovieMapper @Inject constructor(
                 seriesLength = seriesLength,
                 page = 1,
                 requestId = requestId,
-                bookmark = false
+                bookmark = true
             )
         }
     }

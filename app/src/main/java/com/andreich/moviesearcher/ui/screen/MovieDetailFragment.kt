@@ -146,10 +146,15 @@ class MovieDetailFragment : Fragment() {
         state.movieDetailItem?.let {
             initScreen(it)
         }
-        state.bookmarkType.let {
-            binding.bookmarkMovie.visibility = if (it) GONE else VISIBLE
-            binding.bookmarkMovieRemove.visibility = if (it) VISIBLE else GONE
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                state.bookmarkType.let {
+                    binding.bookmarkMovie.visibility = if (it) GONE else VISIBLE
+                    binding.bookmarkMovieRemove.visibility = if (it) VISIBLE else GONE
+                }
+            }
         }
+
     }
 
     private fun handleNews(news: MovieDetailNews) {

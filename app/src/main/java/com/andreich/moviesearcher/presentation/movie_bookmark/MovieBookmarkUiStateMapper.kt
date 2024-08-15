@@ -37,7 +37,7 @@ class MovieBookmarkUiStateMapper : UiStateMapper<MovieBookmarkState, MovieBookma
             countries = movie.countries.joinToString(", "),
             previewUrl = movie.previewUrl,
             filmLength = if (movie.isSeries) movie.seriesLength.toString() else movie.movieLength.toString(),
-
+            bookmark = movie.bookmark
         )
     }
 }
