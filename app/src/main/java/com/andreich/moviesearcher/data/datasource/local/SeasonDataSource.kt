@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface SeasonDataSource {
 
-    fun getSeasons(): Flow<SeasonEntity>
+    fun getSeasons(movieId: Int): Flow<List<SeasonEntity>>
 
     suspend fun insertSeasons(list: List<SeasonEntity>)
 }

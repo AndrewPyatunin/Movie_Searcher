@@ -35,7 +35,8 @@ class PosterRemoteMediator(
         try {
             val apiResponse = remoteDataSource.getPosters(apiKey, page = page, movieId = movieId)
             val posters = apiResponse.docs
-            val endOfPaginationReached = posters.isEmpty()
+            Log.d("Poster_mediator", posters.joinToString())
+            val endOfPaginationReached = posters.isEmpty() || apiResponse.page == apiResponse.total
 
             database.withTransaction {
                 val prevKey = if (page > 1) page - 1 else null

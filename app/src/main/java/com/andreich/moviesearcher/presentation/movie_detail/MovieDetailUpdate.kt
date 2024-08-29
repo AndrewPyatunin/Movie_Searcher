@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.paging.map
 import com.andreich.moviesearcher.presentation.movie_detail.MovieDetailEvent.MovieDetailCommandsResultEvent
 import com.andreich.moviesearcher.presentation.movie_detail.MovieDetailEvent.MovieDetailUiEvent
-import kotlinx.coroutines.flow.first
 import ru.tinkoff.kotea.core.dsl.DslUpdate
 import javax.inject.Inject
 
@@ -15,11 +14,13 @@ class MovieDetailUpdate @Inject constructor() :
         when (event) {
             is MovieDetailCommandsResultEvent.DataIsReady -> handleResult(event)
             is MovieDetailCommandsResultEvent.LoadError -> handleResult(event)
+            is MovieDetailCommandsResultEvent.Success -> handleResult(event)
+            is MovieDetailCommandsResultEvent.SeasonIsReady -> handleResult(event)
             is MovieDetailUiEvent.BackPress -> handleUiEvent(event)
             is MovieDetailUiEvent.LoadMovie -> handleUiEvent(event)
             is MovieDetailUiEvent.NavigateTo -> handleUiEvent(event)
             is MovieDetailUiEvent.AddToBookmark -> handleUiEvent(event)
-            is MovieDetailCommandsResultEvent.Success -> handleResult(event)
+            is MovieDetailUiEvent.LoadSeasons -> handleUiEvent(event)
         }
     }
 
@@ -48,6 +49,9 @@ class MovieDetailUpdate @Inject constructor() :
                 state { state.copy(isBookmark = event.isBookmark) }
                 news(MovieDetailNews.ShowToast(if (event.isBookmark) "Фильм добавлен в избранное" else "Фильм удален из избранного"))
             }
+            is MovieDetailCommandsResultEvent.SeasonIsReady -> {
+                state { state.copy(seasons = event.seasons) }
+            }
         }
     }
 
@@ -66,6 +70,9 @@ class MovieDetailUpdate @Inject constructor() :
             }
             is MovieDetailUiEvent.AddToBookmark -> {
                 commands(MovieDetailCommand.AddToBookmark(event.movieId, event.isBookmark))
+            }
+            is MovieDetailUiEvent.LoadSeasons -> {
+                commands(MovieDetailCommand.LoadSeasons(event.movieId))
             }
         }
     }

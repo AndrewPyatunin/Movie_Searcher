@@ -2,7 +2,6 @@ package com.andreich.moviesearcher.di
 
 import androidx.paging.PagingData
 import com.andreich.moviesearcher.domain.usecase.*
-import com.andreich.moviesearcher.presentation.AnalyticsTracker
 import com.andreich.moviesearcher.presentation.actor_detail.ActorDetailCommandsFlowHandler
 import com.andreich.moviesearcher.presentation.actor_detail.ActorDetailState
 import com.andreich.moviesearcher.presentation.actor_detail.ActorDetailStore
@@ -19,40 +18,51 @@ class StoreModule {
     @Provides
     fun provideMovieListStore(
         searchUseCase: SearchFilteredFilmsUseCase,
-        getMovieHistoryUseCase: GetMovieHistoryUseCase
+        getMovieHistoryUseCase: GetMovieHistoryUseCase,
+        getMovieUseCase: GetMovieUseCase,
+        insertMovieUseCase: InsertMovieUseCase,
+        insertMovieBookmarkUseCase: InsertMovieBookmarkUseCase,
+        removeMovieBookmarkUseCase: RemoveMovieBookmarkUseCase
     ): MovieListStore {
         return MovieListStore(
             initialState = MovieListState(true, PagingData.empty()),
-            update = MovieListUpdate(AnalyticsTracker()),
+            update = MovieListUpdate(),
             commandsHandlers = listOf(
                 MovieListCommandsFlowHandler(searchUseCase),
                 MovieListSearchFilmCommandHandler(searchUseCase),
                 MovieListFilteredSearchCommandHandler(searchUseCase),
                 MovieListSortCommandHandler(searchUseCase),
-                MovieListShowHistoryCommandHandler(getMovieHistoryUseCase)
+                MovieListShowHistoryCommandHandler(getMovieHistoryUseCase),
+                MovieListAddToBookmarkCommandHandler(
+                    insertMovieBookmarkUseCase, insertMovieUseCase, getMovieUseCase
+                ),
+                MovieListRemoveFromBookmarkCommandHandler(
+                    getMovieUseCase, insertMovieUseCase, removeMovieBookmarkUseCase
+                )
             )
         )
     }
 
     @Provides
     fun provideMovieDetailStore(
-        getPostersUseCase: GetPostersUseCase,
+        getPostersUseCase: GetPosterDetailUseCase,
         getPersonsUseCase: GetPersonsUseCase,
         getReviewsUseCase: GetReviewsUseCase,
         getMovieUseCase: GetMovieUseCase,
         insertMovieBookmarkUseCase: InsertMovieBookmarkUseCase,
-        getMovieBookmarkUseCase: GetMovieBookmarkUseCase,
         removeMovieBookmarkUseCase: RemoveMovieBookmarkUseCase,
-        insertMovieUseCase: InsertMovieUseCase
+        insertMovieUseCase: InsertMovieUseCase,
+        getSeasonsUseCase: GetSeasonsUseCase
     ): MovieDetailStore {
         return MovieDetailStore(
             initialState = MovieDetailState(
                 isBookmark = false,
                 isLoading = true,
                 PagingData.empty(),
+                emptyList(),
                 PagingData.empty(),
-                PagingData.empty(),
-                null
+                null,
+                emptyList()
             ),
             update = MovieDetailUpdate(),
             commandHandlers = listOf(
@@ -60,13 +70,14 @@ class StoreModule {
                     getPostersUseCase,
                     getPersonsUseCase,
                     getReviewsUseCase,
-                    getMovieUseCase,
-                    getMovieBookmarkUseCase
+                    getMovieUseCase
                 ), MovieDetailAddToBookmarkCommandHandler(
                     getMovieUseCase,
                     insertMovieUseCase,
                     insertMovieBookmarkUseCase,
                     removeMovieBookmarkUseCase
+                ), MovieDetailGetSeasonsCommandHandler(
+                    getSeasonsUseCase
                 )
             )
         )
@@ -94,7 +105,11 @@ class StoreModule {
             initialState = MovieBookmarkState(true, emptyList()),
             commandHandlers = listOf(
                 MovieBookmarkCommandsFlowHandler(getBookmarkMoviesUseCase),
-                MovieBookmarkRemoveCommandHandler(removeMovieBookmarkUseCase, insertMovieUseCase, getMovieUseCase)
+                MovieBookmarkRemoveCommandHandler(
+                    removeMovieBookmarkUseCase,
+                    insertMovieUseCase,
+                    getMovieUseCase
+                )
             ),
             update = MovieBookmarkUpdate()
         )

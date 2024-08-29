@@ -32,9 +32,9 @@ import com.andreich.moviesearcher.presentation.movie_list.MovieListUiStateMapper
 import com.andreich.moviesearcher.ui.Debounce
 import com.andreich.moviesearcher.ui.FilterState
 import com.andreich.moviesearcher.ui.MovieItem
-import com.andreich.moviesearcher.ui.state.MovieListUiState
 import com.andreich.moviesearcher.ui.adapter.HistoryAdapter
 import com.andreich.moviesearcher.ui.adapter.MovieListAdapter
+import com.andreich.moviesearcher.ui.state.MovieListUiState
 import com.andreich.moviesearcher.ui.view.CustomTextViewWithImage
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -149,6 +149,7 @@ class MovieListFragment : Fragment() {
             onHistoryAdapterClick()
             clickSort()
             clickFilter()
+            menuItemClick()
             onSearchQuery()
             searchView.setOnQueryTextFocusChangeListener { v, hasFocus ->
                 if (hasFocus) store.dispatch(MovieListEvent.MovieListUiEvent.GetHistory)
@@ -230,9 +231,6 @@ class MovieListFragment : Fragment() {
                 (it as CustomTextViewWithImage).sortClick(it[1].visibility == GONE)
                 it.changeImageRes()
                 it.changeToInitialBackground((background as ColorDrawable).color.alpha)
-//                sortList.forEach {
-//                    it.changeToInitialBackground()
-//                }
             }
         }
     }
@@ -246,6 +244,19 @@ class MovieListFragment : Fragment() {
     private fun clickFavourites() {
         binding.imageOpenFavourites.setOnClickListener {
             store.dispatch(MovieListEvent.MovieListUiEvent.FavouritesClicked)
+        }
+    }
+
+    private fun menuItemClick() {
+        movieListAdapter.onMenuClick = object : MovieListAdapter.OnMenuItemClickListener {
+            override fun onAddBookmarkClick(movie: MovieItem) {
+                store.dispatch(MovieListEvent.MovieListUiEvent.AddToBookmarkClicked(movie.id, movie.name))
+            }
+
+            override fun onRemoveBookmarkClick(movie: MovieItem) {
+                store.dispatch(MovieListEvent.MovieListUiEvent.RemoveFromBookmarkClicked(movie.id, movie.name))
+            }
+
         }
     }
 
@@ -316,12 +327,19 @@ class MovieListFragment : Fragment() {
                 binding.cardHistory.visibility = VISIBLE
                 historyAdapter.submitList(news.history)
             }
+            is MovieListNews.ShowBookmarkToast -> {
+                Toast.makeText(
+                    requireContext(),
+                    "Фильм ${news.movieTitle} ${if (news.isAdded) " добавлен в избранное" else " удален из избранного"}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 
     private fun listenAdapter() {
         movieListAdapter.addLoadStateListener {
-            if (it.refresh is LoadState.Loading || it.append is LoadState.Loading) {
+            if (it.refresh is LoadState.Loading) {
                 store.dispatch(MovieListEvent.MovieListUiEvent.PaginationLoad)
             } else {
                 store.dispatch(MovieListEvent.MovieListUiEvent.PaginationStopLoad)

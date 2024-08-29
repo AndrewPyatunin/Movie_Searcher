@@ -18,6 +18,10 @@ sealed interface MovieListEvent {
 
         class FilterMoviesClicked(val filterState: MovieFilterState?) : MovieListUiEvent
 
+        class AddToBookmarkClicked(val movieId: Int, val movieTitle: String) : MovieListUiEvent
+
+        class RemoveFromBookmarkClicked(val movieId: Int, val movieTitle: String) : MovieListUiEvent
+
         object PaginationLoad : MovieListUiEvent
 
         object PaginationStopLoad : MovieListUiEvent
@@ -36,6 +40,10 @@ sealed interface MovieListEvent {
     sealed interface MovieListCommandsResultEvent : MovieListEvent {
 
         class DataIsReady(val movies: PagingData<Movie>?) : MovieListCommandsResultEvent
+
+        class AdditionSuccess(val movieTitle: String) : MovieListCommandsResultEvent
+
+        class RemovalSuccess(val movieTitle: String) : MovieListCommandsResultEvent
 
         class LoadError(val message: String) : MovieListCommandsResultEvent
 

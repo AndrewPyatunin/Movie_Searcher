@@ -9,5 +9,7 @@ sealed interface MovieListNews {
 
     class ShowErrorToast(val message: String) : MovieListNews
 
+    class ShowBookmarkToast(val movieTitle: String, val isAdded: Boolean) : MovieListNews
+
     class ShowHistory(val history: List<MovieSearchHistory>) : MovieListNews
 }

@@ -61,13 +61,12 @@ class RemoteDataSourceImpl @Inject constructor(
     }
 
     override suspend fun getSeasons(
-        apiKey: String,
         page: Int,
         limit: Int,
         movieId: Int,
         vararg selectFields: String
     ): RequestResultDto<SeasonDto> {
-        return apiService.getSeasons(page, limit, movieId, *selectFields)
+        return apiService.getSeasons(page, limit, movieId)
     }
 
     override suspend fun getPosters(

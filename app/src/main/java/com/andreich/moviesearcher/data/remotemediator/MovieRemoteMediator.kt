@@ -46,8 +46,9 @@ class MovieRemoteMediator(
             )
             Log.d("MEDIATOR_FILTER", sortFilter.values.joinToString(", "))
             val movies = apiResponse.docs
+            Log.d("MEDIATOR_PAGING", "curPage = ${apiResponse.page}, totalPages = ${apiResponse.total}")
             val endOfPaginationReached = apiResponse.page == apiResponse.total || apiResponse.docs.isEmpty()
-            Log.d("MEDIATOR_PAGING", endOfPaginationReached.toString())
+            Log.d("MEDIATOR_PAGING_END", endOfPaginationReached.toString())
             database.withTransaction {
                 name?.let {
                     if (it.trim().isNotEmpty()) {

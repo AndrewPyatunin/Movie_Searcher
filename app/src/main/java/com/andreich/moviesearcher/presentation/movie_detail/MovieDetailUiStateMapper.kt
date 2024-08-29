@@ -30,7 +30,8 @@ class MovieDetailUiStateMapper(
                     it.author
                 )
             },
-            posters = state.posters
+            posters = state.posters,
+            seasons = state.seasons
         )
     }
 
@@ -44,7 +45,8 @@ class MovieDetailUiStateMapper(
             countries = countries.joinToString(", "),
             url = url,
             actors = actors,
-            bookmark = bookmark
+            bookmark = bookmark,
+            isSeries = isSeries
         )
     }
 }

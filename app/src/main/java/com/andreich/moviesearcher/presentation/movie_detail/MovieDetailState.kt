@@ -7,7 +7,8 @@ data class MovieDetailState(
     val isBookmark: Boolean,
     val isLoading: Boolean,
     val reviews: PagingData<Review>,
-    val posters: PagingData<Poster>,
+    val posters: List<Poster>,
     val persons: PagingData<Person>,
-    val movie: Movie?
+    val movie: Movie?,
+    val seasons: List<Season>
 )

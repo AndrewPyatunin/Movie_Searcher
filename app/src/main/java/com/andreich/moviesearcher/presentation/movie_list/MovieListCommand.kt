@@ -13,5 +13,9 @@ sealed interface MovieListCommand {
 
     class SearchFiltered(val filters: Map<String, List<String>>, val scope: CoroutineScope) : MovieListCommand
 
+    class AddToBookmark(val movieId: Int, val movieTitle: String) : MovieListCommand
+
+    class RemoveFromBookmark(val movieId: Int, val movieTitle: String) : MovieListCommand
+
     object GetHistory : MovieListCommand
 }

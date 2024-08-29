@@ -9,8 +9,8 @@ class SeasonDataSourceImpl @Inject constructor(
     private val seasonDao: SeasonDao
 ) : SeasonDataSource {
 
-    override fun getSeasons(): Flow<SeasonEntity> {
-        return seasonDao.getSeasons()
+    override fun getSeasons(movieId: Int): Flow<List<SeasonEntity>> {
+        return seasonDao.getSeasons(movieId)
     }
 
     override suspend fun insertSeasons(list: List<SeasonEntity>) {

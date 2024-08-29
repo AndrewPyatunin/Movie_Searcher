@@ -60,19 +60,15 @@ interface ApiService {
     ): RequestResultDto<ReviewDto>
 
     @GET(
-        "season?selectFields=movieId&selectFields=poster&selectFields=number" +
-                "&selectFields=name&selectFields=enName&selectFields=description" +
-                "&selectFields=enDescription&selectFields=episodesCount&selectFields=airDate" +
-                "&selectFields=episodes&sortField=airDate&sortField=episodes.date&sortType=1&sortType=1&number=1-30"
+        "season"//?sortField=airDate&sortField=episodes.date&sortType=1&sortType=1&number=1-30"
     )
     suspend fun getSeasons(
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 10,
-        @Query(QUERY_PARAM_MOVIE_ID) movieId: Int,
-        @Query(QUERY_PARAM_SELECT_FIELDS) vararg selectFields: String
+        @Query("movieId") movieId: Int,
     ): RequestResultDto<SeasonDto>
 
-    @GET("image?&type=cover&type=frame&type=promo&type=still&type=wallpaper")
+    @GET("image?type=wallpaper")
     suspend fun getPosters(
         @Query("movieId") movieId: Int,
         @Query("page") page: Int = 1,

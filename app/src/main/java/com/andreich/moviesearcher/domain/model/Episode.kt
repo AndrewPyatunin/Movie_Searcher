@@ -1,6 +1,6 @@
-package com.andreich.moviesearcher.data.entity
+package com.andreich.moviesearcher.domain.model
 
-data class EpisodeEntity(
+data class Episode(
     var number: Int,
     var name: String,
     var enName: String,

@@ -19,13 +19,10 @@ class SeasonDtoToSeasonEntityMapper @Inject constructor(
                 episodeMapper.map(it)
             },
             enName = fromDto.enName ?: "",
-            enDescription = fromDto.enDescription ?: "",
             name = fromDto.name ?: "",
             airDate = fromDto.airDate ?: "",
-            description = fromDto.description ?: "",
-            url = fromDto.poster?.url ?: "",
-            previewUrl = fromDto.poster?.previewUrl ?: "",
-            id = fromDto.id ?: ""
+            id = fromDto.id ?: "",
+            source = fromDto.source ?: ""
         )
     }
 }

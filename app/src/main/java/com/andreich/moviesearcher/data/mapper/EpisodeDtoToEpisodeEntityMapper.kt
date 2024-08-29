@@ -11,13 +11,8 @@ class EpisodeDtoToEpisodeEntityMapper @Inject constructor() : DtoMapper<EpisodeD
             number = fromDto.number ?: -1,
             name = fromDto.name ?: "",
             enName = fromDto.enName ?: "",
-            url = fromDto.episodePoster?.url ?: "",
-            previewUrl = fromDto.episodePoster?.previewUrl ?: "",
-            duration = fromDto.duration ?: -1,
-            date = fromDto.date ?: "",
             description = fromDto.description ?: "",
             airDate = fromDto.airDate ?: "",
-            enDescription = fromDto.enDescription ?: ""
         )
     }
 }

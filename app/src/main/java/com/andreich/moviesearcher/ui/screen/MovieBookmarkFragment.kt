@@ -1,6 +1,7 @@
 package com.andreich.moviesearcher.ui.screen
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +22,8 @@ import com.andreich.moviesearcher.presentation.movie_bookmark.MovieBookmarkUiSta
 import com.andreich.moviesearcher.ui.MovieItem
 import com.andreich.moviesearcher.ui.adapter.MovieListAdapter
 import com.andreich.moviesearcher.ui.state.MovieBookmarkUiState
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.tinkoff.kotea.android.lifecycle.collectOnCreate
 import ru.tinkoff.kotea.android.storeViaViewModel
@@ -41,12 +44,17 @@ class MovieBookmarkFragment : Fragment() {
     private val binding: FragmentMovieBookmarkBinding
         get() = _binding ?: throw RuntimeException("MovieBookmarkBinding is null!")
 
+
+    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        Log.e("MovieBookmarkFragment", throwable.message, throwable)
+    }
+
     @Inject
     lateinit var bookmarkStore: MovieBookmarkStore
 
     private val movieAdapter by lazy(LazyThreadSafetyMode.NONE) { MovieListAdapter() }
 
-    private val store by storeViaViewModel { bookmarkStore }
+    private val store by storeViaViewModel(Dispatchers.Default + coroutineExceptionHandler) { bookmarkStore }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +73,7 @@ class MovieBookmarkFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentMovieBookmarkBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -96,6 +104,11 @@ class MovieBookmarkFragment : Fragment() {
             }
 
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun collectState(state: MovieBookmarkUiState) {

@@ -1,16 +1,16 @@
 package com.andreich.moviesearcher.ui.screen
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
+import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.graphics.alpha
+import androidx.core.view.ViewCompat
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -27,16 +27,12 @@ import com.andreich.moviesearcher.presentation.movie_detail.MovieDetailNews
 import com.andreich.moviesearcher.presentation.movie_detail.MovieDetailStore
 import com.andreich.moviesearcher.presentation.movie_detail.MovieDetailUiStateMapper
 import com.andreich.moviesearcher.ui.MovieDetailItem
-import com.andreich.moviesearcher.ui.adapter.ActorAdapter
-import com.andreich.moviesearcher.ui.adapter.ActorPagingAdapter
-import com.andreich.moviesearcher.ui.adapter.PosterAdapter
-import com.andreich.moviesearcher.ui.adapter.ReviewListAdapter
+import com.andreich.moviesearcher.ui.adapter.*
 import com.andreich.moviesearcher.ui.state.MovieDetailUiState
 import com.andreich.moviesearcher.ui.view.CustomTextViewWithImage
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.google.android.material.color.utilities.MaterialDynamicColors.background
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -61,7 +57,7 @@ class MovieDetailFragment : Fragment() {
     }
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        Log.e("MainActivity", throwable.message, throwable)
+        Log.e("MovieDetailFragment", throwable.message, throwable)
     }
 
     @Inject
@@ -81,8 +77,8 @@ class MovieDetailFragment : Fragment() {
     private val reviewAdapter: ReviewListAdapter by lazy(LazyThreadSafetyMode.NONE) {
         ReviewListAdapter()
     }
-    private val posterAdapter: PosterAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        PosterAdapter()
+    private val posterAdapter: PosterListAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        PosterListAdapter()
     }
     private val actorAdapter: ActorPagingAdapter by lazy(LazyThreadSafetyMode.NONE) {
         ActorPagingAdapter()
@@ -90,6 +86,10 @@ class MovieDetailFragment : Fragment() {
 
     private val personAdapter: ActorAdapter by lazy(LazyThreadSafetyMode.NONE) {
         ActorAdapter()
+    }
+
+    private val seasonAdapter: SeasonAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        SeasonAdapter()
     }
 
     private val component by lazy { (activity?.application as MovieApp).component }
@@ -132,29 +132,31 @@ class MovieDetailFragment : Fragment() {
     }
 
     private fun collectState(state: MovieDetailUiState) {
-        lifecycleScope.launch(Dispatchers.IO) {
+        lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 reviewAdapter.submitData(state.reviews)
+                binding.movieDetailReviewsRecycler.visibility = VISIBLE
             }
         }
-        lifecycleScope.launch(Dispatchers.IO) {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                Log.d("PosterAdapterFragment", state.posters.toString())
-                posterAdapter.submitData(state.posters)
+        state.seasons.isNotEmpty().let {
+            binding.movieSeasonRecycler.visibility = VISIBLE
+            binding.movieSeasonTag.visibility = VISIBLE
+        }
+        lifecycleScope.launch {
+            state.seasons.let {
+                seasonAdapter.submitList(it)
             }
+        }
+        lifecycleScope.launch {
+            posterAdapter.submitList(state.posters)
         }
         state.movieDetailItem?.let {
             initScreen(it)
         }
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                state.bookmarkType.let {
-                    binding.bookmarkMovie.visibility = if (it) GONE else VISIBLE
-                    binding.bookmarkMovieRemove.visibility = if (it) VISIBLE else GONE
-                }
-            }
+        state.bookmarkType.let {
+            binding.bookmarkMovie.visibility = if (it) GONE else VISIBLE
+            binding.bookmarkMovieRemove.visibility = if (it) VISIBLE else GONE
         }
-
     }
 
     private fun handleNews(news: MovieDetailNews) {
@@ -188,10 +190,12 @@ class MovieDetailFragment : Fragment() {
         val recyclerViewActors = binding.movieDetailActorsRecycler
         val recyclerViewReviews = binding.movieDetailReviewsRecycler
         val recyclerViewPosters = binding.movieDetailPostersRecycler
+        val recyclerViewSeasons = binding.movieSeasonRecycler
 
         recyclerViewActors.adapter = personAdapter
         recyclerViewReviews.adapter = reviewAdapter
         recyclerViewPosters.adapter = posterAdapter
+        recyclerViewSeasons.adapter = seasonAdapter
 
         actorAdapter.onActorClick = object : ActorPagingAdapter.OnActorPagingClickListener {
             override fun onActorClick(person: Person) {
@@ -216,13 +220,13 @@ class MovieDetailFragment : Fragment() {
                 )
             }
         }
-
-        recyclerViewActors.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-        recyclerViewReviews.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         recyclerViewPosters.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        recyclerViewPosters.apply {
+            set3DItem(true)
+            setIsScrollingEnabled(true)
+            setAlpha(true)
+        }
 
         with(binding) {
             bookmarkMovie.setOnClickListener {
@@ -294,6 +298,13 @@ class MovieDetailFragment : Fragment() {
                 movieDetailCountries.text = it.countries
                 movieDetailTitle.text = it.title
                 personAdapter.submitList(it.actors)
+                if (it.isSeries) {
+                    store.dispatch(
+                        MovieDetailEvent.MovieDetailUiEvent.LoadSeasons(
+                            it.id
+                        )
+                    )
+                }
             }
         }
     }

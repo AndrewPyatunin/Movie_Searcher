@@ -1,5 +1,6 @@
 package com.andreich.moviesearcher.data.repo
 
+import android.util.Log
 import androidx.paging.*
 import com.andreich.moviesearcher.data.database.MovieDatabase
 import com.andreich.moviesearcher.data.database.PosterRemoteKeyDao
@@ -12,7 +13,10 @@ import com.andreich.moviesearcher.data.remotemediator.PosterRemoteMediator
 import com.andreich.moviesearcher.domain.model.Poster
 import com.andreich.moviesearcher.domain.pojo.PosterDto
 import com.andreich.moviesearcher.domain.repo.PosterRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -50,5 +54,18 @@ class PosterRepositoryImpl @Inject constructor(
                 posterEntityMapper.map(it)
             }
         }
+    }
+
+    override suspend fun getPostersDetail(movieId: Int): Flow<List<Poster>> {
+               return posterDataSource.insertPosters(remoteDataSource.getPosters(apiKey, movieId).let {
+                    it.docs.map { poster ->
+                        posterMapper.map(poster, it.page ?: 1, "")
+                    }
+                }).let {
+                    posterDataSource.getPostersDetail(movieId).map {
+                        Log.d("POSTER_REPO", it.joinToString())
+                        it.map { posterEntityMapper.map(it)}
+                    }
+                }
     }
 }

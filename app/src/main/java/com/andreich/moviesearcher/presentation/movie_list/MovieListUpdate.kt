@@ -1,7 +1,6 @@
 package com.andreich.moviesearcher.presentation.movie_list
 
 import android.util.Log
-import com.andreich.moviesearcher.presentation.AnalyticsTracker
 import ru.tinkoff.kotea.core.dsl.DslUpdate
 import com.andreich.moviesearcher.presentation.movie_list.MovieListEvent.*
 import com.andreich.moviesearcher.ui.screen.MovieBookmarkFragment
@@ -10,11 +9,9 @@ import com.andreich.moviesearcher.ui.screen.MovieDetailFragment
 import javax.inject.Inject
 
 class MovieListUpdate @Inject constructor(
-    private val analyticsTracker: AnalyticsTracker
 ) : DslUpdate<MovieListState, MovieListEvent, MovieListCommand, MovieListNews>() {
 
     override fun NextBuilder.update(event: MovieListEvent) {
-        analyticsTracker.invoke(state, event)
         when (event) {
             is MovieListCommandsResultEvent.DataIsReady -> {
                 handleResult(event)
@@ -27,6 +24,12 @@ class MovieListUpdate @Inject constructor(
             }
             is MovieListUiEvent.FilterSearchClicked -> {
                 handleUiEvent(event)
+            }
+            is MovieListCommandsResultEvent.AdditionSuccess -> {
+                handleResult(event)
+            }
+            is MovieListCommandsResultEvent.RemovalSuccess -> {
+                handleResult(event)
             }
             is MovieListUiEvent.MovieItemClicked -> {
                 handleUiEvent(event)
@@ -55,6 +58,12 @@ class MovieListUpdate @Inject constructor(
             is MovieListUiEvent.FavouritesClicked -> {
                 handleUiEvent(event)
             }
+            is MovieListUiEvent.AddToBookmarkClicked -> {
+                handleUiEvent(event)
+            }
+            is MovieListUiEvent.RemoveFromBookmarkClicked -> {
+                handleUiEvent(event)
+            }
         }
     }
 
@@ -71,6 +80,12 @@ class MovieListUpdate @Inject constructor(
             is MovieListCommandsResultEvent.SearchHistoryIsReady -> {
                 Log.d("HISTORY_HANDLE", event.history.size.toString())
                 news(MovieListNews.ShowHistory(event.history))
+            }
+            is MovieListCommandsResultEvent.AdditionSuccess -> {
+                news(MovieListNews.ShowBookmarkToast(event.movieTitle, true))
+            }
+            is MovieListCommandsResultEvent.RemovalSuccess -> {
+                news(MovieListNews.ShowBookmarkToast(event.movieTitle, false))
             }
         }
     }
@@ -112,6 +127,12 @@ class MovieListUpdate @Inject constructor(
             }
             is MovieListUiEvent.FavouritesClicked -> {
                 news(MovieListNews.NavigateTo(MovieBookmarkFragment.getInstance()))
+            }
+            is MovieListUiEvent.AddToBookmarkClicked -> {
+                commands(MovieListCommand.AddToBookmark(event.movieId, event.movieTitle))
+            }
+            is MovieListUiEvent.RemoveFromBookmarkClicked -> {
+                commands(MovieListCommand.RemoveFromBookmark(event.movieId, event.movieTitle))
             }
         }
     }

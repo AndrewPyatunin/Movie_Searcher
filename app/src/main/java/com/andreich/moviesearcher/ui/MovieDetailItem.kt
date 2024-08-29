@@ -11,5 +11,6 @@ data class MovieDetailItem(
     val countries: String,
     val url: String,
     val actors: List<Person>,
-    val bookmark: Boolean
+    val bookmark: Boolean,
+    val isSeries: Boolean
 )

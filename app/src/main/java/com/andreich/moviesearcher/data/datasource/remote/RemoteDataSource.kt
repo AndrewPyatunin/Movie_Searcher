@@ -37,7 +37,6 @@ interface RemoteDataSource {
     ): RequestResultDto<ReviewDto>
 
     suspend fun getSeasons(
-        apiKey: String,
         page: Int = 1,
         limit: Int = 10,
         movieId: Int,

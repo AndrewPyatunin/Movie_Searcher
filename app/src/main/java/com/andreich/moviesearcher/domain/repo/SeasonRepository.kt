@@ -1,9 +1,9 @@
 package com.andreich.moviesearcher.domain.repo
 
-import com.andreich.moviesearcher.data.entity.SeasonEntity
+import com.andreich.moviesearcher.domain.model.Season
 import kotlinx.coroutines.flow.Flow
 
 interface SeasonRepository {
 
-    fun getSeasons(): Flow<SeasonEntity>
+    suspend fun getSeasons(movieId: Int): Flow<List<Season>>
 }
