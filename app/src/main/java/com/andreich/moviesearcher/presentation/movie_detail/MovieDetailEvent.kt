@@ -14,6 +14,12 @@ sealed interface MovieDetailEvent {
 
         class LoadSeasons(val movieId: Int) : MovieDetailUiEvent
 
+        class LoadActors(val movieId: Int, val scope: CoroutineScope) : MovieDetailUiEvent
+
+        class LoadPosters(val movieId: Int, val scope: CoroutineScope) : MovieDetailUiEvent
+
+        class LoadReviews(val movieId: Int, val scope: CoroutineScope) : MovieDetailUiEvent
+
         class AddToBookmark(val movieId: Int, val isBookmark: Boolean) : MovieDetailUiEvent
 
         object BackPress : MovieDetailUiEvent
@@ -22,6 +28,14 @@ sealed interface MovieDetailEvent {
     }
 
     sealed interface MovieDetailCommandsResultEvent : MovieDetailEvent {
+
+        class MovieIsReady(val movie: Movie, val isBookmark: Boolean) : MovieDetailCommandsResultEvent
+
+        class ReviewsIsReady(val reviews: PagingData<Review>) : MovieDetailCommandsResultEvent
+
+        class ActorsIsReady(val actors: PagingData<Person>) : MovieDetailCommandsResultEvent
+
+        class PostersIsReady(val posters: List<Poster>) : MovieDetailCommandsResultEvent
 
         class DataIsReady(
             val movie: Movie,

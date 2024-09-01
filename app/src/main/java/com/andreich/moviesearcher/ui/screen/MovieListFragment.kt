@@ -339,7 +339,7 @@ class MovieListFragment : Fragment() {
 
     private fun listenAdapter() {
         movieListAdapter.addLoadStateListener {
-            if (it.refresh is LoadState.Loading) {
+            if (it.refresh is LoadState.Loading || it.append is LoadState.Loading) {
                 store.dispatch(MovieListEvent.MovieListUiEvent.PaginationLoad)
             } else {
                 store.dispatch(MovieListEvent.MovieListUiEvent.PaginationStopLoad)

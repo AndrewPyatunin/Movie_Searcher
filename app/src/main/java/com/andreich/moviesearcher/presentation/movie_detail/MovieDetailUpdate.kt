@@ -16,11 +16,18 @@ class MovieDetailUpdate @Inject constructor() :
             is MovieDetailCommandsResultEvent.LoadError -> handleResult(event)
             is MovieDetailCommandsResultEvent.Success -> handleResult(event)
             is MovieDetailCommandsResultEvent.SeasonIsReady -> handleResult(event)
+            is MovieDetailCommandsResultEvent.ActorsIsReady -> handleResult(event)
+            is MovieDetailCommandsResultEvent.MovieIsReady -> handleResult(event)
+            is MovieDetailCommandsResultEvent.PostersIsReady -> handleResult(event)
+            is MovieDetailCommandsResultEvent.ReviewsIsReady -> handleResult(event)
             is MovieDetailUiEvent.BackPress -> handleUiEvent(event)
             is MovieDetailUiEvent.LoadMovie -> handleUiEvent(event)
             is MovieDetailUiEvent.NavigateTo -> handleUiEvent(event)
             is MovieDetailUiEvent.AddToBookmark -> handleUiEvent(event)
             is MovieDetailUiEvent.LoadSeasons -> handleUiEvent(event)
+            is MovieDetailUiEvent.LoadActors -> handleUiEvent(event)
+            is MovieDetailUiEvent.LoadPosters -> handleUiEvent(event)
+            is MovieDetailUiEvent.LoadReviews -> handleUiEvent(event)
         }
     }
 
@@ -52,6 +59,18 @@ class MovieDetailUpdate @Inject constructor() :
             is MovieDetailCommandsResultEvent.SeasonIsReady -> {
                 state { state.copy(seasons = event.seasons) }
             }
+            is MovieDetailCommandsResultEvent.ActorsIsReady -> {
+                state { state.copy(persons = event.actors) }
+            }
+            is MovieDetailCommandsResultEvent.MovieIsReady -> {
+                state { state.copy(movie = event.movie, isLoading = false) }
+            }
+            is MovieDetailCommandsResultEvent.PostersIsReady -> {
+                state { state.copy(posters = event.posters) }
+            }
+            is MovieDetailCommandsResultEvent.ReviewsIsReady -> {
+                state { state.copy(reviews = event.reviews) }
+            }
         }
     }
 
@@ -73,6 +92,15 @@ class MovieDetailUpdate @Inject constructor() :
             }
             is MovieDetailUiEvent.LoadSeasons -> {
                 commands(MovieDetailCommand.LoadSeasons(event.movieId))
+            }
+            is MovieDetailUiEvent.LoadActors -> {
+                commands(MovieDetailCommand.LoadPersons(event.movieId, event.scope))
+            }
+            is MovieDetailUiEvent.LoadPosters -> {
+                commands(MovieDetailCommand.LoadPosters(event.movieId, event.scope))
+            }
+            is MovieDetailUiEvent.LoadReviews -> {
+                commands(MovieDetailCommand.LoadReviews(event.movieId, event.scope))
             }
         }
     }

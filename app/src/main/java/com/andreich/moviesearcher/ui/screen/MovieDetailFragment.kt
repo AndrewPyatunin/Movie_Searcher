@@ -5,12 +5,13 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.graphics.alpha
-import androidx.core.view.ViewCompat
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -110,6 +111,18 @@ class MovieDetailFragment : Fragment() {
                 movieId ?: 0
             )
         )
+        store.dispatch(MovieDetailEvent.MovieDetailUiEvent.LoadPosters(
+            movieId ?: 0,
+            lifecycleScope + Dispatchers.IO
+        ))
+        store.dispatch(MovieDetailEvent.MovieDetailUiEvent.LoadActors(
+            movieId ?: 0,
+            lifecycleScope + Dispatchers.IO
+        ))
+        store.dispatch(MovieDetailEvent.MovieDetailUiEvent.LoadReviews(
+            movieId ?: 0,
+            lifecycleScope + Dispatchers.IO
+        ))
     }
 
     override fun onCreateView(
@@ -131,18 +144,46 @@ class MovieDetailFragment : Fragment() {
         initViews()
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private fun collectState(state: MovieDetailUiState) {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 reviewAdapter.submitData(state.reviews)
-                binding.movieDetailReviewsRecycler.visibility = VISIBLE
             }
         }
-        state.seasons.isNotEmpty().let {
-            binding.movieSeasonRecycler.visibility = VISIBLE
-            binding.movieSeasonTag.visibility = VISIBLE
+        lifecycleScope.launch {
+            with(binding) {
+                if (reviewAdapter.snapshot().isNullOrEmpty()) {
+                    Log.d("REVIEW_ADAPTER_EMPTY", "empty")
+                    movieReviewsTag.visibility = GONE
+                    movieDetailReviewsRecycler.visibility = GONE
+                } else {
+                    Log.d("REVIEW_ADAPTER_NOT_EMPTY", "not_empty")
+                    movieReviewsTag.visibility = VISIBLE
+                    movieDetailReviewsRecycler.visibility = VISIBLE
+                }
+            }
         }
         lifecycleScope.launch {
+            with(binding) {
+                with(state) {
+                    if (seasons.isEmpty() || movieDetailItem?.isSeries == false) {
+                        movieSeasonRecycler.visibility = GONE
+                        movieSeasonTag.visibility = GONE
+                    } else {
+                        movieSeasonRecycler.visibility = VISIBLE
+                        movieSeasonTag.visibility = VISIBLE
+                    }
+                    if (posters.isEmpty()) {
+                        moviePostersTag.visibility = GONE
+                        movieDetailPostersRecycler.visibility = GONE
+                    } else {
+                        moviePostersTag.visibility = VISIBLE
+                        movieDetailPostersRecycler.visibility = VISIBLE
+                    }
+                }
+            }
+
             state.seasons.let {
                 seasonAdapter.submitList(it)
             }
@@ -153,10 +194,21 @@ class MovieDetailFragment : Fragment() {
         state.movieDetailItem?.let {
             initScreen(it)
         }
-        state.bookmarkType.let {
-            binding.bookmarkMovie.visibility = if (it) GONE else VISIBLE
-            binding.bookmarkMovieRemove.visibility = if (it) VISIBLE else GONE
+        lifecycleScope.launch {
+            state.bookmarkType.let {
+                with(binding) {
+                    when (it) {
+                        true -> {
+                            bookmarkAdd.setImageResource(R.drawable.bookmark_remove)
+                        }
+                        false -> {
+                            bookmarkAdd.setImageResource(R.drawable.bookmark_add)
+                        }
+                    }
+                }
+            }
         }
+
     }
 
     private fun handleNews(news: MovieDetailNews) {
@@ -174,11 +226,7 @@ class MovieDetailFragment : Fragment() {
     }
 
     private fun View.changeVisibility() {
-        visibility = if (visibility == GONE) {
-            VISIBLE
-        } else {
-            GONE
-        }
+        visibility = if (visibility == GONE) VISIBLE else GONE
     }
 
     private fun CustomTextViewWithImage.changeImageRes() {
@@ -229,10 +277,8 @@ class MovieDetailFragment : Fragment() {
         }
 
         with(binding) {
-            bookmarkMovie.setOnClickListener {
-                bookmarkClick(false)
-            }
-            bookmarkMovieRemove.setOnClickListener {
+            bookmarkAdd.setOnClickListener {
+                Log.d("BOOKMARK", "clicked")
                 bookmarkClick(true)
             }
             bookmarksOpen.setOnClickListener {
@@ -298,6 +344,13 @@ class MovieDetailFragment : Fragment() {
                 movieDetailCountries.text = it.countries
                 movieDetailTitle.text = it.title
                 personAdapter.submitList(it.actors)
+                if (it.actors.isEmpty()) {
+                    movieDetailActorsRecycler.visibility = GONE
+                    movieActorsTag.visibility = GONE
+                } else {
+                    movieDetailActorsRecycler.visibility = VISIBLE
+                    movieActorsTag.visibility = VISIBLE
+                }
                 if (it.isSeries) {
                     store.dispatch(
                         MovieDetailEvent.MovieDetailUiEvent.LoadSeasons(

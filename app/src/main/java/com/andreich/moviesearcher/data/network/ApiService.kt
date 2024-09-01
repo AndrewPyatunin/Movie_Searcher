@@ -60,7 +60,7 @@ interface ApiService {
     ): RequestResultDto<ReviewDto>
 
     @GET(
-        "season"//?sortField=airDate&sortField=episodes.date&sortType=1&sortType=1&number=1-30"
+        "season?number=1-30"
     )
     suspend fun getSeasons(
         @Query("page") page: Int = 1,

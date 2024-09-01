@@ -66,12 +66,11 @@ class StoreModule {
             ),
             update = MovieDetailUpdate(),
             commandHandlers = listOf(
-                MovieDetailCommandsFlowHandler(
-                    getPostersUseCase,
-                    getPersonsUseCase,
-                    getReviewsUseCase,
-                    getMovieUseCase
-                ), MovieDetailAddToBookmarkCommandHandler(
+                MovieDetailGetMovieCommandHandler(getMovieUseCase),
+                MovieDetailGetPostersCommandHandler(getPostersUseCase),
+                MovieDetailGetReviewsCommandHandler(getReviewsUseCase),
+                MovieDetailGetActorsCommandHandler(getPersonsUseCase),
+                MovieDetailAddToBookmarkCommandHandler(
                     getMovieUseCase,
                     insertMovieUseCase,
                     insertMovieBookmarkUseCase,
