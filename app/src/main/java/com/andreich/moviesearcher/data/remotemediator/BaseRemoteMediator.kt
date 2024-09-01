@@ -103,13 +103,13 @@ open class BaseRemoteMediator<Entity : Any, RemoteKey : Any>(
                         (remoteKeyDao as MovieRemoteKeyDao).getRemoteKeyByValueID(id)
                     } as RemoteKey?
                 }
-                PersonEntity::class -> {
-                    (state.closestItemToPosition(position) as PersonEntity).id.let { id ->
+                ActorEntity::class -> {
+                    (state.closestItemToPosition(position) as ActorEntity).id.let { id ->
                         (remoteKeyDao as PersonRemoteKeyDao).getRemoteKeyByValueID(id)
                     } as RemoteKey?
                 }
                 ReviewEntity::class -> {
-                    (state.closestItemToPosition(position) as PersonEntity).id.let { id ->
+                    (state.closestItemToPosition(position) as ReviewEntity).id.let { id ->
                         (remoteKeyDao as ReviewRemoteKeyDao).getRemoteKeyByValueID(id)
                     } as RemoteKey?
                 }
@@ -138,9 +138,9 @@ open class BaseRemoteMediator<Entity : Any, RemoteKey : Any>(
                         (movie as MovieEntity).id
                     ) as RemoteKey?
                 }
-                PersonEntity::class -> {
+                ActorEntity::class -> {
                     (remoteKeyDao as PersonRemoteKeyDao).getRemoteKeyByValueID(
-                        (movie as PersonEntity).id
+                        (movie as ActorEntity).id
                     ) as RemoteKey?
                 }
                 ReviewEntity::class -> {
@@ -172,9 +172,9 @@ open class BaseRemoteMediator<Entity : Any, RemoteKey : Any>(
                         (movie as MovieEntity).id
                     ) as RemoteKey?
                 }
-                PersonEntity::class -> {
+                ActorEntity::class -> {
                     (remoteKeyDao as PersonRemoteKeyDao).getRemoteKeyByValueID(
-                        (movie as PersonEntity).id
+                        (movie as ActorEntity).id
                     ) as RemoteKey?
                 }
                 ReviewEntity::class -> {

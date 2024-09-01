@@ -10,8 +10,10 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
+    <color name="light_black">#ff00011f</color>
     <color name="white">#FFFFFFFF</color>
     <color name="light_green">#d5ffc8</color>
     <color name="light_red">#ffd5d5</color>
     <color name="light_gray">#faf5f5</color>
+    <color name="shimmer">#C2C2C2</color>
 </resources>

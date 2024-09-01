@@ -2,6 +2,7 @@ package com.andreich.moviesearcher.data.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.andreich.moviesearcher.domain.pojo.EpisodeDto
 
 @Entity("season")
 data class SeasonEntity(
@@ -9,13 +10,10 @@ data class SeasonEntity(
     val id: String,
     val movieId: Int,
     val number: Int,
-    val episodesCount: Int,
-    val episodes: List<EpisodeEntity> = arrayListOf(),
-    val enName: String,
-    val name: String,
     val airDate: String,
-    val description: String,
-    val enDescription: String,
-    val url: String,
-    val previewUrl: String,
+    val enName: String,
+    val episodes: List<EpisodeEntity>,
+    val episodesCount: Int,
+    val name: String,
+    val source: String,
 )

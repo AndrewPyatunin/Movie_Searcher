@@ -2,19 +2,35 @@ package com.andreich.moviesearcher.domain.repo
 
 import androidx.paging.PagingData
 import com.andreich.moviesearcher.domain.model.Movie
+import com.andreich.moviesearcher.domain.model.MovieSearchHistory
 import kotlinx.coroutines.flow.Flow
 
 interface MovieRepository {
 
     fun getMovie(movieId: Int): Flow<Movie>
 
+    fun getMovieBookmark(movieId: Int): Flow<Movie?>
+
+    fun getBookmarkMovies(): Flow<List<Movie>>
+
+    suspend fun insertMovieBookmark(movie: Movie)
+
+    suspend fun removeMovieBookmark(movieId: Int)
+
+    suspend fun insertMovies(movies: List<Movie>)
+
     suspend fun searchFilm(name: String)
 
     fun searchFilteredFilms(
-        requestParams: String?,
         pageSize: Int,
         requestId: String,
-        name: String?
+        name: String?,
+        filters: Map<String, List<String>>,
+        completeRequest: Boolean,
+        sortFilters: Map<String, Int>
     ): Flow<PagingData<Movie>>
 
+    suspend fun insertMovieHistory(request: MovieSearchHistory)
+
+    suspend fun getMovieHistory(): List<MovieSearchHistory>
 }

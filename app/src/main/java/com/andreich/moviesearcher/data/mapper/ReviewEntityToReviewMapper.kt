@@ -8,9 +8,7 @@ class ReviewEntityToReviewMapper @Inject constructor() : EntityToModelMapper<Rev
 
     override fun map(from: ReviewEntity): Review {
         return with(from) {
-            Review(
-                id, movieId, title, type, review, date, author
-            )
+            Review(id, movieId, title, type, review, date, author)
         }
     }
 }

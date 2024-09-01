@@ -28,20 +28,24 @@ class MovieDtoToMovieMapper @Inject constructor(
             countries = fromDto.countries.map {
                 it.name.toString()
             },
+            firstCountry = if (fromDto.countries.size > 0) fromDto.countries[0].name else null,
             url = fromDto.poster?.url ?: "",
             previewUrl = fromDto.poster?.previewUrl ?: "",
             actors = fromDto.persons.map {
                 personMapper.map(it, item, requestId)
             },
             votes = fromDto.votes?.kp,
-            network = fromDto.networks?.items?.joinToString(", ") ?: "",
-            seasonsAmount = fromDto.seasonsInfo.size,
+            network = fromDto.networks?.items?.map {
+                it.name ?: ""
+            } ?: emptyList(),
+            seasonsAmount = fromDto.seasonsInfo?.size,
             top250 = fromDto.top250 ?: 0,
             movieLength = fromDto.movieLength ?: -1,
             isSeries = fromDto.isSeries ?: false,
             seriesLength = fromDto.seriesLength ?: -1,
             page = item,
-            requestId = requestId
+            requestId = requestId,
+            bookmark = false
         )
     }
 }

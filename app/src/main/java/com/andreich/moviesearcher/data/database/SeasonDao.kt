@@ -11,8 +11,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SeasonDao {
 
-    @Query("SELECT * FROM season")
-    fun getSeasons(): Flow<SeasonEntity>
+    @Query("SELECT * FROM season WHERE movieId = :movieId ORDER BY number")
+    fun getSeasons(movieId: Int): Flow<List<SeasonEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSeasons(list: List<SeasonEntity>)

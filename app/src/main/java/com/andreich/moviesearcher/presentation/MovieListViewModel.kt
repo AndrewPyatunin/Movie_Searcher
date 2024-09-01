@@ -21,7 +21,7 @@ class MovieListViewModel @Inject constructor(
 
     fun getList(requestId: String) {
         viewModelScope.launch {
-            searchMovieUseCase.execute(null, 10, requestId, scope = viewModelScope).collectLatest {
+            searchMovieUseCase.execute(10, requestId, scope = viewModelScope).collectLatest {
                 _movieListState.value = state.copy()
             }
         }
@@ -29,10 +29,10 @@ class MovieListViewModel @Inject constructor(
     }
 
     fun getData(requestId: String): Flow<PagingData<Movie>> {
-        return searchMovieUseCase.execute(null, 10, requestId, scope = viewModelScope)
+        return searchMovieUseCase.execute(10, requestId, scope = viewModelScope)
     }
 
     fun searchFilm(name: String, requestId: String): Flow<PagingData<Movie>> {
-        return searchMovieUseCase.execute(null, 10, requestId, name, scope = viewModelScope)
+        return searchMovieUseCase.execute(10, requestId, name, scope = viewModelScope)
     }
 }

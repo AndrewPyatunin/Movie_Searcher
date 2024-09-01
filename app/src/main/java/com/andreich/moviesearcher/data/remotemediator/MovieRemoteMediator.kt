@@ -7,6 +7,8 @@ import com.andreich.moviesearcher.data.database.*
 import com.andreich.moviesearcher.data.datasource.remote.RemoteDataSource
 import com.andreich.moviesearcher.data.entity.*
 import com.andreich.moviesearcher.data.mapper.MovieMapper
+import com.andreich.moviesearcher.data.network.QUERY_PARAM_SORT_FIELD
+import com.andreich.moviesearcher.data.network.QUERY_PARAM_SORT_TYPE
 import com.andreich.moviesearcher.domain.pojo.*
 import retrofit2.HttpException
 import java.io.IOException
@@ -21,55 +23,57 @@ class MovieRemoteMediator(
     private val personMapper: MovieMapper<PersonDto, PersonEntity>,
     private val name: String? = null,
     private val requestId: String,
+    private val filters: Map<String, List<String>> = emptyMap(),
+    private val sortFilter: Map<String, String> = emptyMap(),
+    private val completeRequest: Boolean
 ) : BaseRemoteMediator<MovieEntity, MovieRemoteKeyDao>(remoteKeyDao, MovieEntity::class, ) {
     val movieDao = database.movieDao()
+    val historyDao = database.historyDao()
 
     override suspend fun workWithNetworkAndDatabase(page: Int, loadType: LoadType): MediatorResult {
         try {
+            Log.d("SORT_REPO_MEDIATOR", sortFilter.values.joinToString(", "))
             val apiResponse = name?.let {
-                remoteDataSource.searchFilm(apiKey, page, movieName = name)
-//                networkService.searchFilm(apiKey, page, movieName = name)
-            } ?: remoteDataSource.searchWithFilters(page = page, apiKey = apiKey)
+                remoteDataSource.searchFilm(apiKey, page, 10, name)
+            } ?: remoteDataSource.searchWithFilters(
+                apiKey = apiKey,
+                page = page,
+                filters = filters,
+                sortType = sortFilter.filterKeys {
+                    it == QUERY_PARAM_SORT_TYPE
+                },
+                sortField = sortFilter
+            )
+            Log.d("MEDIATOR_FILTER", sortFilter.values.joinToString(", "))
             val movies = apiResponse.docs
-            movies.map {
-                it.persons.map { person ->
-                    personMapper.map(person, page, requestId)
-                }
-            }.forEach {
-                database.personDao().insertActors(it)
-            }
-            if (name != null) {
-                MovieSearchHistoryEntity(requestId, name, movies.map {
-                    movieMapper.map(it, page, requestId)
-                }).let {
-                    database.historyDao().insertElement(it)
-                }
-            }
-            val endOfPaginationReached = apiResponse.page == apiResponse.total
-//
+            Log.d("MEDIATOR_PAGING", "curPage = ${apiResponse.page}, totalPages = ${apiResponse.total}")
+            val endOfPaginationReached = apiResponse.page == apiResponse.total || apiResponse.docs.isEmpty()
+            Log.d("MEDIATOR_PAGING_END", endOfPaginationReached.toString())
             database.withTransaction {
+                name?.let {
+                    if (it.trim().isNotEmpty()) {
+                        MovieSearchHistoryEntity(movieTitle = name, id = name.lowercase().trim(), time = System.currentTimeMillis()).let {
+                            if (historyDao.getTableSize() >= 20) {
+                                historyDao.deleteOldest()
+                            }
+                            historyDao.insertElement(it)
+                        }
+                    }
+                }
+
                 movies.map {
                     it.persons.map { person ->
                         personMapper.map(person, page, requestId)
                     }
-                }.forEach {
+                }/*.forEach {
                     database.personDao().insertActors(it)
-                }
-//                if (name != null) {
-//                    MovieSearchHistoryEntity(requestId, name, movies.map {
-//                        movieMapper.map(it, page, requestId)
-//                    }).let {
-//                        database.historyDao().insertElement(it)
-//                    }
-//                }
+                }*/
                 if (loadType == LoadType.REFRESH) {
-    //                    remoteKeyDao.clearRemoteKeys()
-    //                    movieDao.clearAllMovies()
                     Log.d("REMOTE_MEDIATOR", "refresh$page")
                 }
                 val prevKey = if (page == 1) null else page - 1
                 val nextKey = if (endOfPaginationReached) null else page + 1
-                Log.d("REMOTE_MEDIATOR", "next_key_first=$nextKey")
+                Log.d("REMOTE_MEDIATOR_PAGE", "next_key_first=$page")
                 val remoteKeys = movies.map {
                     MovieRemoteKeyEntity(id = it.id ?: 0, valueId = it.id ?: 0, prevKey = prevKey, currentPage = page, nextKey = nextKey)
                 }
@@ -149,9 +153,11 @@ class MovieRemoteMediator(
     }
 
     private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, MovieEntity>): MovieRemoteKeyEntity? {
+        Log.d("MEDIATOR_REMOTE_KEY_START", "movie.id.toString()")
         return state.pages.lastOrNull {
             it.data.isNotEmpty()
         }?.data?.lastOrNull()?.let { movie ->
+            Log.d("MEDIATOR_REMOTE_KEY", movie.id.toString())
             remoteKeyDao.getRemoteKeyByValueID(movie.id)
         }
     }

@@ -7,4 +7,6 @@ import kotlinx.coroutines.flow.Flow
 interface PosterRepository {
 
     fun getPosters(movieId: Int, pageSize: Int, requestId: String): Flow<PagingData<Poster>>
+
+    suspend fun getPostersDetail(movieId: Int): Flow<List<Poster>>
 }

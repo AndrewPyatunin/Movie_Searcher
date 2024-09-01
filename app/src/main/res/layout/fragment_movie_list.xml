@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.screen.MovieListFragment">
 
     <com.google.android.material.card.MaterialCardView
@@ -13,7 +13,7 @@
         app:cardCornerRadius="8dp"
         app:cardElevation="8dp"
         app:cardUseCompatPadding="true"
-        app:layout_constraintBottom_toTopOf="@+id/recycler_movies"
+        app:layout_constraintBottom_toTopOf="@id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -26,7 +26,7 @@
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/search_view"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 app:iconifiedByDefault="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/search_filter_image"
@@ -47,27 +47,94 @@
                 app:layout_constraintStart_toEndOf="@id/search_view"
                 app:layout_constraintTop_toTopOf="parent" />
 
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
+
+    <com.andreich.moviesearcher.ui.view.CustomTextViewWithImage
+        android:id="@+id/sort_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:theme="@style/IconStyleDown"
+        app:category_text="Дата"
+        app:category_text_size="12sp"
+        app:layout_constraintEnd_toStartOf="@id/sort_country"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline" />
+
+    <com.andreich.moviesearcher.ui.view.CustomTextViewWithImage
+        android:id="@+id/sort_country"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:theme="@style/IconStyleDown"
+        app:category_text="Страна"
+        app:category_text_size="12sp"
+        app:layout_constraintEnd_toStartOf="@id/sort_age_rating"
+        app:layout_constraintStart_toEndOf="@id/sort_date"
+        app:layout_constraintTop_toBottomOf="@id/guideline" />
+
+    <com.andreich.moviesearcher.ui.view.CustomTextViewWithImage
+        android:id="@+id/sort_age_rating"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:theme="@style/IconStyleDown"
+        app:category_text="Возраст"
+        app:category_text_size="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/sort_country"
+        app:layout_constraintTop_toBottomOf="@id/guideline" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_history"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="4dp"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sort_date">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_history"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guideline" />
+
+    </androidx.cardview.widget.CardView>
+
+    <ImageView
+        android:id="@+id/image_open_favourites"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginTop="4dp"
+        android:elevation="8dp"
+        android:theme="@style/IconOpenBookmarks"
+        app:layout_constraintTop_toTopOf="@id/card_history"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_movies"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/progress_load_movies"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guideline" />
+        app:layout_constraintTop_toBottomOf="@id/card_history" />
 
     <ProgressBar
         android:id="@+id/progress_load_movies"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_movies" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

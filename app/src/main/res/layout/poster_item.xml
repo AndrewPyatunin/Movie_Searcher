@@ -8,12 +8,12 @@
     app:cardElevation="4dp"
     app:cardUseCompatPadding="true">
 
-    <ImageView
+    <com.jackandphantom.carouselrecyclerview.view.ReflectionImageView
         android:id="@+id/poster"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:maxWidth="200dp"
+        android:layout_height="200dp"
+        android:maxWidth="300dp"
         android:adjustViewBounds="true"
-        android:scaleType="centerCrop" />
+        android:scaleType="fitXY" />
 
 </androidx.cardview.widget.CardView>

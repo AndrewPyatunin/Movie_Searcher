@@ -11,4 +11,66 @@
     <string name="posters">Posters</string>
     <string name="reviews">Reviews</string>
     <string name="actors">Actors</string>
+    <string name="choose_filters">Choose filters</string>
+    <string name="content_type">Content type</string>
+    <string name="years">Years</string>
+    <string name="rating">Rating</string>
+    <string name="input_value">Input value:</string>
+    <string name="network">Network</string>
+    <string name="from">From</string>
+    <string name="until">Until</string>
+    <string name="apply">Apply</string>
+    <string name="reset_filters">Reset filters</string>
+    <string name="actor_movies">Фильмография</string>
+    <string name="actor_career">Карьера</string>
+    <string name="date_of_death">Дата смерти</string>
+    <string name="actor_birth_place">Место Рождения</string>
+    <string name="actor_birthday">Дата рождения</string>
+    <string name="actor_about">О персоне</string>
+    <string name="actor_growth">Рост</string>
+    <string name="remove_from_bookmark">Удалить из избранного</string>
+    <string name="add_to_bookmark">Добавить в избранное</string>
+    <string name="season_list">Список сезонов</string>
+    <string-array name="countries">
+        <item>Выберите страну</item>
+        <item>США</item>
+        <item>Россия</item>
+        <item>Испания</item>
+        <item>Франция</item>
+        <item>Германия</item>
+        <item>Великобритания</item>
+        <item>Индия</item>
+        <item>Турция</item>
+        <item>Южная Корея</item>
+        <item>Китай</item>
+        <item>Япония</item>
+        <item>Нидерланды</item>
+        <item>Казахстан</item>
+    </string-array>
+    <string-array name="network">
+        <item>Выберите сеть</item>
+        <item>Netflix</item>
+        <item>HBO</item>
+        <item>Amazon</item>
+        <item>YouTube Premium</item>
+    </string-array>
+    <string-array name="genres">
+        <item>Выберите жанр</item>
+        <item>Драма</item>
+        <item>Фантастика</item>
+        <item>Приключения</item>
+        <item>Фэнтези</item>
+        <item>Комедия</item>
+        <item>Триллер</item>
+        <item>Ужасы</item>
+        <item>Мелодрама</item>
+    </string-array>
+    <string-array name="content_types">
+        <item>Выберите тип</item>
+        <item>Фильм</item>
+        <item>Сериал</item>
+        <item>Аниме</item>
+        <item>Мультфильм</item>
+        <item>Анимационный сериал</item>
+    </string-array>
 </resources>

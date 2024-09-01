@@ -10,6 +10,7 @@ import com.andreich.moviesearcher.data.datasource.remote.RemoteDataSource
 import com.andreich.moviesearcher.data.entity.PersonEntity
 import com.andreich.moviesearcher.data.entity.PersonRemoteKeyEntity
 import com.andreich.moviesearcher.data.mapper.MovieMapper
+import com.andreich.moviesearcher.domain.pojo.ActorDto
 import com.andreich.moviesearcher.domain.pojo.PersonDto
 import retrofit2.HttpException
 import java.io.IOException
@@ -42,10 +43,6 @@ class PersonRemoteMediator(
             val endOfPaginationReached = persons.isEmpty()
 
             database.withTransaction {
-                if (loadType == LoadType.REFRESH) {
-//                    remoteKeyDao.clearRemoteKeys()
-//                    movieDao.clearAllMovies()
-                }
                 val prevKey = if (page > 1) page - 1 else null
                 val nextKey = if (endOfPaginationReached) null else page + 1
                 val remoteKeys = persons.map {

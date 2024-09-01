@@ -18,16 +18,18 @@ data class MovieEntity(
     val ageRating: Int,
     val genres: List<String>,
     val countries: List<String>,
+    val firstCountry: String?,
     val url: String,
     val previewUrl: String,
     val actors: List<PersonEntity>,
     val votes: Int?,
-    val network: String,
-    val seasonsAmount: Int,
+    val network: List<String>,
+    val seasonsAmount: Int?,
     val top250: Int,
     val movieLength: Int,
     val isSeries: Boolean,
     val seriesLength: Int,
     val page: Int,
-    val requestId: String
+    val requestId: String,
+    val bookmark: Boolean
 )

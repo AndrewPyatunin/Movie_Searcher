@@ -8,8 +8,9 @@ interface RemoteDataSource {
         apiKey: String,
         page: Int = 1,
         limit: Int = 10,
-//        sortFilters: Map<String, String> = emptyMap(),
-        vararg filters: String
+        filters: Map<String, List<String>> = emptyMap(),
+        sortField: Map<String, String> = emptyMap(),
+        sortType: Map<String, String> = emptyMap()
     ): RequestResultDto<MovieDto>
 
     suspend fun getActors(
@@ -36,7 +37,6 @@ interface RemoteDataSource {
     ): RequestResultDto<ReviewDto>
 
     suspend fun getSeasons(
-        apiKey: String,
         page: Int = 1,
         limit: Int = 10,
         movieId: Int,
@@ -49,4 +49,12 @@ interface RemoteDataSource {
         page: Int = 1,
         limit: Int = 10,
     ): RequestResultDto<PosterDto>
+
+    suspend fun getActor(
+        actorId: Int
+    ): ActorDto
+
+    suspend fun getMovie(
+        movieId: Int
+    ): MovieDto
 }

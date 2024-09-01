@@ -24,4 +24,12 @@ interface EntityMapperModule {
     @Binds
     fun bindSeasonEntityMapper(impl: SeasonEntityToSeasonMapper): EntityToModelMapper<SeasonEntity, Season>
 
+    @Binds
+    fun bindActorEntityMapper(impl: ActorEntityToActorMapper): EntityToModelMapper<ActorEntity, Actor>
+
+    @Binds
+    fun bindBookmarkMovieEntityMapper(impl: MovieBookmarkEntityToMovieMapper): EntityToModelMapper<BookmarkMovieEntity, Movie>
+
+    @Binds
+    fun bindEpisodeEntityMapper(impl: EpisodeEntityToEpisodeMapper): EntityToModelMapper<EpisodeEntity, Episode>
 }

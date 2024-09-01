@@ -1,0 +1,3 @@
+package com.andreich.moviesearcher.presentation.movie_filter
+
+sealed interface MovieFilterCommand

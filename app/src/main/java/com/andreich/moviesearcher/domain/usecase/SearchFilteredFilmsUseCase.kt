@@ -12,12 +12,22 @@ class SearchFilteredFilmsUseCase @Inject constructor(
     private val repository: MovieRepository
 ) {
 
-    fun execute(searchParams: String? = null, pageSize: Int, requestId: String, name: String? = null, scope: CoroutineScope): Flow<PagingData<Movie>> {
+    fun execute(
+        pageSize: Int,
+        requestId: String,
+        name: String? = null,
+        scope: CoroutineScope,
+        filters: Map<String, List<String>> = emptyMap(),
+        completeRequest: Boolean = false,
+        sortFilters: Map<String, Int> = emptyMap()
+    ): Flow<PagingData<Movie>> {
         return repository.searchFilteredFilms(
-            searchParams,
             pageSize,
             requestId,
-            name
+            name,
+            filters,
+            completeRequest,
+            sortFilters
         ).cachedIn(scope)
     }
 }

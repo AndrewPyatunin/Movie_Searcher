@@ -27,7 +27,7 @@ class Converter {
 
     @TypeConverter
     fun fromListEpisodeToString(list: List<EpisodeEntity?>?): String {
-        return  Gson().toJson(list)
+        return Gson().toJson(list)
     }
 
     @TypeConverter
@@ -50,5 +50,45 @@ class Converter {
     @TypeConverter
     fun fromStringToListMovieEntity(value: String?): List<MovieEntity> {
         return Gson().fromJson(value, object : TypeToken<List<MovieEntity>>() {}.type)
+    }
+
+    @TypeConverter
+    fun fromListSpousesToString(list: List<SpousesEntity?>?): String {
+        return Gson().toJson(list)
+    }
+
+    @TypeConverter
+    fun fromStringToListSpousesEntity(value: String?): List<SpousesEntity> {
+        return Gson().fromJson(value, object : TypeToken<List<SpousesEntity>>() {}.type)
+    }
+
+    @TypeConverter
+    fun fromListMoviesEntityToString(list: List<MoviesEntity?>?): String {
+        return Gson().toJson(list)
+    }
+
+    @TypeConverter
+    fun fromStringToListMoviesEntity(value: String?): List<MoviesEntity> {
+        return Gson().fromJson(value, object : TypeToken<List<MoviesEntity>>() {}.type)
+    }
+
+    @TypeConverter
+    fun fromListActorEntityToString(list: List<ActorEntity?>?): String {
+        return Gson().toJson(list)
+    }
+
+    @TypeConverter
+    fun fromStringToListActorEntity(value: String): List<ActorEntity> {
+        return Gson().fromJson(value, object : TypeToken<List<ActorEntity>>() {}.type)
+    }
+
+    @TypeConverter
+    fun fromListIntToString(list: List<Int>): String {
+        return Gson().toJson(list)
+    }
+
+    @TypeConverter
+    fun fromStringToListInt(value: String): List<Int> {
+        return Gson().fromJson(value, object : TypeToken<List<Int>>() {}.type)
     }
 }

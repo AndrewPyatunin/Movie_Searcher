@@ -32,5 +32,8 @@ interface DataModule {
     fun bindRemoteDataSource(impl: RemoteDataSourceImpl): RemoteDataSource
 
     @Binds
+    fun bindHistoryDataSource(impl: HistoryDataSourceImpl): HistoryDataSource
+
+    @Binds
     fun bindEpisodeDtoMapper(impl: EpisodeDtoToEpisodeEntityMapper): DtoMapper<EpisodeDto, EpisodeEntity>
 }
