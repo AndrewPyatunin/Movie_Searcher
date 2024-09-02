@@ -111,18 +111,24 @@ class MovieDetailFragment : Fragment() {
                 movieId ?: 0
             )
         )
-        store.dispatch(MovieDetailEvent.MovieDetailUiEvent.LoadPosters(
-            movieId ?: 0,
-            lifecycleScope + Dispatchers.IO
-        ))
-        store.dispatch(MovieDetailEvent.MovieDetailUiEvent.LoadActors(
-            movieId ?: 0,
-            lifecycleScope + Dispatchers.IO
-        ))
-        store.dispatch(MovieDetailEvent.MovieDetailUiEvent.LoadReviews(
-            movieId ?: 0,
-            lifecycleScope + Dispatchers.IO
-        ))
+        store.dispatch(
+            MovieDetailEvent.MovieDetailUiEvent.LoadPosters(
+                movieId ?: 0,
+                lifecycleScope + Dispatchers.IO
+            )
+        )
+        store.dispatch(
+            MovieDetailEvent.MovieDetailUiEvent.LoadActors(
+                movieId ?: 0,
+                lifecycleScope + Dispatchers.IO
+            )
+        )
+        store.dispatch(
+            MovieDetailEvent.MovieDetailUiEvent.LoadReviews(
+                movieId ?: 0,
+                lifecycleScope + Dispatchers.IO
+            )
+        )
     }
 
     override fun onCreateView(
