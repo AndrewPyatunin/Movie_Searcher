@@ -63,7 +63,7 @@ class MovieDetailUpdate @Inject constructor() :
                 state { state.copy(persons = event.actors) }
             }
             is MovieDetailCommandsResultEvent.MovieIsReady -> {
-                state { state.copy(movie = event.movie, isLoading = false) }
+                state { state.copy(movie = event.movie, isBookmark = event.isBookmark, isLoading = false) }
             }
             is MovieDetailCommandsResultEvent.PostersIsReady -> {
                 state { state.copy(posters = event.posters) }

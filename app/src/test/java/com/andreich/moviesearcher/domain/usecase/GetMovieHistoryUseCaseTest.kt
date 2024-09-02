@@ -26,6 +26,22 @@ class MyRepo(
         TODO("Not yet implemented")
     }
 
+    override fun getMovieBookmark(movieId: Int): Flow<Movie?> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getBookmarkMovies(): Flow<List<Movie>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun insertMovieBookmark(movie: Movie) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun removeMovieBookmark(movieId: Int) {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun insertMovies(movies: List<Movie>) {
         TODO("Not yet implemented")
     }

@@ -5,7 +5,6 @@ import com.andreich.moviesearcher.domain.usecase.GetMovieUseCase
 import com.andreich.moviesearcher.domain.usecase.InsertMovieBookmarkUseCase
 import com.andreich.moviesearcher.domain.usecase.InsertMovieUseCase
 import com.andreich.moviesearcher.domain.usecase.RemoveMovieBookmarkUseCase
-import com.andreich.moviesearcher.presentation.runCatchingCancellable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import ru.tinkoff.kotea.core.CommandsFlowHandler
